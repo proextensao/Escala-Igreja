@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Disponibilidade - Nação Santa</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; display: flex; justify-content: center; padding-top: 50px; padding-bottom: 50px; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); width: 450px; text-align: center; position: relative; }
+        .logo-igreja { display: block; margin: 0 auto 15px auto; width: 150px; height: 150px; object-fit: contain; border-radius: 50%; background-color: #1a73e8; padding: 10px; box-sizing: border-box; }
+        h3 { color: #1a73e8; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        
+        .mes-pequeno { position: absolute; top: 15px; right: 15px; font-size: 11px; color: #64748b; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+        
+        label { font-size: 14px; font-weight: bold; display: block; margin-top: 15px; text-align: left; }
+        input[type="text"], input[type="tel"], input[type="date"], select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; font-size: 15px; }
+        button { background: #1a73e8; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #1557b0; }
+
+        /* --- DROPDOWN --- */
+        .custom-select-wrapper { position: relative; width: 100%; margin: 8px 0; }
+        .custom-select-display { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; background: white; cursor: pointer; text-align: left; color: #757575; font-size: 15px; }
+        .custom-select-display.selected { color: black; }
+        .custom-select-options { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto; z-index: 100; text-align: left; box-sizing: border-box; padding: 5px 0; }
+        .custom-select-options.show { display: flex; flex-direction: column; }
+        .custom-select-options label { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; margin: 0; cursor: pointer; font-weight: normal; font-size: 15px; transition: 0.2s; }
+        .custom-select-options label:hover { background-color: #f8fafc; }
+
+        .date-input-group { display: flex; gap: 10px; align-items: center; }
+        .date-input-group button { width: auto; background: #475569; padding: 0 20px; }
+        .chips-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 20px; }
+        .chip { background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; gap: 8px; font-weight: bold; }
+        .chip span { cursor: pointer; color: #991b1b; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="mesDinamico" class="mes-pequeno">MÊS</div>
+        <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png" alt="Logo Nação Santa" class="logo-igreja">
+        <h3>Cadastro de Disponibilidade<br>Voluntários - Nação Santa</h3>
+
+        <label>Nome:</label>
+        <input type="text" id="nome" placeholder="Ex: José Maria">
+
+        <label>WhatsApp:</label>
+        <input type="tel" id="whatsapp" placeholder="(XX) XXXXX-XXXX" maxlength="15">
+
+        <label>Qual seu ministério?</label>
+        <div class="custom-select-wrapper" id="dropdownWrapper">
+            <div class="custom-select-display" id="dropdownDisplay">Selecionar ministério(s)</div>
+            <div class="custom-select-options" id="dropdownOptions">
+                <label>Fotografia <input type="checkbox" value="Fotografia"></label>
+                <label>Iluminação <input type="checkbox" value="Iluminação"></label>
+                <label>Projeção <input type="checkbox" value="Projeção"></label>
+                <label>Produção <input type="checkbox" value="Produção"></label>
+                <label>Rede Social <input type="checkbox" value="Rede Social"></label>
+                <label>Som <input type="checkbox" value="Som"></label>
+                <label>Transmissão <input type="checkbox" value="Transmissão"></label>
+            </div>
+        </div>
+
+        <label>Disponibilidade:</label>
+        <select id="disponibilidade">
+            <option value="" disabled selected>Selecione uma opção...</option>
+            <optgroup label="Geral">
+                <option value="todos">Disponível todos os dias</option>
+                <option value="nenhum">Indisponível este mês</option>
+            </optgroup>
+            <optgroup label="Disponível Somente">
+                <option value="0">Somente aos domingos</option>
+                <option value="2">Somente às terças</option>
+                <option value="6">Somente aos sábados</option>
+            </optgroup>
+            <optgroup label="Indisponível Somente">
+                <option value="nao_domingo">Indisponível aos domingos</option>
+                <option value="nao_terca">Indisponível às terças</option>
+                <option value="nao_sabado">Indisponível aos sábados</option>
+            </optgroup>
+        </select>
+
+        <label>Datas específicas que NÃO pode comparecer (Opcional):</label>
+        <div class="date-input-group">
+            <input type="date" id="inputData">
+            <button type="button" id="btnAddData">Adicionar</button>
+        </div>
+        <div id="listaDatas" class="chips-container"></div>
+
+        <button id="btnSalvar" style="margin-top: 20px;">Enviar Cadastro</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCoo-5SaiCvgyy05Jpbzd179r5F2sdkmHA",
+            authDomain: "escala-projecao.firebaseapp.com",
+            projectId: "escala-projecao"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const hoje = new Date();
+        const ultimoDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+        let mesAlvo = hoje.getMonth();
+        let anoAlvo = hoje.getFullYear();
+        
+        if (hoje.getDate() >= (ultimoDiaDoMes - 3)) {
+            mesAlvo++;
+            if (mesAlvo > 11) { mesAlvo = 0; anoAlvo++; }
+        }
+        
+        const stringMes = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+        
+        // Exibe apenas o MÊS, sem textos extras
+        document.getElementById("mesDinamico").innerText = stringMes[mesAlvo];
+        
+        const mesReferenciaBanco = `${anoAlvo}-${String(mesAlvo + 1).padStart(2, '0')}`;
+
+        document.getElementById('whatsapp').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        const dropdownDisplay = document.getElementById('dropdownDisplay');
+        const dropdownOptions = document.getElementById('dropdownOptions');
+        const checkboxesMinisterio = dropdownOptions.querySelectorAll('input[type="checkbox"]');
+        dropdownDisplay.addEventListener('click', () => dropdownOptions.classList.toggle('show'));
+        document.addEventListener('click', (e) => { if (!document.getElementById('dropdownWrapper').contains(e.target)) dropdownOptions.classList.remove('show'); });
+
+        checkboxesMinisterio.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const sel = Array.from(checkboxesMinisterio).filter(i => i.checked).map(i => i.value);
+                if (sel.length === 0) { dropdownDisplay.innerText = "Selecionar ministério(s)"; dropdownDisplay.classList.remove('selected'); }
+                else if (sel.length === 1) { dropdownDisplay.innerText = sel[0]; dropdownDisplay.classList.add('selected'); }
+                else { dropdownDisplay.innerText = `${sel.length} ministérios selecionados`; dropdownDisplay.classList.add('selected'); }
+            });
+        });
+
+        let datasSelecionadas = [];
+        document.getElementById('btnAddData').onclick = () => {
+            const val = document.getElementById('inputData').value;
+            if (!val) return;
+            if (!datasSelecionadas.includes(val)) { datasSelecionadas.push(val); datasSelecionadas.sort(); renderizarDatas(); }
+            document.getElementById('inputData').value = "";
+        };
+        window.removerData = function(index) { datasSelecionadas.splice(index, 1); renderizarDatas(); };
+        function renderizarDatas() {
+            const container = document.getElementById('listaDatas'); container.innerHTML = "";
+            datasSelecionadas.forEach((data, index) => {
+                const [a, m, d] = data.split('-');
+                container.innerHTML += `<div class="chip">${d}/${m}/${a} <span onclick="removerData(${index})">✖</span></div>`;
+            });
+        }
+
+        document.getElementById('btnSalvar').onclick = async () => {
+            const nome = document.getElementById('nome').value.trim();
+            const zap = document.getElementById('whatsapp').value;
+            const disp = document.getElementById('disponibilidade').value;
+            const marcados = document.querySelectorAll('#dropdownOptions input[type="checkbox"]:checked');
+            const ministeriosSelecionados = Array.from(marcados).map(cb => cb.value);
+
+            if (!nome) return alert("Por favor, digite seu nome.");
+            if (zap.length < 14) return alert("Preencha seu WhatsApp com o DDD.");
+            if (ministeriosSelecionados.length === 0) return alert("Selecione pelo menos um ministério.");
+            if (!disp) return alert("Selecione sua disponibilidade.");
+
+            const inputPend = document.getElementById('inputData').value;
+            if (inputPend && !datasSelecionadas.includes(inputPend)) datasSelecionadas.push(inputPend);
+
+            const snap = await getDocs(collection(db, "voluntarios"));
+            let docExistente = null; let ministeriosAntigos = [];
+            snap.forEach(d => { if (d.data().whatsapp === zap) { docExistente = d; ministeriosAntigos = d.data().ministerios || []; } });
+            const ministeriosFinais = [...new Set([...ministeriosAntigos, ...ministeriosSelecionados])];
+
+            const dadosFinal = {
+                nome: nome,
+                whatsapp: zap,
+                ministerios: ministeriosFinais,
+                disponibilidade: disp,
+                datasIndisponiveis: datasSelecionadas,
+                mesReferencia: mesReferenciaBanco
+            };
+
+            if (docExistente) {
+                await updateDoc(doc(db, "voluntarios", docExistente.id), dadosFinal);
+                alert("Cadastro ATUALIZADO com sucesso!");
+            } else {
+                await addDoc(collection(db, "voluntarios"), dadosFinal);
+                alert("Cadastro ENVIADO com sucesso!");
+            }
+
+            document.getElementById('nome').value = ""; document.getElementById('whatsapp').value = "";
+            document.getElementById('disponibilidade').value = ""; document.getElementById('inputData').value = "";
+            checkboxesMinisterio.forEach(cb => cb.checked = false);
+            dropdownDisplay.innerText = "Selecionar ministério(s)"; dropdownDisplay.classList.remove('selected');
+            datasSelecionadas = []; renderizarDatas();
+        };
+    </script>
+</body>
+</html>
