@@ -510,11 +510,13 @@ window.voltarParaCadastro = function() {
 };
 
 /* ===== CADASTRO LOGIC ===== */
+// ALTERAÇÃO 1: Janela de antecedência alterada de 3 para 10 dias.
+// Faltando 10 dias ou menos para o fim do mês, o cadastro já aponta para o mês seguinte.
 const hoje = new Date();
 const ultimoDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
 let mesAlvo = hoje.getMonth();
 let anoAlvo = hoje.getFullYear();
-if (hoje.getDate() >= (ultimoDiaDoMes - 3)) {
+if (hoje.getDate() >= (ultimoDiaDoMes - 9)) {
   mesAlvo++;
   if (mesAlvo > 11) { mesAlvo = 0; anoAlvo++; }
 }
@@ -595,7 +597,7 @@ const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AG
 const hojeP = new Date();
 const ultimoDiaDoMesP = new Date(hojeP.getFullYear(), hojeP.getMonth() + 1, 0).getDate();
 let mesP = hojeP.getMonth(); let anoP = hojeP.getFullYear();
-if (hojeP.getDate() >= (ultimoDiaDoMesP - 3)) { mesP++; if(mesP>11){mesP=0; anoP++;} }
+if (hojeP.getDate() >= (ultimoDiaDoMesP - 9)) { mesP++; if(mesP>11){mesP=0; anoP++;} }
 document.getElementById("mesDinamicoPainel").innerText = meses[mesP];
 document.getElementById('mesEscala').value = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
 document.getElementById('mesEscala').addEventListener('change', () => { if(ministerioSelecionado) carregarVoluntarios(); });
@@ -671,8 +673,10 @@ async function carregarVoluntarios(){
     const v=d.data(); v.id=d.id;
     if(v.ministerios?.includes(ministerioSelecionado)) {
       listaGlobal.push(v);
+      // Aviso visual: se o mesReferencia do voluntário é diferente do mês selecionado
+      // ele aparece com alerta, mas ainda é incluído na equipe e considerado na geração.
       let txtStatus = v.mesReferencia !== mesSelecionadoPainel
-        ? "<span style='color:#ef4444; font-weight:bold;'>⚠️ Não preencheu para este mês</span>"
+        ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>"
         : textoDisp(v);
       listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div>`;
       [selectCaverna,selectMulheres,selectOutros].forEach(s=>s.innerHTML+=`<option value="${v.nome}">${v.nome}</option>`);
@@ -711,7 +715,9 @@ btnGerar.onclick = async () => {
       let escaladosNoDia = [];
       for (let i = 0; i < numVagas; i++) {
         let candidatos = listaGlobal.filter(v => {
-          if (v.mesReferencia !== mesVal) return false;
+          // ALTERAÇÃO 2: Removida a restrição de mesReferencia na geração da escala.
+          // Voluntários cadastrados em qualquer mês são considerados válidos,
+          // pois a líder pode abrir o cadastro antes da janela de 10 dias.
           if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
           if (escaladosNoDia.includes(v.nome)) return false;
           let d2 = String(v.disponibilidade || "");
