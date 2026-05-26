@@ -298,7 +298,10 @@ tbody td { background:white; color:#1e293b; }
 .acao-amarelo { color: #eab308; } .acao-vermelho { color: #ef4444; } .acao-lixeira { color: #64748b; }
 .amarelo td { background:#fef08a !important; color: black !important; } .vermelho td { background:#fca5a5 !important; color: black !important; }
 .historico-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-.btn-baixar { background: #e2e8f0; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #475569; }
+.btn-baixar { background: #e2e8f0; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #475569; transition: 0.2s; font-size: 16px; }
+.btn-baixar:hover { background: #cbd5e1; }
+.btn-baixar.excluir-hist { color: #ef4444; }
+.btn-acoes-hist { display: flex; gap: 10px; }
 
 @media print {
     #screen-cadastro { display: none !important; }
@@ -464,28 +467,18 @@ tbody td { background:white; color:#1e293b; }
         </div>
 
         <div class="card-painel">
-          <h3>Eventos especiais</h3>
-
-          <input type="text" id="nomeCaverna" value="Caverna de Adulão">
-          <input type="date" id="dataCaverna">
-          <select id="selectCaverna"></select>
-          <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
-          <select id="vagasCaverna"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-          <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeCaverna').value,'19:00','dataCaverna','selectCaverna','vagasCaverna')"><i class="ph ph-plus"></i> Adicionar</button>
-
-          <input type="text" id="nomeMulheres" value="Culto Mulheres">
-          <input type="date" id="dataMulheres">
-          <select id="selectMulheres"></select>
-          <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
-          <select id="vagasMulheres"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-          <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeMulheres').value,'17:00','dataMulheres','selectMulheres','vagasMulheres')"><i class="ph ph-plus"></i> Adicionar</button>
-
-          <input type="text" id="nomeOutro" placeholder="Outros Eventos">
-          <input type="date" id="dataOutros">
-          <select id="selectOutros"></select>
-          <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
-          <select id="vagasOutros"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-          <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeOutro').value,'19:00','dataOutros','selectOutros','vagasOutros')"><i class="ph ph-plus"></i> Adicionar</button>
+          <h3>Evento Especial</h3>
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Nome do evento:</label>
+          <input type="text" id="nomeEvento" placeholder="Ex: Caverna de Adulão">
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Hora:</label>
+          <input type="time" id="horaEvento" value="19:00">
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Data:</label>
+          <input type="date" id="dataEvento">
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Voluntário:</label>
+          <select id="selectEvento"></select>
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
+          <select id="vagasEvento"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
+          <button class="btn blue" style="margin-top:8px;" onclick="addEventoVagas(document.getElementById('nomeEvento').value, document.getElementById('horaEvento').value, 'dataEvento', 'selectEvento', 'vagasEvento')"><i class="ph ph-plus"></i> Adicionar à Escala</button>
         </div>
       </div>
     </div>
@@ -676,7 +669,8 @@ function textoDisp(v){
 async function carregarVoluntarios(){
   const snap = await getDocs(collection(db,"voluntarios"));
   listaGlobal=[]; listaVoluntariosUI.innerHTML="";
-  [selectCaverna,selectMulheres,selectOutros].forEach(s=>s.innerHTML="<option value=''>Selecione...</option>");
+  const selectEvento = document.getElementById('selectEvento');
+  if(selectEvento) selectEvento.innerHTML="<option value=''>Selecione...</option>";
   const mesSelecionadoPainel = document.getElementById('mesEscala').value;
   snap.forEach(d=>{
     const v=d.data(); v.id=d.id;
@@ -688,7 +682,7 @@ async function carregarVoluntarios(){
         ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>"
         : textoDisp(v);
       listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div>`;
-      [selectCaverna,selectMulheres,selectOutros].forEach(s=>s.innerHTML+=`<option value="${v.nome}">${v.nome}</option>`);
+      if(selectEvento) selectEvento.innerHTML+=`<option value="${v.nome}">${v.nome}</option>`;
     }
   });
 }
@@ -770,43 +764,71 @@ window.excluirVol = async(id) => { if(confirm("Remover da equipe?")){ let r=doc(
 async function carregarHistorico() {
   const listaHistorico = document.getElementById('listaHistorico');
   listaHistorico.innerHTML = "";
-  const snap = await getDocs(query(collection(db,"historico_escalas"), where("ministerio","==",ministerioSelecionado)));
-  if(snap.empty) { listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>"; return; }
-  let docs = [];
-  snap.forEach(d => docs.push({id:d.id, ...d.data()}));
-  docs.sort((a,b) => b.mesReferencia.localeCompare(a.mesReferencia));
-  docs.forEach(esc => {
-    listaHistorico.innerHTML += `<div class="historico-item"><span><b>${esc.mesReferencia}</b> (${esc.linhas?.length || 0} entradas)</span><button class="btn-baixar" onclick="carregarEscalaHistorico('${esc.id}')"><i class="ph ph-download-simple"></i></button></div>`;
+  if(!ministerioSelecionado) return;
+  const snap = await getDocs(collection(db,"historico_escalas"));
+  let listaTemp = [];
+  snap.forEach(d => { const item = d.data(); if(item.ministerio === ministerioSelecionado){ item.id = d.id; listaTemp.push(item); } });
+  listaTemp.sort((a,b) => (b.dataCriacao || "").localeCompare(a.dataCriacao || ""));
+  if(listaTemp.length === 0) {
+    listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>";
+    return;
+  }
+  listaTemp.forEach(item => {
+    listaHistorico.innerHTML += `
+      <div class="historico-item">
+        <span>${item.nomeExibicao || item.mesReferencia}</span>
+        <div class="btn-acoes-hist">
+          <button class="btn-baixar" title="Visualizar/Imprimir" onclick="reconstruirEBaixar('${item.id}')"><i class="ph ph-file-pdf"></i></button>
+          <button class="btn-baixar excluir-hist" title="Excluir" onclick="excluirHistorico('${item.id}')"><i class="ph ph-trash"></i></button>
+        </div>
+      </div>`;
   });
 }
 
-window.carregarEscalaHistorico = async(id) => {
+window.excluirHistorico = async(id) => {
+  if(confirm("Deseja excluir esta escala do histórico permanentemente?")) {
+    await deleteDoc(doc(db,"historico_escalas",id));
+    carregarHistorico();
+  }
+};
+
+window.reconstruirEBaixar = async(id) => {
   const snap = await getDoc(doc(db,"historico_escalas",id));
   if(!snap.exists()) return;
-  const esc = snap.data();
+  const dados = snap.data();
   corpoTabela.innerHTML = "";
-  esc.linhas.forEach(l => {
+  dados.linhas.forEach(l => {
+    const tr = document.createElement("tr");
+    if(l.cor) tr.className = l.cor;
+    const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
     const [d,m,a] = l.data.split('/');
-    criarLinha(new Date(`${a}-${m}-${d}T12:00:00`), l.evento, l.hora, l.voluntario);
+    const dt = new Date(`${a}-${m}-${d}T12:00:00`);
+    tr.innerHTML = `<td>${l.data}</td><td>${dias[dt.getDay()]}</td><td contenteditable="true">${l.evento}</td><td contenteditable="true">${l.hora}</td><td contenteditable="true">${l.voluntario}</td><td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
+    corpoTabela.appendChild(tr);
   });
+  document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`;
+  window.print();
+  document.title = "Gerenciador de Escala - Nação Santa";
 };
 
 document.getElementById('btnSalvar2').onclick = async () => {
   const mesVal = document.getElementById('mesEscala').value;
+  if(!mesVal) return alert("Selecione o mês!");
   const linhas = [];
   document.querySelectorAll('#corpoTabela tr').forEach(tr => {
     const tds = tr.querySelectorAll('td');
-    if(tds.length >= 5) linhas.push({ data: tds[0].innerText, dia: tds[1].innerText, evento: tds[2].innerText, hora: tds[3].innerText, voluntario: tds[4].innerText });
+    if(tds.length >= 5) linhas.push({ data: tds[0].innerText, dia: tds[1].innerText, evento: tds[2].innerText, hora: tds[3].innerText, voluntario: tds[4].innerText, cor: tr.className });
   });
-  const snapExist = await getDocs(query(collection(db,"historico_escalas"), where("ministerio","==",ministerioSelecionado), where("mesReferencia","==",mesVal)));
-  if(!snapExist.empty) {
-    const docId = snapExist.docs[0].id;
-    await updateDoc(doc(db,"historico_escalas",docId), { linhas, atualizadoEm: new Date().toISOString() });
-    alert("Escala atualizada no histórico!");
-  } else {
-    await addDoc(collection(db,"historico_escalas"), { ministerio: ministerioSelecionado, mesReferencia: mesVal, linhas, criadoEm: new Date().toISOString() });
-    alert("Escala salva com sucesso!");
-  }
+  if(linhas.length === 0) return alert("Gere uma escala primeiro!");
+  // Conta versões existentes para criar nome correto
+  const snapVersao = await getDocs(query(collection(db,"historico_escalas"), where("mesReferencia","==",mesVal), where("ministerio","==",ministerioSelecionado)));
+  const versao = snapVersao.size + 1;
+  const nomeExibicao = `${mesVal} - ${ministerioSelecionado} (Versão ${versao})`;
+  await addDoc(collection(db,"historico_escalas"), {
+    ministerio: ministerioSelecionado, mesReferencia: mesVal,
+    nomeExibicao, dataCriacao: new Date().toISOString(), linhas
+  });
+  alert(`Escala salva: ${nomeExibicao}`);
   carregarHistorico();
 };
 
