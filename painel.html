@@ -252,29 +252,23 @@ tbody td { background:white; color:#1e293b; }
             <input type="text" id="nomeCaverna" value="Caverna de Adulão">
             <input type="date" id="dataCaverna">
             <select id="selectCaverna"></select>
-            <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
-            <select id="vagasCaverna">
-              <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
-            </select>
-            <button class="btn blue" onclick="addEventoMultiplo(document.getElementById('nomeCaverna').value, '19:00', 'dataCaverna', 'selectCaverna', 'vagasCaverna')"><i class="ph ph-plus"></i> Adicionar</button>
+            <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
+            <select id="vagasCaverna"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
+            <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeCaverna').value,'19:00','dataCaverna','selectCaverna','vagasCaverna')"><i class="ph ph-plus"></i> Adicionar</button>
 
             <input type="text" id="nomeMulheres" value="Culto Mulheres">
             <input type="date" id="dataMulheres">
             <select id="selectMulheres"></select>
-            <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
-            <select id="vagasMulheres">
-              <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
-            </select>
-            <button class="btn blue" onclick="addEventoMultiplo(document.getElementById('nomeMulheres').value, '17:00', 'dataMulheres', 'selectMulheres', 'vagasMulheres')"><i class="ph ph-plus"></i> Adicionar</button>
+            <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
+            <select id="vagasMulheres"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
+            <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeMulheres').value,'17:00','dataMulheres','selectMulheres','vagasMulheres')"><i class="ph ph-plus"></i> Adicionar</button>
 
             <input type="text" id="nomeOutro" placeholder="Outros Eventos">
             <input type="date" id="dataOutros">
             <select id="selectOutros"></select>
-            <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
-            <select id="vagasOutros">
-              <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
-            </select>
-            <button class="btn blue" onclick="addEventoMultiplo(document.getElementById('nomeOutro').value, '19:00', 'dataOutros', 'selectOutros', 'vagasOutros')"><i class="ph ph-plus"></i> Adicionar</button>
+            <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
+            <select id="vagasOutros"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
+            <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeOutro').value,'19:00','dataOutros','selectOutros','vagasOutros')"><i class="ph ph-plus"></i> Adicionar</button>
         </div>
     </div>
 </div>
@@ -519,6 +513,7 @@ async function carregarVoluntarios() {
         const v = d.data(); v.id = d.id;
         if(v.ministerios?.includes(ministerioSelecionado)) {
             listaGlobal.push(v);
+            // Aviso laranja para cadastro de mês anterior, mas inclui na equipe
             let txtStatus = v.mesReferencia !== mesSelecionadoPainel
                 ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>"
                 : textoDisp(v);
@@ -527,31 +522,10 @@ async function carregarVoluntarios() {
                     <span><b>${v.nome}</b><br><small>${txtStatus}</small></span>
                     <i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')" title="Desvincular do Ministério"></i>
                 </div>`;
+            [selectCaverna, selectMulheres, selectOutros].forEach(s => s.innerHTML += `<option value="${v.nome}">${v.nome}</option>`);
         }
     });
-    // Embaralhar nomes nos selects de eventos especiais para evitar progressão repetitiva
-    const nomesEmbaralhados = () => {
-        const arr = listaGlobal.map(v => v.nome);
-        for(let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i+1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
-        return arr;
-    };
-    [selectCaverna, selectMulheres, selectOutros].forEach(s => {
-        nomesEmbaralhados().forEach(nome => s.innerHTML += `<option value="${nome}">${nome}</option>`);
-    });
 }
-
-window.addEventoMultiplo = (n, h, idData, idSel, idVagas) => {
-    const d = document.getElementById(idData).value;
-    const p = document.getElementById(idSel).value;
-    const vagas = parseInt(document.getElementById(idVagas).value) || 1;
-    if(!d || !p) return alert("Preencha data e voluntário");
-    const nomeInicial = p;
-    const todosNomes = Array.from(document.getElementById(idSel).options)
-        .map(o => o.value).filter(v => v !== '');
-    const outros = todosNomes.filter(n2 => n2 !== nomeInicial).sort(() => Math.random() - 0.5);
-    const escolhidos = [nomeInicial, ...outros].slice(0, vagas);
-    escolhidos.forEach(nome => criarLinha(new Date(d + "T12:00:00"), n, h, nome));
-};
 
 window.excluirVol = async(id) => {
     if(confirm(`Desvincular este voluntário da equipe de ${ministerioSelecionado}?`)) {
@@ -640,6 +614,8 @@ btnGerar.onclick = async () => {
                     return true;
                 });
 
+                // Embaralha primeiro para máxima aleatoriedade, depois ordena por contagem como desempate
+                for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
                 candidatos.sort((a, b) => (contagemMes[a.nome] || 0) - (contagemMes[b.nome] || 0));
                 let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
                 if(escolhido !== "A definir") {
@@ -806,8 +782,25 @@ window.confirmarResgate = async function() {
     } catch(e) { alert("Erro ao tentar resgatar o voluntário do banco."); }
 };
 
-// addEventoMultiplo definido junto com carregarVoluntarios acima
+// ── Eventos especiais ─────────────────────────────────────────────────────
+window.addEvento = (n, h, idData, idSel) => {
+    const d = document.getElementById(idData).value;
+    const p = document.getElementById(idSel).value;
+    if(!d || !p) return alert("Preencha data e voluntário");
+    criarLinha(new Date(d + "T12:00:00"), n, h, p);
+};
 
+window.addEventoVagas = (n, h, idD, idS, idV) => {
+    const d = document.getElementById(idD).value;
+    const primNome = document.getElementById(idS).value;
+    const vagas = parseInt(document.getElementById(idV).value) || 1;
+    if(!d || !primNome) return alert("Preencha data e voluntário.");
+    const todosNomes = Array.from(document.getElementById(idS).options)
+        .map(o => o.value).filter(v => v !== '');
+    const outros = todosNomes.filter(nm => nm !== primNome).sort(() => Math.random() - 0.5);
+    const escolhidos = [primNome, ...outros].slice(0, vagas);
+    escolhidos.forEach(nome => criarLinha(new Date(d+"T12:00:00"), n, h, nome));
+};
 </script>
 </body>
 </html>
