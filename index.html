@@ -711,6 +711,7 @@ btnGerar.onclick = async () => {
   let data = new Date(ano, mes - 1, 1);
   const padrao = { 0:{n:"Culto Domingo",h:"16:40"}, 2:{n:"Culto Terça",h:"19:00"}, 6:{n:"Culto Sábado",h:"17:00"} };
   let contagem = {};
+  let ultimaData = {}; // rastreia última data escalada por voluntário (bloqueio de 7 dias)
   while (data.getMonth() === mes - 1) {
     const diaSem = data.getDay();
     const dataISO = data.toISOString().split('T')[0];
@@ -718,9 +719,6 @@ btnGerar.onclick = async () => {
       let escaladosNoDia = [];
       for (let i = 0; i < numVagas; i++) {
         let candidatos = listaGlobal.filter(v => {
-          // ALTERAÇÃO 2: Removida a restrição de mesReferencia na geração da escala.
-          // Voluntários cadastrados em qualquer mês são considerados válidos,
-          // pois a líder pode abrir o cadastro antes da janela de 10 dias.
           if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
           if (escaladosNoDia.includes(v.nome)) return false;
           let d2 = String(v.disponibilidade || "");
@@ -737,13 +735,23 @@ btnGerar.onclick = async () => {
           }
           if ((contagem[v.nome] || 0) >= limiteMês) return false;
           if (ocupados[v.nome]?.includes(dataISO)) return false;
+          // Bloqueio de 7 dias: não pode atuar se já foi escalado nos últimos 7 dias
+          if (ultimaData[v.nome]) {
+            const diffMs = new Date(dataISO) - new Date(ultimaData[v.nome]);
+            const diffDias = diffMs / (1000 * 60 * 60 * 24);
+            if (diffDias < 7) return false;
+          }
           return true;
         });
         // Embaralha primeiro para aleatoriedade maxima, depois ordena por contagem como desempate
         for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
         candidatos.sort((a,b)=>(contagem[a.nome]||0)-(contagem[b.nome]||0));
         let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
-        if(escolhido !== "A definir") { contagem[escolhido] = (contagem[escolhido] || 0) + 1; escaladosNoDia.push(escolhido); }
+        if(escolhido !== "A definir") {
+          contagem[escolhido] = (contagem[escolhido] || 0) + 1;
+          ultimaData[escolhido] = dataISO;
+          escaladosNoDia.push(escolhido);
+        }
         criarLinha(new Date(data), padrao[diaSem].n, padrao[diaSem].h, escolhido);
       }
     }
