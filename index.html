@@ -38,6 +38,7 @@ body {
   z-index: 5;
 }
 
+/* Painel entra da direita */
 body.show-painel #screen-cadastro {
   transform: translateX(-40%);
   opacity: 0;
@@ -90,15 +91,22 @@ body.show-painel #screen-painel {
 
 .mes-pequeno {
   position: absolute;
-  top: 15px; right: 15px;
-  font-size: 11px; color: #64748b;
-  background: #f1f5f9; padding: 4px 8px;
-  border-radius: 4px; font-weight: bold;
+  top: 15px;
+  right: 15px;
+  font-size: 11px;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 .card label {
-  font-size: 14px; font-weight: bold;
-  display: block; margin-top: 15px; text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-top: 15px;
+  text-align: left;
 }
 
 .card input[type="text"],
@@ -106,40 +114,79 @@ body.show-painel #screen-painel {
 .card input[type="date"],
 .card select,
 .card button {
-  width: 100%; padding: 12px; margin: 8px 0;
-  border-radius: 6px; border: 1px solid #ddd; font-size: 15px;
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 15px;
 }
 
 .card button {
-  background: #1a73e8; color: white; border: none;
-  font-weight: bold; cursor: pointer; transition: 0.2s;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
 }
+
 .card button:hover { background: #1557b0; }
 
+/* Botão ir para Painel */
 .btn-ir-painel {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; padding: 13px; margin-top: 12px; border-radius: 6px;
-  border: 2px solid #334155 !important; background: #1e293b !important;
-  color: #94a3b8 !important; font-weight: bold; font-size: 14px;
-  cursor: pointer; transition: all 0.25s ease; letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 2px solid #334155 !important;
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
 }
+
 .btn-ir-painel:hover {
-  background: #334155 !important; color: white !important;
-  border-color: #475569 !important; transform: translateY(-1px);
+  background: #334155 !important;
+  color: white !important;
+  border-color: #475569 !important;
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.btn-ir-painel i { font-size: 18px; transition: transform 0.25s ease; }
-.btn-ir-painel:hover i:last-child { transform: translateX(4px); }
 
+.btn-ir-painel i {
+  font-size: 18px;
+  transition: transform 0.25s ease;
+}
+
+.btn-ir-painel:hover i {
+  transform: translateX(4px);
+}
+
+/* Divisor */
 .divider {
-  display: flex; align-items: center; gap: 10px;
-  margin: 16px 0 4px 0; color: #94a3b8; font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 4px 0;
+  color: #94a3b8;
+  font-size: 12px;
 }
 .divider::before, .divider::after {
-  content: ''; flex: 1; height: 1px; background: #e2e8f0;
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
 }
 
-/* Dropdown ministérios */
+/* Dropdown */
 .custom-select-wrapper { position: relative; width: 100%; margin: 8px 0; }
 .custom-select-display {
   width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ddd;
@@ -149,14 +196,13 @@ body.show-painel #screen-painel {
 .custom-select-options {
   display: none; position: absolute; top: 100%; left: 0; width: 100%;
   background: white; border: 1px solid #ddd; border-radius: 6px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 220px;
-  overflow-y: auto; z-index: 100; text-align: left; padding: 5px 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto;
+  z-index: 100; text-align: left; padding: 5px 0;
 }
 .custom-select-options.show { display: flex; flex-direction: column; }
 .custom-select-options label {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 15px; margin: 0; cursor: pointer;
-  font-weight: normal; font-size: 15px; transition: 0.2s;
+  padding: 10px 15px; margin: 0; cursor: pointer; font-weight: normal; font-size: 15px; transition: 0.2s;
 }
 .custom-select-options label:hover { background-color: #f8fafc; }
 
@@ -165,100 +211,104 @@ body.show-painel #screen-painel {
 
 .chips-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 20px; }
 .chip {
-  background: #fee2e2; color: #ef4444; padding: 6px 12px;
-  border-radius: 15px; font-size: 12px;
-  display: flex; align-items: center; gap: 8px; font-weight: bold;
+  background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 15px;
+  font-size: 12px; display: flex; align-items: center; gap: 8px; font-weight: bold;
 }
 .chip span { cursor: pointer; color: #991b1b; font-size: 14px; }
 
 /* ===== PAINEL STYLES ===== */
-#screen-painel { background: #0f172a; padding: 20px; }
-#painel-body { font-family:'Segoe UI'; position: relative; }
-#painel-body h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 10px; }
+#screen-painel {
+  background: #0f172a;
+  padding: 20px;
+}
 
+.painel-topo {
+  position: relative;
+}
+
+/* Botão voltar para Cadastro */
 .btn-voltar-cadastro {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: #334155; color: #cbd5e1; border: none;
-  padding: 8px 16px; border-radius: 6px; cursor: pointer;
-  font-size: 13px; font-weight: bold; transition: 0.2s;
-  position: absolute; top: 20px; left: 20px; z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #334155;
+  color: #cbd5e1;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: 0.2s;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
 }
 .btn-voltar-cadastro:hover { background: #475569; color: white; }
 
+/* Painel interno */
+#painel-body { font-family:'Segoe UI'; position: relative; }
+#painel-body h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 10px; }
+
 .mes-pequeno-painel {
-  position: absolute; top: 20px; right: 20px;
-  font-size: 11px; color: #1e293b; background: #f8fafc;
-  padding: 5px 10px; border-radius: 4px; font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 11px;
+  color: #1e293b;
+  background: #f8fafc;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  text-transform: uppercase;
 }
 
 .subtitulo { color: #94a3b8; text-align: center; margin-top: 0; margin-bottom: 10px; font-weight: 400; font-size: 18px; }
 .btn-mestre { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0 auto 25px auto; background: #334155; color: #cbd5e1; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
-.btn-mestre i { font-size: 16px; }
-.btn-mestre:hover { background: #475569; color: white; }
-
+.btn-mestre:hover { background: #475569; color: white;}
 .tabs-container { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; max-width: 1200px; margin-left: auto; margin-right: auto; }
 .tab-btn { background: #1e293b; color: #cbd5e1; border: 2px solid #334155; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
-.tab-btn i { font-size: 18px; opacity: 0.8; }
 .tab-btn:hover { background: #334155; color: white; }
 .tab-btn.unlocked { background: #2563eb; color: white; border-color: #3b82f6; }
-.tab-btn.unlocked i { opacity: 1; }
 .tab-btn.active { background: #22c55e !important; color: white !important; border-color: #16a34a !important; transform: scale(1.05); box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4); }
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
 .modal-box { background: white; padding: 30px; border-radius: 12px; text-align: center; width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-.modal-box h3 { margin-top: 0; color: #1e293b; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.modal-box input, .modal-box select { margin: 15px 0; text-align: center; font-size: 15px; width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+.modal-box input, .modal-box select { margin: 15px 0; text-align: center; font-size: 15px; width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;}
 .erro-msg { color: #ef4444; font-size: 14px; font-weight: bold; display: none; margin-bottom: 15px; }
 .btn-cancelar { background: #94a3b8; color: white; margin-top: 5px; }
-.btn-cancelar:hover { background: #64748b; }
-
 #painelPrincipal { display: none; }
 .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1200px; margin:auto; }
 .card-painel { background:white; padding:25px; border-radius:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 .header-config { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.header-config h3 { margin: 0; }
-.btn-trocar-senha { display: flex; align-items: center; gap: 6px; background: #f97316; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s; }
-.btn-trocar-senha i { font-size: 14px; }
-.btn-trocar-senha:hover { opacity: 0.8; }
-
+.btn-trocar-senha { display: flex; align-items: center; gap: 6px; background: #f97316; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s;}
 .card-painel input, .card-painel select { width:100%; padding:10px; margin-bottom:10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-.btn { width:100%; padding:12px; border:none; border-radius:8px; margin-bottom:10px; cursor:pointer; font-weight: bold; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; }
-.btn i { font-size: 18px; }
+.btn { width:100%; padding:12px; border:none; border-radius:8px; margin-bottom:10px; cursor:pointer; font-weight: bold; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px;}
 .btn:hover { opacity: 0.9; }
 .green{background:#22c55e;color:white;} .blue{background:#2563eb;color:white;} .gray{background:#475569;color:white;} .orange{background:#f97316;color:white;}
-
 .voluntarios-container { height:150px; overflow:auto; border:1px solid #ddd; padding:5px; border-radius: 6px; }
 .voluntario-item { padding:8px; background:#f1f5f9; margin-bottom:5px; border-radius:6px; font-size:13px; display:flex; justify-content:space-between; align-items: center; }
 .excluir { cursor:pointer; color: #ef4444; font-size: 16px; transition: 0.2s; }
-.excluir:hover { color: #dc2626; transform: scale(1.1); }
-
-table { width:100%; margin-top:20px; background:#2563eb; color:white; border-collapse: collapse; border-radius: 8px; overflow: hidden; }
+table { width:100%; margin-top:20px; background:#2563eb; color:white; border-collapse: collapse; border-radius: 8px; overflow: hidden;}
 td,th { padding:12px 10px; text-align:center; border: 1px solid #bfdbfe; }
 tbody td { background:white; color:#1e293b; }
 .acoes i { cursor:pointer; margin:0 5px; font-size: 18px; transition: 0.2s; }
-.acoes i:hover { transform: scale(1.1); }
 .acao-amarelo { color: #eab308; } .acao-vermelho { color: #ef4444; } .acao-lixeira { color: #64748b; }
-.acao-lixeira:hover { color: #ef4444; }
-.amarelo td { background:#fef08a !important; color: black !important; }
-.vermelho td { background:#fca5a5 !important; color: black !important; }
-
+.amarelo td { background:#fef08a !important; color: black !important; } .vermelho td { background:#fca5a5 !important; color: black !important; }
 .historico-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-.historico-item:last-child { border-bottom: none; }
-.btn-acoes-hist { display: flex; gap: 10px; }
-.btn-baixar { display: flex; align-items: center; justify-content: center; background: #e2e8f0; border: none; padding: 6px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 16px; color: #475569; }
-.btn-baixar:hover { background: #cbd5e1; }
-.btn-baixar.excluir-hist { color: #ef4444; }
+.btn-baixar { background: #e2e8f0; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #475569; }
 
 @media print {
-  #screen-cadastro { display: none !important; }
-  .btn-voltar-cadastro, .tabs-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal > .main-grid { display: none !important; }
-  #secaoPrint, #secaoPrint * { visibility: visible; }
-  #secaoPrint { position: absolute; top: 0; left: 0; width: 100%; }
-  .acoes, th:last-child, td:last-child { display: none !important; }
-  table { width: 100%; border: 1px solid black; }
-  tr.amarelo td { background: #fef08a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  tr.vermelho td { background: #fca5a5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #screen-cadastro { display: none !important; }
+    .btn-voltar-cadastro, .tabs-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal > .main-grid { display: none !important; }
+    #secaoPrint, #secaoPrint * { visibility: visible; }
+    #secaoPrint { position: absolute; top: 0; left: 0; width: 100%; }
+    .acoes, th:last-child, td:last-child { display: none !important; }
+    table { width: 100%; border: 1px solid black; }
+    tr.amarelo td { background: #fef08a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tr.vermelho td { background: #fca5a5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
 </head>
@@ -319,6 +369,7 @@ tbody td { background:white; color:#1e293b; }
 
     <button id="btnSalvar" style="margin-top: 20px;">Enviar Cadastro</button>
 
+    <!-- BOTÃO IR PARA PAINEL -->
     <div class="divider">acesso restrito</div>
     <button class="btn-ir-painel" onclick="irParaPainel()">
       <i class="ph ph-gauge"></i>
@@ -352,11 +403,9 @@ tbody td { background:white; color:#1e293b; }
       <button class="tab-btn" data-min="Transmissão" onclick="abrirModalSenha('Transmissão', this)"><i class="ph ph-lock-key"></i> Transmissão</button>
     </div>
 
-    <!-- Modais -->
     <div class="modal-overlay" id="modalSenha">
       <div class="modal-box">
-        <h3 id="tituloModalSenha"><i class="ph ph-lock-key"></i> Senha</h3>
-        <p style="font-size:14px; color:#64748b; margin-top:-10px;">Acesso restrito</p>
+        <h3 id="tituloModalSenha">Senha</h3>
         <input type="password" id="inputSenha" placeholder="Digite a senha">
         <div class="erro-msg" id="erroSenha">Senha incorreta!</div>
         <button class="btn blue" onclick="verificarSenha()">Entrar</button>
@@ -365,20 +414,18 @@ tbody td { background:white; color:#1e293b; }
     </div>
     <div class="modal-overlay" id="modalTrocarSenha">
       <div class="modal-box">
-        <h3><i class="ph ph-password"></i> Alterar Senha</h3>
-        <p id="txtTrocarSenha" style="font-size:14px; color:#64748b; margin-top:-10px;"></p>
+        <h3>Alterar Senha</h3>
+        <p id="txtTrocarSenha"></p>
         <input type="password" id="inputNovaSenha" placeholder="Nova senha">
-        <div class="erro-msg" id="erroTrocarSenha">A senha não pode ser vazia!</div>
-        <button class="btn green" onclick="salvarNovaSenha()">Salvar Nova Senha</button>
+        <button class="btn green" onclick="salvarNovaSenha()">Salvar</button>
         <button class="btn btn-cancelar" onclick="fecharModal('modalTrocarSenha')">Cancelar</button>
       </div>
     </div>
     <div class="modal-overlay" id="modalResgate">
       <div class="modal-box">
-        <h3><i class="ph ph-users"></i> Resgatar Voluntário</h3>
-        <p style="font-size:13px; color:#64748b; margin-top:-10px;">Adicione à sua equipe alguém que já tem cadastro no banco de dados.</p>
-        <select id="selectVoluntarioResgate"><option value="">Carregando...</option></select>
-        <button class="btn blue" onclick="confirmarResgate()"><i class="ph ph-plus"></i> Adicionar à Equipe</button>
+        <h3>Resgatar Voluntário</h3>
+        <select id="selectVoluntarioResgate"></select>
+        <button class="btn blue" onclick="confirmarResgate()">Adicionar à Equipe</button>
         <button class="btn btn-cancelar" onclick="fecharModal('modalResgate')">Cancelar</button>
       </div>
     </div>
@@ -394,23 +441,14 @@ tbody td { background:white; color:#1e293b; }
           <input type="month" id="mesEscala">
           <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas por Culto:</label>
           <select id="vagasPorDia">
-            <option value="1">1 Pessoa por dia</option>
-            <option value="2">2 Pessoas por dia</option>
-            <option value="3">3 Pessoas por dia</option>
-            <option value="4">4 Pessoas por dia</option>
+            <option value="1">1 Pessoa por dia</option><option value="2">2 Pessoas por dia</option><option value="3">3 Pessoas por dia</option><option value="4">4 Pessoas por dia</option>
           </select>
           <label style="color:#475569; font-size:12px; font-weight:bold;">Limite de vezes p/ voluntário no mês:</label>
           <select id="limiteMensal">
-            <option value="1">Máximo 1 vez</option>
-            <option value="2">Máximo 2 vezes</option>
-            <option value="3" selected>Máximo 3 vezes</option>
-            <option value="4">Máximo 4 vezes</option>
-            <option value="5">Máximo 5 vezes</option>
-            <option value="8">Máximo 8 vezes</option>
-            <option value="99">Sem limite (Repetir conforme necessário)</option>
+            <option value="1">Máximo 1 vez</option><option value="2">Máximo 2 vezes</option><option value="3" selected>Máximo 3 vezes</option><option value="4">Máximo 4 vezes</option><option value="5">Máximo 5 vezes</option><option value="8">Máximo 8 vezes</option><option value="99">Sem limite (Repetir conforme necessário)</option>
           </select>
           <label style="color:#475569; font-size:12px; font-weight:bold;">Dias de Atuação:</label>
-          <div style="display:flex; gap:10px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
+          <div style="display: flex; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
             <label style="font-size:12px;"><input type="checkbox" id="checkDom" checked> Dom</label>
             <label style="font-size:12px;"><input type="checkbox" id="checkTer" checked> Ter</label>
             <label style="font-size:12px;"><input type="checkbox" id="checkSab" checked> Sáb</label>
@@ -418,39 +456,49 @@ tbody td { background:white; color:#1e293b; }
           <button class="btn green" id="btnGerar"><i class="ph ph-calendar-plus"></i> Gerar escala</button>
           <button class="btn gray" id="btnSalvar2"><i class="ph ph-floppy-disk"></i> Salvar escala</button>
           <button class="btn orange" id="btnEditar" style="display:none;"><i class="ph ph-pencil-simple"></i> Editar escala</button>
-          <h3 style="margin-top:15px;">Histórico de Escalas</h3>
+          <h3 style="margin-top: 15px;">Histórico</h3>
           <div id="listaHistorico" class="voluntarios-container"></div>
-          <h3 style="margin-top:15px;">Cadastrados neste ministério</h3>
+          <h3 style="margin-top: 15px;">Equipe Atual</h3>
           <div id="listaVoluntariosUI" class="voluntarios-container"></div>
-          <button class="btn blue" onclick="abrirModalResgate()" style="margin-top:15px; font-size:14px; box-shadow:0 4px 6px rgba(37,99,235,0.3);"><i class="ph ph-user-plus"></i> Resgatar do Banco de Dados</button>
+          <button class="btn blue" onclick="abrirModalResgate()" style="margin-top: 15px;"><i class="ph ph-user-plus"></i> Resgatar do Banco</button>
         </div>
 
         <div class="card-painel">
           <h3>Eventos especiais</h3>
+
           <input type="text" id="nomeCaverna" value="Caverna de Adulão">
           <input type="date" id="dataCaverna">
           <select id="selectCaverna"></select>
-          <button class="btn blue" onclick="addEvento(document.getElementById('nomeCaverna').value, '19:00', 'dataCaverna', 'selectCaverna')"><i class="ph ph-plus"></i> Adicionar</button>
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
+          <select id="vagasCaverna">
+            <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
+          </select>
+          <button class="btn blue" onclick="addEventoMultiplo(document.getElementById('nomeCaverna').value, '19:00', 'dataCaverna', 'selectCaverna', 'vagasCaverna')"><i class="ph ph-plus"></i> Adicionar</button>
+
           <input type="text" id="nomeMulheres" value="Culto Mulheres">
           <input type="date" id="dataMulheres">
           <select id="selectMulheres"></select>
-          <button class="btn blue" onclick="addEvento(document.getElementById('nomeMulheres').value, '17:00', 'dataMulheres', 'selectMulheres')"><i class="ph ph-plus"></i> Adicionar</button>
-          <input type="text" id="nomeOutro" placeholder="Evento Externo">
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
+          <select id="vagasMulheres">
+            <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
+          </select>
+          <button class="btn blue" onclick="addEventoMultiplo(document.getElementById('nomeMulheres').value, '17:00', 'dataMulheres', 'selectMulheres', 'vagasMulheres')"><i class="ph ph-plus"></i> Adicionar</button>
+
+          <input type="text" id="nomeOutro" placeholder="Outros Eventos">
           <input type="date" id="dataOutros">
           <select id="selectOutros"></select>
-          <button class="btn blue" onclick="addEvento(document.getElementById('nomeOutro').value, '19:00', 'dataOutros', 'selectOutros')"><i class="ph ph-plus"></i> Adicionar</button>
+          <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
+          <select id="vagasOutros">
+            <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
+          </select>
+          <button class="btn blue" onclick="addEventoMultiplo(document.getElementById('nomeOutro').value, '19:00', 'dataOutros', 'selectOutros', 'vagasOutros')"><i class="ph ph-plus"></i> Adicionar</button>
         </div>
       </div>
     </div>
 
     <div id="secaoPrint">
       <table id="tabelaEscala">
-        <thead>
-          <tr>
-            <th>Data</th><th>Dia</th><th>Evento</th><th>Hora</th><th>Voluntário</th>
-            <th class="acoes">Ações</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Data</th><th>Dia</th><th>Evento</th><th>Hora</th><th>Voluntário</th><th class="acoes">Ações</th></tr></thead>
         <tbody id="corpoTabela"></tbody>
       </table>
     </div>
@@ -467,7 +515,7 @@ const firebaseConfig = { apiKey:"AIzaSyCoo-5SaiCvgyy05Jpbzd179r5F2sdkmHA", authD
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ===== NAVEGAÇÃO ===== */
+/* ===== NAVEGAÇÃO ENTRE TELAS ===== */
 window.irParaPainel = function() {
   document.body.classList.add('show-painel');
   document.getElementById('screen-painel').scrollTop = 0;
@@ -476,11 +524,17 @@ window.voltarParaCadastro = function() {
   document.body.classList.remove('show-painel');
 };
 
-/* ===== CADASTRO ===== */
+/* ===== CADASTRO LOGIC ===== */
+// ALTERAÇÃO 1: Janela de antecedência alterada de 3 para 10 dias.
+// Faltando 10 dias ou menos para o fim do mês, o cadastro já aponta para o mês seguinte.
 const hoje = new Date();
 const ultimoDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
-let mesAlvo = hoje.getMonth(); let anoAlvo = hoje.getFullYear();
-if (hoje.getDate() >= (ultimoDiaDoMes - 9)) { mesAlvo++; if(mesAlvo > 11){ mesAlvo = 0; anoAlvo++; } }
+let mesAlvo = hoje.getMonth();
+let anoAlvo = hoje.getFullYear();
+if (hoje.getDate() >= (ultimoDiaDoMes - 9)) {
+  mesAlvo++;
+  if (mesAlvo > 11) { mesAlvo = 0; anoAlvo++; }
+}
 const stringMes = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 document.getElementById("mesDinamico").innerText = stringMes[mesAlvo];
 const mesReferenciaBanco = `${anoAlvo}-${String(mesAlvo + 1).padStart(2, '0')}`;
@@ -551,7 +605,7 @@ document.getElementById('btnSalvar').onclick = async () => {
   datasSelecionadas = []; renderizarDatas();
 };
 
-/* ===== PAINEL ===== */
+/* ===== PAINEL LOGIC ===== */
 let listaGlobal = []; let ministerioSelecionado = ""; let ministerioPendente = ""; let botaoPendente = null; let acessoMestreLiberado = false; let ministeriosDestravados = {};
 
 const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
@@ -578,128 +632,42 @@ function ativarAcessoMestre() {
 window.abrirModalSenha = function(nome, el) {
   if (acessoMestreLiberado || ministeriosDestravados[nome]) { liberarAcessoAoPainel(nome, el); return; }
   ministerioPendente = nome; botaoPendente = el;
-  document.getElementById("tituloModalSenha").innerHTML = nome === 'MESTRA' ? '<i class="ph ph-key"></i> Acesso Mestre Geral' : `<i class="ph ph-lock-key"></i> ${nome}`;
+  document.getElementById("tituloModalSenha").innerHTML = nome === 'MESTRA' ? 'Acesso Mestre' : nome;
   document.getElementById("inputSenha").value = ""; document.getElementById("erroSenha").style.display = "none";
   document.getElementById("modalSenha").style.display = "flex";
   setTimeout(() => document.getElementById("inputSenha").focus(), 100);
 };
 window.fecharModal = function(id) { document.getElementById(id).style.display = "none"; };
-
-document.getElementById("inputSenha").addEventListener("keypress", function(e) {
-  if (e.key === "Enter") { e.preventDefault(); verificarSenha(); }
-});
-
 window.verificarSenha = async function() {
   const senha = document.getElementById("inputSenha").value;
-  if(!senha) return;
-  try {
-    const docSnap = await getDoc(doc(db, "configuracoes", "senhas"));
-    if (docSnap.exists()) {
-      const s = docSnap.data();
-      if (ministerioPendente === 'MESTRA') {
-        if (senha === s.mestra) { ativarAcessoMestre(); fecharModal('modalSenha'); alert("Acesso Mestre liberado!"); }
-        else { document.getElementById("erroSenha").style.display = "block"; }
-        return;
-      }
-      if (senha === s.mestra) {
-        ativarAcessoMestre(); fecharModal('modalSenha');
-        liberarAcessoAoPainel(ministerioPendente, botaoPendente);
-      } else if (senha === s[ministerioPendente]) {
-        ministeriosDestravados[ministerioPendente] = true;
-        atualizarVisualAba(botaoPendente, ministerioPendente);
-        fecharModal('modalSenha');
-        liberarAcessoAoPainel(ministerioPendente, botaoPendente);
-      } else {
-        document.getElementById("erroSenha").style.display = "block";
-      }
+  const docSnap = await getDoc(doc(db, "configuracoes", "senhas"));
+  if (docSnap.exists()) {
+    const s = docSnap.data();
+    if (senha === s.mestra) {
+      ativarAcessoMestre(); fecharModal('modalSenha');
+      if(botaoPendente) liberarAcessoAoPainel(ministerioPendente, botaoPendente);
+    } else if (senha === s[ministerioPendente]) {
+      ministeriosDestravados[ministerioPendente] = true;
+      atualizarVisualAba(botaoPendente, ministerioPendente);
+      fecharModal('modalSenha');
+      liberarAcessoAoPainel(ministerioPendente, botaoPendente);
+    } else {
+      document.getElementById("erroSenha").style.display = "block";
     }
-  } catch(error) { alert("Erro ao conectar com o banco de dados."); }
+  }
 };
 
 function liberarAcessoAoPainel(nome, elemento) {
-  if (nome === 'MESTRA') {
-    document.getElementById("tituloAviso").innerText = "Administração Geral - Selecione um ministério abaixo";
-    document.getElementById("painelPrincipal").style.display = "none";
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    return;
-  }
+  if (nome === 'MESTRA') { document.getElementById("tituloAviso").innerText = "Administração Geral"; return; }
   ministerioSelecionado = nome;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   if(elemento) elemento.classList.add('active');
   document.getElementById("tituloAviso").innerText = `Gerenciando: ${nome}`;
   document.getElementById("painelPrincipal").style.display = "block";
-  corpoTabela.innerHTML = "";
   carregarVoluntarios(); carregarHistorico();
 }
 
-window.abrirModalTrocarSenha = function() {
-  if(!ministerioSelecionado) return;
-  document.getElementById('txtTrocarSenha').innerText = `Ministério: ${ministerioSelecionado}`;
-  document.getElementById('inputNovaSenha').value = "";
-  document.getElementById('erroTrocarSenha').style.display = "none";
-  document.getElementById('modalTrocarSenha').style.display = 'flex';
-  setTimeout(() => document.getElementById('inputNovaSenha').focus(), 100);
-};
-window.salvarNovaSenha = async function() {
-  const nova = document.getElementById('inputNovaSenha').value.trim();
-  if(!nova) { document.getElementById('erroTrocarSenha').style.display = "block"; return; }
-  try {
-    await updateDoc(doc(db, "configuracoes", "senhas"), { [ministerioSelecionado]: nova });
-    alert("Senha alterada com sucesso!"); fecharModal('modalTrocarSenha');
-  } catch(error) { alert("Erro ao salvar nova senha."); }
-};
-
-/* ===== TABELA ===== */
-window.setEdicao = function(habilitado) {
-  Array.from(corpoTabela.querySelectorAll('tr')).forEach(tr => {
-    if(tr.cells.length >= 5) {
-      tr.cells[0].setAttribute('contenteditable', habilitado);
-      tr.cells[2].setAttribute('contenteditable', habilitado);
-      tr.cells[3].setAttribute('contenteditable', habilitado);
-      tr.cells[4].setAttribute('contenteditable', habilitado);
-      if(tr.cells[5]) tr.cells[5].style.display = habilitado ? '' : 'none';
-    }
-  });
-  const thAcoes = document.querySelector('th.acoes');
-  if(thAcoes) thAcoes.style.display = habilitado ? '' : 'none';
-};
-
-window.alternarCor = function(elemento, classe) {
-  const tr = elemento.closest('tr');
-  tr.className = tr.className === classe ? '' : classe;
-};
-
-function criarLinha(data, evento, hora, nome) {
-  const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td contenteditable="true">${data.toLocaleDateString('pt-BR')}</td>
-    <td>${dias[data.getDay()]}</td>
-    <td contenteditable="true">${evento}</td>
-    <td contenteditable="true">${hora}</td>
-    <td contenteditable="true">${nome}</td>
-    <td class="acoes">
-      <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
-      <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
-      <i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i>
-    </td>`;
-  corpoTabela.appendChild(tr);
-  ordenarTabela();
-}
-
-function ordenarTabela() {
-  const tbody = document.getElementById("corpoTabela");
-  const rows = Array.from(tbody.querySelectorAll("tr"));
-  rows.sort((a, b) => {
-    const dA = a.cells[0].innerText.split('/').reverse().join('-');
-    const dB = b.cells[0].innerText.split('/').reverse().join('-');
-    return dA.localeCompare(dB);
-  });
-  rows.forEach(row => tbody.appendChild(row));
-}
-
-/* ===== VOLUNTÁRIOS ===== */
-function textoDisp(v) {
+function textoDisp(v){
   let d = v.disponibilidade;
   let mapa = { "todos":"Disponível todos os dias","nenhum":"Indisponível este mês","0":"Somente Domingos","2":"Somente Terças","6":"Somente Sábados","nao_domingo":"Indisponível aos Domingos","nao_terca":"Indisponível às Terças","nao_sabado":"Indisponível aos Sábados" };
   let txt = mapa[d] || d || "Sem restrições";
@@ -711,8 +679,7 @@ function textoDisp(v) {
   return txt;
 }
 
-async function carregarVoluntarios() {
-  if(!ministerioSelecionado) return;
+async function carregarVoluntarios(){
   const snap = await getDocs(collection(db,"voluntarios"));
   listaGlobal=[]; listaVoluntariosUI.innerHTML="";
   [selectCaverna,selectMulheres,selectOutros].forEach(s=>s.innerHTML="<option value=''>Selecione...</option>");
@@ -724,48 +691,46 @@ async function carregarVoluntarios() {
       let txtStatus = v.mesReferencia !== mesSelecionadoPainel
         ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>"
         : textoDisp(v);
-      listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')" title="Desvincular do Ministério"></i></div>`;
-      [selectCaverna,selectMulheres,selectOutros].forEach(s=>s.innerHTML+=`<option value="${v.nome}">${v.nome}</option>`);
+      listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div>`;
     }
+  });
+  // Embaralhar nomes nos selects de eventos especiais para evitar progressão repetitiva
+  const nomesEmbaralhados = () => {
+    const arr = listaGlobal.map(v => v.nome);
+    for(let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i+1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+    return arr;
+  };
+  [selectCaverna,selectMulheres,selectOutros].forEach(s=>{
+    nomesEmbaralhados().forEach(nome => s.innerHTML+=`<option value="${nome}">${nome}</option>`);
   });
 }
 
-window.excluirVol = async(id) => {
-  if(confirm(`Desvincular este voluntário da equipe de ${ministerioSelecionado}?`)) {
-    try {
-      const docRef = doc(db,"voluntarios",id);
-      const snap = await getDoc(docRef);
-      if(snap.exists()) {
-        let arr = (snap.data().ministerios || []).filter(m => m !== ministerioSelecionado);
-        await updateDoc(docRef, { ministerios: arr });
-        carregarVoluntarios();
-      }
-    } catch(error) { alert("Erro ao tentar desvincular o voluntário."); }
-  }
+window.addEventoMultiplo = (n, h, idData, idSel, idVagas) => {
+  const d = document.getElementById(idData).value;
+  const p = document.getElementById(idSel).value;
+  const vagas = parseInt(document.getElementById(idVagas).value) || 1;
+  if(!d || !p) return alert("Preencha data e voluntário");
+  // Pega todos os voluntários da lista e embaralha para selecionar 'vagas' diferentes
+  const nomeInicial = p;
+  const todosNomes = Array.from(document.getElementById(idSel).options)
+    .map(o => o.value).filter(v => v !== '');
+  // Embaralha e coloca o selecionado primeiro
+  const outros = todosNomes.filter(n2 => n2 !== nomeInicial).sort(() => Math.random() - 0.5);
+  const escolhidos = [nomeInicial, ...outros].slice(0, vagas);
+  escolhidos.forEach(nome => criarLinha(new Date(d + "T12:00:00"), n, h, nome));
 };
 
-/* ===== GERAR ESCALA ===== */
 btnGerar.onclick = async () => {
-  setEdicao(true);
-  btnSalvar2.style.display = 'block';
-  btnEditar.style.display = 'none';
-
   const mesVal = mesEscala.value;
   const numVagas = parseInt(document.getElementById("vagasPorDia").value);
-  const limiteMes = parseInt(document.getElementById("limiteMensal").value);
-  if(!mesVal) return alert("Selecione o mês");
-
-  const diasPermitidos = {
-    0: document.getElementById("checkDom").checked,
-    2: document.getElementById("checkTer").checked,
-    6: document.getElementById("checkSab").checked
-  };
-
+  const limiteMês = parseInt(document.getElementById("limiteMensal").value);
+  if (!mesVal) return alert("Selecione o mês");
+  const diasPermitidos = { 0: document.getElementById("checkDom").checked, 2: document.getElementById("checkTer").checked, 6: document.getElementById("checkSab").checked };
   const snapHist = await getDocs(query(collection(db,"historico_escalas"), where("mesReferencia","==",mesVal)));
   let ocupados = {};
   snapHist.forEach(d => {
     const esc = d.data();
-    if(esc.ministerio !== ministerioSelecionado) {
+    if (esc.ministerio !== ministerioSelecionado) {
       esc.linhas.forEach(l => {
         let p = l.data.split('/');
         let dt = `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
@@ -774,200 +739,146 @@ btnGerar.onclick = async () => {
       });
     }
   });
-
   const [ano, mes] = mesVal.split('-').map(Number);
   corpoTabela.innerHTML = "";
   let data = new Date(ano, mes - 1, 1);
   const padrao = { 0:{n:"Culto Domingo",h:"16:40"}, 2:{n:"Culto Terça",h:"19:00"}, 6:{n:"Culto Sábado",h:"17:00"} };
   let contagem = {};
-
-  while(data.getMonth() === mes - 1) {
+  while (data.getMonth() === mes - 1) {
     const diaSem = data.getDay();
     const dataISO = data.toISOString().split('T')[0];
-    if(padrao[diaSem] && diasPermitidos[diaSem]) {
+    if (padrao[diaSem] && diasPermitidos[diaSem]) {
       let escaladosNoDia = [];
-      for(let i = 0; i < numVagas; i++) {
+      for (let i = 0; i < numVagas; i++) {
         let candidatos = listaGlobal.filter(v => {
-          if(v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
-          if(escaladosNoDia.includes(v.nome)) return false;
+          // ALTERAÇÃO 2: Removida a restrição de mesReferencia na geração da escala.
+          // Voluntários cadastrados em qualquer mês são considerados válidos,
+          // pois a líder pode abrir o cadastro antes da janela de 10 dias.
+          if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
+          if (escaladosNoDia.includes(v.nome)) return false;
           let d2 = String(v.disponibilidade || "");
-          if(d2 !== "todos" && d2 !== "") {
-            if(d2.startsWith("nao_")) {
-              if(diaSem === 0 && d2.includes("domingo")) return false;
-              if(diaSem === 2 && d2.includes("terca")) return false;
-              if(diaSem === 6 && d2.includes("sabado")) return false;
+          if (d2 !== "todos") {
+            if (d2.startsWith("nao_")) {
+              if (diaSem === 0 && d2.includes("domingo")) return false;
+              if (diaSem === 2 && d2.includes("terca")) return false;
+              if (diaSem === 6 && d2.includes("sabado")) return false;
             } else {
-              if(d2 === "0" && diaSem !== 0) return false;
-              if(d2 === "2" && diaSem !== 2) return false;
-              if(d2 === "6" && diaSem !== 6) return false;
+              if (d2 === "0" && diaSem !== 0) return false;
+              if (d2 === "2" && diaSem !== 2) return false;
+              if (d2 === "6" && diaSem !== 6) return false;
             }
           }
-          if((contagem[v.nome] || 0) >= limiteMes) return false;
-          if(ocupados[v.nome]?.includes(dataISO)) return false;
+          if ((contagem[v.nome] || 0) >= limiteMês) return false;
+          if (ocupados[v.nome]?.includes(dataISO)) return false;
           return true;
         });
         candidatos.sort((a,b) => (contagem[a.nome]||0) - (contagem[b.nome]||0));
         let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
-        if(escolhido !== "A definir") { contagem[escolhido] = (contagem[escolhido]||0)+1; escaladosNoDia.push(escolhido); }
+        if(escolhido !== "A definir") { contagem[escolhido] = (contagem[escolhido] || 0) + 1; escaladosNoDia.push(escolhido); }
         criarLinha(new Date(data), padrao[diaSem].n, padrao[diaSem].h, escolhido);
       }
     }
     data.setDate(data.getDate() + 1);
   }
-};
-
-/* ===== SALVAR / EDITAR ===== */
-btnSalvar2.onclick = async () => {
-  const mesReferencia = document.getElementById('mesEscala').value;
-  const linhas = Array.from(corpoTabela.querySelectorAll("tr"));
-  if(linhas.length === 0) return alert("Gere uma escala primeiro!");
-  if(!mesReferencia) return alert("Selecione o mês!");
-
-  const snapVersao = await getDocs(query(
-    collection(db,"historico_escalas"),
-    where("mesReferencia","==",mesReferencia),
-    where("ministerio","==",ministerioSelecionado)
-  ));
-  const versao = snapVersao.size + 1;
-  const nomeExibicao = `${mesReferencia} - ${ministerioSelecionado} (Versão ${versao})`;
-
-  const dadosEscala = {
-    ministerio: ministerioSelecionado,
-    mesReferencia: mesReferencia,
-    nomeExibicao: nomeExibicao,
-    dataCriacao: new Date().toISOString(),
-    linhas: linhas.map(tr => ({
-      data: tr.cells[0].innerText, dia: tr.cells[1].innerText,
-      evento: tr.cells[2].innerText, hora: tr.cells[3].innerText,
-      voluntario: tr.cells[4].innerText, cor: tr.className
-    }))
-  };
-
-  await addDoc(collection(db,"historico_escalas"), dadosEscala);
-  alert(`Escala salva: ${nomeExibicao}`);
-  carregarHistorico();
-
-  setEdicao(false);
-  btnSalvar2.style.display = 'none';
-  btnEditar.style.display = 'block';
-
-  document.title = `Escala ${mesReferencia} - ${ministerioSelecionado}`;
-  window.print();
-  document.title = "Nação Santa - Sistema de Escala";
-};
-
-btnEditar.onclick = () => {
-  setEdicao(true);
   btnSalvar2.style.display = 'block';
-  btnEditar.style.display = 'none';
 };
 
-/* ===== HISTÓRICO ===== */
+function criarLinha(d, e, h, n) {
+  const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${d.toLocaleDateString('pt-BR')}</td><td>${dias[d.getDay()]}</td><td contenteditable="true">${e}</td><td contenteditable="true">${h}</td><td contenteditable="true">${n}</td><td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()"></i></td>`;
+  corpoTabela.appendChild(tr);
+}
+window.alternarCor = (el, c) => { let tr = el.closest('tr'); tr.className = tr.className === c ? '' : c; };
+window.excluirVol = async(id) => { if(confirm("Remover da equipe?")){ let r=doc(db,"voluntarios",id); let s=await getDoc(r); let m=s.data().ministerios.filter(x=>x!==ministerioSelecionado); await updateDoc(r,{ministerios:m}); carregarVoluntarios(); }};
+
 async function carregarHistorico() {
-  if(!ministerioSelecionado) return;
-  const snap = await getDocs(collection(db,"historico_escalas"));
+  const listaHistorico = document.getElementById('listaHistorico');
   listaHistorico.innerHTML = "";
-  let listaTemp = [];
-  snap.forEach(d => { const item = d.data(); if(item.ministerio === ministerioSelecionado){ item.id=d.id; listaTemp.push(item); } });
-  listaTemp.sort((a,b) => (b.dataCriacao||"").localeCompare(a.dataCriacao||""));
-  if(listaTemp.length === 0) { listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>"; return; }
-  listaTemp.forEach(item => {
-    listaHistorico.innerHTML += `
-      <div class="historico-item">
-        <span>${item.nomeExibicao || item.mesReferencia}</span>
-        <div class="btn-acoes-hist">
-          <button class="btn-baixar" title="Visualizar/Imprimir" onclick="reconstruirEBaixar('${item.id}')"><i class="ph ph-file-pdf"></i></button>
-          <button class="btn-baixar excluir-hist" title="Excluir" onclick="excluirHistorico('${item.id}')"><i class="ph ph-trash"></i></button>
-        </div>
-      </div>`;
+  const snap = await getDocs(query(collection(db,"historico_escalas"), where("ministerio","==",ministerioSelecionado)));
+  if(snap.empty) { listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>"; return; }
+  let docs = [];
+  snap.forEach(d => docs.push({id:d.id, ...d.data()}));
+  docs.sort((a,b) => b.mesReferencia.localeCompare(a.mesReferencia));
+  docs.forEach(esc => {
+    listaHistorico.innerHTML += `<div class="historico-item"><span><b>${esc.mesReferencia}</b> (${esc.linhas?.length || 0} entradas)</span><button class="btn-baixar" onclick="carregarEscalaHistorico('${esc.id}')"><i class="ph ph-download-simple"></i></button></div>`;
   });
 }
 
-window.excluirHistorico = async(id) => {
-  if(confirm("Deseja excluir esta escala do histórico permanentemente?")) {
-    await deleteDoc(doc(db,"historico_escalas",id));
-    carregarHistorico();
-  }
-};
-
-window.reconstruirEBaixar = async(id) => {
+window.carregarEscalaHistorico = async(id) => {
   const snap = await getDoc(doc(db,"historico_escalas",id));
   if(!snap.exists()) return;
-  const dados = snap.data();
-  mesEscala.value = dados.mesReferencia;
+  const esc = snap.data();
   corpoTabela.innerHTML = "";
-  dados.linhas.forEach(l => {
-    const tr = document.createElement("tr");
-    if(l.cor) tr.className = l.cor;
-    tr.innerHTML = `
-      <td contenteditable="true">${l.data}</td>
-      <td>${l.dia}</td>
-      <td contenteditable="true">${l.evento}</td>
-      <td contenteditable="true">${l.hora}</td>
-      <td contenteditable="true">${l.voluntario}</td>
-      <td class="acoes">
-        <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
-        <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
-        <i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i>
-      </td>`;
-    corpoTabela.appendChild(tr);
+  esc.linhas.forEach(l => {
+    const [d,m,a] = l.data.split('/');
+    criarLinha(new Date(`${a}-${m}-${d}T12:00:00`), l.evento, l.hora, l.voluntario);
   });
-  setEdicao(false);
-  btnSalvar2.style.display = 'none';
-  btnEditar.style.display = 'block';
-  document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`;
-  window.print();
-  document.title = "Nação Santa - Sistema de Escala";
 };
 
-/* ===== RESGATE ===== */
+document.getElementById('btnSalvar2').onclick = async () => {
+  const mesVal = document.getElementById('mesEscala').value;
+  const linhas = [];
+  document.querySelectorAll('#corpoTabela tr').forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if(tds.length >= 5) linhas.push({ data: tds[0].innerText, dia: tds[1].innerText, evento: tds[2].innerText, hora: tds[3].innerText, voluntario: tds[4].innerText });
+  });
+  const snapExist = await getDocs(query(collection(db,"historico_escalas"), where("ministerio","==",ministerioSelecionado), where("mesReferencia","==",mesVal)));
+  if(!snapExist.empty) {
+    const docId = snapExist.docs[0].id;
+    await updateDoc(doc(db,"historico_escalas",docId), { linhas, atualizadoEm: new Date().toISOString() });
+    alert("Escala atualizada no histórico!");
+  } else {
+    await addDoc(collection(db,"historico_escalas"), { ministerio: ministerioSelecionado, mesReferencia: mesVal, linhas, criadoEm: new Date().toISOString() });
+    alert("Escala salva com sucesso!");
+  }
+  carregarHistorico();
+};
+
 window.abrirModalResgate = async function() {
-  if(!ministerioSelecionado) return;
-  document.getElementById("modalResgate").style.display = "flex";
-  const select = document.getElementById("selectVoluntarioResgate");
-  select.innerHTML = "<option value=''>Procurando no banco de dados...</option>";
-  try {
-    const snap = await getDocs(collection(db,"voluntarios"));
-    select.innerHTML = "<option value=''>Selecione um voluntário...</option>";
-    let temAlguem = false;
-    snap.forEach(d => {
-      const v = d.data();
-      if(!(v.ministerios||[]).includes(ministerioSelecionado)) {
-        select.innerHTML += `<option value="${d.id}">${v.nome}</option>`;
-        temAlguem = true;
-      }
-    });
-    if(!temAlguem) select.innerHTML = "<option value=''>Todos já estão nesta equipe!</option>";
-  } catch(e) { select.innerHTML = "<option value=''>Erro ao carregar do banco.</option>"; }
+  const snap = await getDocs(collection(db,"voluntarios"));
+  const select = document.getElementById('selectVoluntarioResgate');
+  select.innerHTML = "";
+  snap.forEach(d => {
+    const v = d.data();
+    if(!v.ministerios?.includes(ministerioSelecionado)) {
+      select.innerHTML += `<option value="${d.id}">${v.nome}</option>`;
+    }
+  });
+  if(select.innerHTML === "") { alert("Nenhum voluntário disponível para resgate."); return; }
+  document.getElementById('modalResgate').style.display = 'flex';
 };
 
 window.confirmarResgate = async function() {
-  const id = document.getElementById("selectVoluntarioResgate").value;
-  if(!id) return alert("Selecione alguém na lista para adicionar!");
-  try {
-    const docRef = doc(db,"voluntarios",id);
-    const snap = await getDoc(docRef);
-    if(snap.exists()) {
-      const vol = snap.data();
-      let arr = vol.ministerios || [];
-      if(!arr.includes(ministerioSelecionado)) {
-        arr.push(ministerioSelecionado);
-        await updateDoc(docRef, { ministerios: arr });
-        alert(`${vol.nome} foi adicionado à equipe de ${ministerioSelecionado}!`);
-        fecharModal('modalResgate');
-        carregarVoluntarios();
-      }
-    }
-  } catch(e) { alert("Erro ao tentar resgatar o voluntário do banco."); }
+  const id = document.getElementById('selectVoluntarioResgate').value;
+  if(!id) return;
+  const r = doc(db,"voluntarios",id);
+  const s = await getDoc(r);
+  const ministeriosAtuais = s.data().ministerios || [];
+  if(!ministeriosAtuais.includes(ministerioSelecionado)) {
+    await updateDoc(r, { ministerios: [...ministeriosAtuais, ministerioSelecionado] });
+  }
+  fecharModal('modalResgate');
+  carregarVoluntarios();
 };
 
-/* ===== EVENTOS ESPECIAIS ===== */
-window.addEvento = (n, h, idData, idSel) => {
-  const d = document.getElementById(idData).value;
-  const p = document.getElementById(idSel).value;
-  if(!d || !p) return alert("Preencha data e voluntário");
-  criarLinha(new Date(d+"T12:00:00"), n, h, p);
+let ministerioTrocandoSenha = "";
+window.abrirModalTrocarSenha = function() {
+  ministerioTrocandoSenha = ministerioSelecionado;
+  document.getElementById('txtTrocarSenha').innerText = `Ministério: ${ministerioSelecionado}`;
+  document.getElementById('inputNovaSenha').value = "";
+  document.getElementById('modalTrocarSenha').style.display = 'flex';
 };
+window.salvarNovaSenha = async function() {
+  const nova = document.getElementById('inputNovaSenha').value.trim();
+  if(!nova) return alert("Digite a nova senha.");
+  const r = doc(db,"configuracoes","senhas");
+  await updateDoc(r, { [ministerioTrocandoSenha]: nova });
+  alert("Senha alterada com sucesso!");
+  fecharModal('modalTrocarSenha');
+};
+
+// addEventoMultiplo definido junto com carregarVoluntarios acima
 </script>
 </body>
 </html>
