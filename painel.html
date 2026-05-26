@@ -577,7 +577,7 @@ btnGerar.onclick = async () => {
 
     while(data.getMonth() === mes - 1) {
         const diaSemana = data.getDay();
-        const dataISO = data.toISOString().split('T')[0];
+        const dataISO = `${data.getFullYear()}-${String(data.getMonth()+1).padStart(2,'0')}-${String(data.getDate()).padStart(2,'0')}`;
 
         if(eventosPadrao[diaSemana] && diasPermitidos[diaSemana]) {
             let nomesEscaladosNoDia = [];
@@ -602,10 +602,14 @@ btnGerar.onclick = async () => {
 
                     if((contagemMes[v.nome] || 0) >= limiteMes) return false;
                     if(ocupados[v.nome]?.includes(dataISO)) return false;
-                    // Bloqueio de 7 dias: não pode atuar se já foi escalado nos últimos 7 dias
+                    // Bloqueio de 7 dias: não pode atuar na mesma semana
+                    // Usa Date.UTC para evitar bug de fuso horário (Brasil UTC-3)
                     if(ultimaData[v.nome]) {
-                        const diffMs = new Date(dataISO) - new Date(ultimaData[v.nome]);
-                        const diffDias = diffMs / (1000 * 60 * 60 * 24);
+                        const [ay,am,ad] = dataISO.split('-').map(Number);
+                        const [by,bm,bd] = ultimaData[v.nome].split('-').map(Number);
+                        const msA = Date.UTC(ay,am-1,ad);
+                        const msB = Date.UTC(by,bm-1,bd);
+                        const diffDias = (msA - msB) / 86400000;
                         if(diffDias < 7) return false;
                     }
                     return true;
