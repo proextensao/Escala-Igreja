@@ -171,7 +171,6 @@ tbody td { background:white; color:#1e293b; }
     <button class="tab-btn" data-min="Transmissão" onclick="abrirModalSenha('Transmissão', this)"><i class="ph ph-lock-key"></i> Transmissão</button>
 </div>
 
-<!-- Modais -->
 <div class="modal-overlay" id="modalSenha">
     <div class="modal-box">
         <h3 id="tituloModalSenha"><i class="ph ph-lock-key"></i> Senha</h3>
@@ -204,7 +203,6 @@ tbody td { background:white; color:#1e293b; }
     </div>
 </div>
 
-<!-- Painel Principal -->
 <div id="painelPrincipal">
     <div class="main-grid">
         <div class="card">
@@ -254,7 +252,6 @@ tbody td { background:white; color:#1e293b; }
             <button class="btn blue" onclick="abrirModalResgate()" style="margin-top:15px; font-size:14px; box-shadow:0 4px 6px rgba(37,99,235,0.3);"><i class="ph ph-user-plus"></i> Resgatar do Banco de Dados</button>
         </div>
 
-        <!-- CARD EVENTO ESPECIAL - NOVO LAYOUT -->
         <div class="card">
             <h3>Evento Especial</h3>
             <label style="color:#475569; font-size:12px; font-weight:bold;">Nome do evento:</label>
@@ -264,7 +261,6 @@ tbody td { background:white; color:#1e293b; }
             <label style="color:#475569; font-size:12px; font-weight:bold;">Data:</label>
             <input type="date" id="dataEvento">
 
-            <!-- VAGAS AGORA VEM ANTES DOS VOLUNTÁRIOS -->
             <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
             <select id="vagasEvento" onchange="atualizarSelectsVoluntarios()">
                 <option value="1">1 pessoa</option><option value="2">2 pessoas</option>
@@ -277,7 +273,6 @@ tbody td { background:white; color:#1e293b; }
                 <option value="15">15 pessoas</option>
             </select>
 
-            <!-- CONTAINER DINÂMICO DOS SELECTS DE VOLUNTÁRIOS -->
             <div id="containerSelectsVoluntarios" class="selects-voluntarios-container"></div>
 
             <button class="btn blue" style="margin-top:8px;" onclick="adicionarEventoEspecial()">
@@ -318,7 +313,6 @@ let botaoPendente = null;
 let acessoMestreLiberado = false;
 let ministeriosDestravados = {};
 
-// ── Mês dinâmico ──────────────────────────────────────────────────────────
 const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 const hojeP = new Date();
 const ultimoDiaDoMesP = new Date(hojeP.getFullYear(), hojeP.getMonth() + 1, 0).getDate();
@@ -328,7 +322,6 @@ document.getElementById("mesDinamicoPainel").innerText = meses[mesP];
 document.getElementById('mesEscala').value = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
 document.getElementById('mesEscala').addEventListener('change', () => { if(ministerioSelecionado) carregarVoluntarios(); });
 
-// ── Modais ────────────────────────────────────────────────────────────────
 window.abrirModalSenha = function(nomeMinisterio, elementoBtn) {
     if (acessoMestreLiberado || ministeriosDestravados[nomeMinisterio]) {
         liberarAcessoAoPainel(nomeMinisterio, elementoBtn);
@@ -345,9 +338,7 @@ window.abrirModalSenha = function(nomeMinisterio, elementoBtn) {
     setTimeout(() => document.getElementById("inputSenha").focus(), 100);
 };
 
-window.fecharModal = function(idModal) {
-    document.getElementById(idModal).style.display = "none";
-};
+window.fecharModal = function(idModal) { document.getElementById(idModal).style.display = "none"; };
 
 document.getElementById("inputSenha").addEventListener("keypress", function(e) {
     if (e.key === "Enter") { e.preventDefault(); verificarSenha(); }
@@ -362,31 +353,22 @@ window.verificarSenha = async function() {
             const s = docSnap.data();
             if (ministerioPendente === 'MESTRA') {
                 if (senhaDigitada === s.mestra) {
-                    ativarAcessoMestre();
-                    fecharModal('modalSenha');
+                    ativarAcessoMestre(); fecharModal('modalSenha');
                     alert("Acesso Mestre liberado! Todos os ministérios estão destravados.");
-                } else {
-                    document.getElementById("erroSenha").style.display = "block";
-                }
+                } else { document.getElementById("erroSenha").style.display = "block"; }
                 return;
             }
             if (senhaDigitada === s.mestra) {
-                ativarAcessoMestre();
-                fecharModal('modalSenha');
+                ativarAcessoMestre(); fecharModal('modalSenha');
                 liberarAcessoAoPainel(ministerioPendente, botaoPendente);
             } else if (senhaDigitada === s[ministerioPendente]) {
                 ministeriosDestravados[ministerioPendente] = true;
                 atualizarVisualAba(botaoPendente, ministerioPendente);
                 fecharModal('modalSenha');
                 liberarAcessoAoPainel(ministerioPendente, botaoPendente);
-            } else {
-                document.getElementById("erroSenha").style.display = "block";
-            }
+            } else { document.getElementById("erroSenha").style.display = "block"; }
         }
-    } catch(error) {
-        console.error("Erro ao buscar senha:", error);
-        alert("Erro ao conectar com o banco de dados.");
-    }
+    } catch(error) { alert("Erro ao conectar com o banco de dados."); }
 };
 
 function ativarAcessoMestre() {
@@ -399,13 +381,9 @@ function ativarAcessoMestre() {
 }
 
 function atualizarVisualAba(botao, nomeMin) {
-    if(botao) {
-        botao.innerHTML = `<i class="ph ph-lock-key-open"></i> ${nomeMin}`;
-        botao.classList.add('unlocked');
-    }
+    if(botao) { botao.innerHTML = `<i class="ph ph-lock-key-open"></i> ${nomeMin}`; botao.classList.add('unlocked'); }
 }
 
-// ── Acesso ao painel ──────────────────────────────────────────────────────
 function liberarAcessoAoPainel(nomeMinisterio, elementoBtn) {
     if (nomeMinisterio === 'MESTRA') {
         document.getElementById("tituloAviso").innerText = "Administração Geral - Selecione um ministério abaixo";
@@ -423,7 +401,6 @@ function liberarAcessoAoPainel(nomeMinisterio, elementoBtn) {
     carregarHistorico();
 }
 
-// ── Alterar senha ─────────────────────────────────────────────────────────
 window.abrirModalTrocarSenha = function() {
     if(!ministerioSelecionado) return;
     document.getElementById("txtTrocarSenha").innerText = `Ministério: ${ministerioSelecionado}`;
@@ -437,14 +414,10 @@ window.salvarNovaSenha = async function() {
     if(!novaSenha) { document.getElementById("erroTrocarSenha").style.display = "block"; return; }
     try {
         await updateDoc(doc(db, "configuracoes", "senhas"), { [ministerioSelecionado]: novaSenha });
-        alert("Senha alterada com sucesso!");
-        fecharModal('modalTrocarSenha');
-    } catch(error) {
-        alert("Erro ao salvar nova senha.");
-    }
+        alert("Senha alterada com sucesso!"); fecharModal('modalTrocarSenha');
+    } catch(error) { alert("Erro ao salvar nova senha."); }
 };
 
-// ── Controle de edição ────────────────────────────────────────────────────
 window.setEdicao = function(habilitado) {
     Array.from(corpoTabela.querySelectorAll('tr')).forEach(tr => {
         if(tr.cells.length >= 5) {
@@ -464,7 +437,26 @@ window.alternarCor = function(elemento, classe) {
     tr.className = tr.className === classe ? '' : classe;
 };
 
-// ── Tabela: criar linha e ORDENAR por data ────────────────────────────────
+// ── ORDENAÇÃO CORRIGIDA (Adicionado zeros à esquerda) ─────────────────────
+function ordenarTabela() {
+    const tbody = document.getElementById("corpoTabela");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    rows.sort((a, b) => {
+        const parseDate = (str) => {
+            let p = str.split('/');
+            // Garante que a data sempre seja AAA-MM-DD para o JavaScript ordenar alfabeticamente corretamente.
+            if(p.length === 3) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`; 
+            return str;
+        };
+        const dA = parseDate(a.cells[0].innerText.trim());
+        const dB = parseDate(b.cells[0].innerText.trim());
+        if (dA !== dB) return dA.localeCompare(dB);
+        // Desempate pela hora
+        return a.cells[3].innerText.trim().localeCompare(b.cells[3].innerText.trim());
+    });
+    rows.forEach(row => tbody.appendChild(row));
+}
+
 function criarLinha(data, evento, hora, nome) {
     const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
     const tr = document.createElement("tr");
@@ -480,33 +472,12 @@ function criarLinha(data, evento, hora, nome) {
             <i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i>
         </td>`;
     corpoTabela.appendChild(tr);
-    ordenarTabela();  // ← ORDENA SEMPRE após inserir
+    ordenarTabela();  // ← Chama a ordenação SEMPRE que uma nova linha (evento especial ou normal) é gerada
 }
 
-// ── Ordena tabela por data (dd/mm/aaaa → aaaa-mm-dd para comparação) ──────
-function ordenarTabela() {
-    const tbody = document.getElementById("corpoTabela");
-    const rows = Array.from(tbody.querySelectorAll("tr"));
-    rows.sort((a, b) => {
-        const dA = a.cells[0].innerText.trim().split('/').reverse().join('-');
-        const dB = b.cells[0].innerText.trim().split('/').reverse().join('-');
-        if (dA !== dB) return dA.localeCompare(dB);
-        // Desempate por hora (coluna 3)
-        return (a.cells[3].innerText.trim()).localeCompare(b.cells[3].innerText.trim());
-    });
-    rows.forEach(row => tbody.appendChild(row));
-}
-
-// ── Voluntários ───────────────────────────────────────────────────────────
 function textoDisp(v) {
     let d = v.disponibilidade;
-    let mapa = {
-        "todos":"Disponível todos os dias","nenhum":"Indisponível este mês",
-        "0":"Somente Domingos","2":"Somente Terças","6":"Somente Sábados",
-        "nao_domingo":"Indisponível aos Domingos",
-        "nao_terca":"Indisponível às Terças",
-        "nao_sabado":"Indisponível aos Sábados"
-    };
+    let mapa = { "todos":"Disponível todos os dias","nenhum":"Indisponível este mês","0":"Somente Domingos","2":"Somente Terças","6":"Somente Sábados","nao_domingo":"Indisponível aos Domingos","nao_terca":"Indisponível às Terças","nao_sabado":"Indisponível aos Sábados" };
     let txt = mapa[d] || d || "Sem restrições";
     if(v.datasIndisponiveis && v.datasIndisponiveis.length > 0) {
         let arrayDatas = Array.isArray(v.datasIndisponiveis) ? v.datasIndisponiveis : String(v.datasIndisponiveis).split(',');
@@ -530,8 +501,7 @@ async function carregarVoluntarios() {
         if(v.ministerios?.includes(ministerioSelecionado)) {
             listaGlobal.push(v);
             let txtStatus = v.mesReferencia !== mesSelecionadoPainel
-                ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>"
-                : textoDisp(v);
+                ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>" : textoDisp(v);
             listaVoluntariosUI.innerHTML += `
                 <div class="voluntario-item">
                     <span><b>${v.nome}</b><br><small>${txtStatus}</small></span>
@@ -539,8 +509,7 @@ async function carregarVoluntarios() {
                 </div>`;
         }
     });
-    // Atualiza selects do evento especial ao recarregar voluntários
-    atualizarSelectsVoluntarios();
+    atualizarSelectsVoluntarios(); // Atualiza a lista dropdown com os voluntários carregados
 }
 
 window.excluirVol = async(id) => {
@@ -557,11 +526,9 @@ window.excluirVol = async(id) => {
     }
 };
 
-// ── Selects dinâmicos do Evento Especial ──────────────────────────────────
 window.atualizarSelectsVoluntarios = function() {
     const vagas = parseInt(document.getElementById('vagasEvento').value) || 1;
     const container = document.getElementById('containerSelectsVoluntarios');
-    // Preserva valores já escolhidos
     const valoresAtuais = Array.from(container.querySelectorAll('select')).map(s => s.value);
     container.innerHTML = '';
     for (let i = 0; i < vagas; i++) {
@@ -570,16 +537,12 @@ window.atualizarSelectsVoluntarios = function() {
         const sel = document.createElement('select');
         sel.id = `selectEventoVaga_${i}`;
         sel.innerHTML = "<option value=''>Selecione...</option>";
-        listaGlobal.forEach(v => {
-            sel.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
-        });
+        listaGlobal.forEach(v => { sel.innerHTML += `<option value="${v.nome}">${v.nome}</option>`; });
         if (valoresAtuais[i]) sel.value = valoresAtuais[i];
-        container.appendChild(label);
-        container.appendChild(sel);
+        container.appendChild(label); container.appendChild(sel);
     }
 };
 
-// ── Adicionar evento especial à escala ────────────────────────────────────
 window.adicionarEventoEspecial = function() {
     const nome = document.getElementById('nomeEvento').value.trim();
     const hora = document.getElementById('horaEvento').value;
@@ -591,39 +554,33 @@ window.adicionarEventoEspecial = function() {
 
     for (let i = 0; i < vagas; i++) {
         const sel = document.getElementById(`selectEventoVaga_${i}`);
-        const nomeVol = sel ? sel.value : '';
-        if (!nomeVol) return alert(`Selecione o Voluntário ${i + 1}.`);
+        if (!sel || !sel.value) return alert(`Selecione o Voluntário ${i + 1}.`);
     }
 
-    // Adiciona uma linha por voluntário (ordenação acontece dentro de criarLinha)
+    // Divide a data pelo hífen para não correr o risco de erro de Fuso Horário no Browser
+    const [ano, mes, dia] = dataStr.split('-');
+    const dt = new Date(ano, mes - 1, dia, 12, 0, 0);
+
     for (let i = 0; i < vagas; i++) {
         const sel = document.getElementById(`selectEventoVaga_${i}`);
-        criarLinha(new Date(dataStr + "T12:00:00"), nome, hora, sel.value);
+        criarLinha(dt, nome, hora, sel.value);
     }
 
-    // Limpa o formulário
-    document.getElementById('nomeEvento').value = '';
-    document.getElementById('dataEvento').value = '';
+    document.getElementById('nomeEvento').value = ''; document.getElementById('dataEvento').value = '';
     document.getElementById('vagasEvento').value = '1';
     atualizarSelectsVoluntarios();
 };
 
-// ── Gerar escala ──────────────────────────────────────────────────────────
 btnGerar.onclick = async () => {
     setEdicao(true);
-    btnSalvar.style.display = 'block';
-    btnEditar.style.display = 'none';
+    btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
 
     const mesVal = mesEscala.value;
     const numVagas = parseInt(document.getElementById("vagasPorDia").value);
     const limiteMes = parseInt(document.getElementById("limiteMensal").value);
     if(!mesVal) return alert("Selecione o mês");
 
-    const diasPermitidos = {
-        0: document.getElementById("checkDom").checked,
-        2: document.getElementById("checkTer").checked,
-        6: document.getElementById("checkSab").checked
-    };
+    const diasPermitidos = { 0: document.getElementById("checkDom").checked, 2: document.getElementById("checkTer").checked, 6: document.getElementById("checkSab").checked };
 
     const snapHist = await getDocs(query(collection(db, "historico_escalas"), where("mesReferencia", "==", mesVal)));
     let ocupados = {};
@@ -642,13 +599,8 @@ btnGerar.onclick = async () => {
     const [ano, mes] = mesVal.split('-').map(Number);
     corpoTabela.innerHTML = "";
     let data = new Date(ano, mes - 1, 1);
-    const eventosPadrao = {
-        0: { n: "Culto Domingo", h: "16:40" },
-        2: { n: "Culto Terça", h: "19:00" },
-        6: { n: "Culto Sábado", h: "17:00" }
-    };
-    let contagemMes = {};
-    let ultimaData = {};
+    const eventosPadrao = { 0: { n: "Culto Domingo", h: "16:40" }, 2: { n: "Culto Terça", h: "19:00" }, 6: { n: "Culto Sábado", h: "17:00" } };
+    let contagemMes = {}; let ultimaData = {};
 
     while(data.getMonth() === mes - 1) {
         const diaSemana = data.getDay();
@@ -689,8 +641,7 @@ btnGerar.onclick = async () => {
                 let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
                 if(escolhido !== "A definir") {
                     contagemMes[escolhido] = (contagemMes[escolhido] || 0) + 1;
-                    ultimaData[escolhido] = dataISO;
-                    nomesEscaladosNoDia.push(escolhido);
+                    ultimaData[escolhido] = dataISO; nomesEscaladosNoDia.push(escolhido);
                 }
                 criarLinha(new Date(data), eventosPadrao[diaSemana].n, eventosPadrao[diaSemana].h, escolhido);
             }
@@ -699,7 +650,6 @@ btnGerar.onclick = async () => {
     }
 };
 
-// ── Salvar escala ─────────────────────────────────────────────────────────
 btnSalvar.onclick = async () => {
     const mesReferencia = mesEscala.value;
     const linhas = Array.from(corpoTabela.querySelectorAll("tr"));
@@ -715,10 +665,8 @@ btnSalvar.onclick = async () => {
     const nomeExibicao = `${mesReferencia} - ${ministerioSelecionado} (Versão ${versao})`;
 
     const dadosEscala = {
-        ministerio: ministerioSelecionado,
-        mesReferencia: mesReferencia,
-        nomeExibicao: nomeExibicao,
-        dataCriacao: new Date().toISOString(),
+        ministerio: ministerioSelecionado, mesReferencia: mesReferencia,
+        nomeExibicao: nomeExibicao, dataCriacao: new Date().toISOString(),
         linhas: linhas.map(tr => ({
             data: tr.cells[0].innerText, dia: tr.cells[1].innerText,
             evento: tr.cells[2].innerText, hora: tr.cells[3].innerText,
@@ -730,36 +678,24 @@ btnSalvar.onclick = async () => {
     alert(`Escala salva: ${nomeExibicao}`);
     carregarHistorico();
 
-    setEdicao(false);
-    btnSalvar.style.display = 'none';
-    btnEditar.style.display = 'block';
-
-    document.title = `Escala ${mesReferencia} - ${ministerioSelecionado}`;
-    window.print();
+    setEdicao(false); btnSalvar.style.display = 'none'; btnEditar.style.display = 'block';
+    document.title = `Escala ${mesReferencia} - ${ministerioSelecionado}`; window.print();
     document.title = "Gerenciador de Escala - Nação Santa";
 };
 
-// ── Editar escala ─────────────────────────────────────────────────────────
-btnEditar.onclick = () => {
-    setEdicao(true);
-    btnSalvar.style.display = 'block';
-    btnEditar.style.display = 'none';
-};
+btnEditar.onclick = () => { setEdicao(true); btnSalvar.style.display = 'block'; btnEditar.style.display = 'none'; };
 
-// ── Histórico ─────────────────────────────────────────────────────────────
 async function carregarHistorico() {
     if(!ministerioSelecionado) return;
     const snap = await getDocs(collection(db, "historico_escalas"));
-    listaHistorico.innerHTML = "";
-    let listaTemp = [];
+    listaHistorico.innerHTML = ""; let listaTemp = [];
     snap.forEach(d => {
         const item = d.data();
         if(item.ministerio === ministerioSelecionado) { item.id = d.id; listaTemp.push(item); }
     });
     listaTemp.sort((a, b) => (b.dataCriacao || "").localeCompare(a.dataCriacao || ""));
     if(listaTemp.length === 0) {
-        listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>";
-        return;
+        listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>"; return;
     }
     listaTemp.forEach(item => {
         listaHistorico.innerHTML += `
@@ -774,43 +710,26 @@ async function carregarHistorico() {
 }
 
 window.excluirHistorico = async(id) => {
-    if(confirm("Deseja excluir esta escala do histórico permanentemente?")) {
-        await deleteDoc(doc(db, "historico_escalas", id));
-        carregarHistorico();
-    }
+    if(confirm("Deseja excluir esta escala do histórico permanentemente?")) { await deleteDoc(doc(db, "historico_escalas", id)); carregarHistorico(); }
 };
 
 window.reconstruirEBaixar = async(id) => {
     const snap = await getDoc(doc(db, "historico_escalas", id));
     if(!snap.exists()) return;
-    const dados = snap.data();
-    mesEscala.value = dados.mesReferencia;
-    corpoTabela.innerHTML = "";
+    const dados = snap.data(); mesEscala.value = dados.mesReferencia; corpoTabela.innerHTML = "";
     dados.linhas.forEach(l => {
-        const tr = document.createElement("tr");
-        if(l.cor) tr.className = l.cor;
+        const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
         tr.innerHTML = `
-            <td contenteditable="true">${l.data}</td>
-            <td>${l.dia}</td>
-            <td contenteditable="true">${l.evento}</td>
-            <td contenteditable="true">${l.hora}</td>
-            <td contenteditable="true">${l.voluntario}</td>
-            <td class="acoes">
-                <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
-                <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
-                <i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i>
-            </td>`;
+            <td contenteditable="true">${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.evento}</td>
+            <td contenteditable="true">${l.hora}</td><td contenteditable="true">${l.voluntario}</td>
+            <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
         corpoTabela.appendChild(tr);
     });
-    setEdicao(false);
-    btnSalvar.style.display = 'none';
-    btnEditar.style.display = 'block';
-    document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`;
-    window.print();
+    setEdicao(false); btnSalvar.style.display = 'none'; btnEditar.style.display = 'block';
+    document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`; window.print();
     document.title = "Gerenciador de Escala - Nação Santa";
 };
 
-// ── Resgatar voluntário ───────────────────────────────────────────────────
 window.abrirModalResgate = async function() {
     if(!ministerioSelecionado) return;
     document.getElementById("modalResgate").style.display = "flex";
@@ -823,8 +742,7 @@ window.abrirModalResgate = async function() {
         snap.forEach(d => {
             const v = d.data();
             if(!(v.ministerios || []).includes(ministerioSelecionado)) {
-                select.innerHTML += `<option value="${d.id}">${v.nome}</option>`;
-                temAlguem = true;
+                select.innerHTML += `<option value="${d.id}">${v.nome}</option>`; temAlguem = true;
             }
         });
         if(!temAlguem) select.innerHTML = "<option value=''>Todos já estão nesta equipe!</option>";
@@ -838,14 +756,10 @@ window.confirmarResgate = async function() {
         const docRef = doc(db, "voluntarios", idVoluntario);
         const snap = await getDoc(docRef);
         if(snap.exists()) {
-            const vol = snap.data();
-            let arr = vol.ministerios || [];
+            const vol = snap.data(); let arr = vol.ministerios || [];
             if(!arr.includes(ministerioSelecionado)) {
-                arr.push(ministerioSelecionado);
-                await updateDoc(docRef, { ministerios: arr });
-                alert(`${vol.nome} foi adicionado à equipe de ${ministerioSelecionado}!`);
-                fecharModal('modalResgate');
-                carregarVoluntarios();
+                arr.push(ministerioSelecionado); await updateDoc(docRef, { ministerios: arr });
+                alert(`${vol.nome} foi adicionado à equipe de ${ministerioSelecionado}!`); fecharModal('modalResgate'); carregarVoluntarios();
             }
         }
     } catch(e) { alert("Erro ao tentar resgatar o voluntário do banco."); }
