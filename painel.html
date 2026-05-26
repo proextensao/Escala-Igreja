@@ -573,6 +573,7 @@ btnGerar.onclick = async () => {
         6: { n: "Culto Sábado", h: "17:00" }
     };
     let contagemMes = {};
+    let ultimaData = {}; // rastreia última data escalada por voluntário (bloqueio de 7 dias)
 
     while(data.getMonth() === mes - 1) {
         const diaSemana = data.getDay();
@@ -582,7 +583,6 @@ btnGerar.onclick = async () => {
             let nomesEscaladosNoDia = [];
             for(let i = 0; i < numVagas; i++) {
                 let candidatos = listaGlobal.filter(v => {
-                    // Sem restrição de mesReferencia — qualquer mês é válido
                     if(v.disponibilidade === "nenhum") return false;
                     if(v.datasIndisponiveis?.includes(dataISO)) return false;
                     if(nomesEscaladosNoDia.includes(v.nome)) return false;
@@ -602,6 +602,12 @@ btnGerar.onclick = async () => {
 
                     if((contagemMes[v.nome] || 0) >= limiteMes) return false;
                     if(ocupados[v.nome]?.includes(dataISO)) return false;
+                    // Bloqueio de 7 dias: não pode atuar se já foi escalado nos últimos 7 dias
+                    if(ultimaData[v.nome]) {
+                        const diffMs = new Date(dataISO) - new Date(ultimaData[v.nome]);
+                        const diffDias = diffMs / (1000 * 60 * 60 * 24);
+                        if(diffDias < 7) return false;
+                    }
                     return true;
                 });
 
@@ -611,6 +617,7 @@ btnGerar.onclick = async () => {
                 let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
                 if(escolhido !== "A definir") {
                     contagemMes[escolhido] = (contagemMes[escolhido] || 0) + 1;
+                    ultimaData[escolhido] = dataISO;
                     nomesEscaladosNoDia.push(escolhido);
                 }
                 criarLinha(new Date(data), eventosPadrao[diaSemana].n, eventosPadrao[diaSemana].h, escolhido);
