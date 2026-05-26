@@ -133,6 +133,14 @@ tbody td { background:white; color:#1e293b; }
 .btn-baixar:hover { background: #cbd5e1; }
 .btn-baixar.excluir-hist { color: #ef4444; }
 
+/* Selects dinâmicos do evento especial */
+.selects-voluntarios-container { margin-bottom: 10px; }
+.selects-voluntarios-container label {
+    color:#475569; font-size:12px; font-weight:bold;
+    display:block; margin-bottom:4px; margin-top:8px;
+}
+.selects-voluntarios-container select { margin-bottom: 0; }
+
 @media print {
     body { background: white !important; padding: 0; }
     .main-grid, h1, .tabs-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno { display: none !important; }
@@ -246,6 +254,7 @@ tbody td { background:white; color:#1e293b; }
             <button class="btn blue" onclick="abrirModalResgate()" style="margin-top:15px; font-size:14px; box-shadow:0 4px 6px rgba(37,99,235,0.3);"><i class="ph ph-user-plus"></i> Resgatar do Banco de Dados</button>
         </div>
 
+        <!-- CARD EVENTO ESPECIAL - NOVO LAYOUT -->
         <div class="card">
             <h3>Evento Especial</h3>
             <label style="color:#475569; font-size:12px; font-weight:bold;">Nome do evento:</label>
@@ -254,11 +263,26 @@ tbody td { background:white; color:#1e293b; }
             <input type="time" id="horaEvento" value="19:00">
             <label style="color:#475569; font-size:12px; font-weight:bold;">Data:</label>
             <input type="date" id="dataEvento">
-            <label style="color:#475569; font-size:12px; font-weight:bold;">Voluntário:</label>
-            <select id="selectEvento"></select>
+
+            <!-- VAGAS AGORA VEM ANTES DOS VOLUNTÁRIOS -->
             <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
-            <select id="vagasEvento"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-            <button class="btn blue" style="margin-top:8px;" onclick="addEventoVagas(document.getElementById('nomeEvento').value, document.getElementById('horaEvento').value, 'dataEvento', 'selectEvento', 'vagasEvento')"><i class="ph ph-plus"></i> Adicionar à Escala</button>
+            <select id="vagasEvento" onchange="atualizarSelectsVoluntarios()">
+                <option value="1">1 pessoa</option><option value="2">2 pessoas</option>
+                <option value="3">3 pessoas</option><option value="4">4 pessoas</option>
+                <option value="5">5 pessoas</option><option value="6">6 pessoas</option>
+                <option value="7">7 pessoas</option><option value="8">8 pessoas</option>
+                <option value="9">9 pessoas</option><option value="10">10 pessoas</option>
+                <option value="11">11 pessoas</option><option value="12">12 pessoas</option>
+                <option value="13">13 pessoas</option><option value="14">14 pessoas</option>
+                <option value="15">15 pessoas</option>
+            </select>
+
+            <!-- CONTAINER DINÂMICO DOS SELECTS DE VOLUNTÁRIOS -->
+            <div id="containerSelectsVoluntarios" class="selects-voluntarios-container"></div>
+
+            <button class="btn blue" style="margin-top:8px;" onclick="adicionarEventoEspecial()">
+                <i class="ph ph-plus"></i> Adicionar à Escala
+            </button>
         </div>
     </div>
 </div>
@@ -294,7 +318,7 @@ let botaoPendente = null;
 let acessoMestreLiberado = false;
 let ministeriosDestravados = {};
 
-// ── Mês dinâmico com janela de 10 dias (igual ao index) ──────────────────
+// ── Mês dinâmico ──────────────────────────────────────────────────────────
 const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 const hojeP = new Date();
 const ultimoDiaDoMesP = new Date(hojeP.getFullYear(), hojeP.getMonth() + 1, 0).getDate();
@@ -420,7 +444,7 @@ window.salvarNovaSenha = async function() {
     }
 };
 
-// ── Controle de edição da tabela ──────────────────────────────────────────
+// ── Controle de edição ────────────────────────────────────────────────────
 window.setEdicao = function(habilitado) {
     Array.from(corpoTabela.querySelectorAll('tr')).forEach(tr => {
         if(tr.cells.length >= 5) {
@@ -440,7 +464,7 @@ window.alternarCor = function(elemento, classe) {
     tr.className = tr.className === classe ? '' : classe;
 };
 
-// ── Tabela: criar linha e ordenar ─────────────────────────────────────────
+// ── Tabela: criar linha e ORDENAR por data ────────────────────────────────
 function criarLinha(data, evento, hora, nome) {
     const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
     const tr = document.createElement("tr");
@@ -456,16 +480,19 @@ function criarLinha(data, evento, hora, nome) {
             <i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i>
         </td>`;
     corpoTabela.appendChild(tr);
-    ordenarTabela();
+    ordenarTabela();  // ← ORDENA SEMPRE após inserir
 }
 
+// ── Ordena tabela por data (dd/mm/aaaa → aaaa-mm-dd para comparação) ──────
 function ordenarTabela() {
     const tbody = document.getElementById("corpoTabela");
     const rows = Array.from(tbody.querySelectorAll("tr"));
     rows.sort((a, b) => {
-        const dA = a.cells[0].innerText.split('/').reverse().join('-');
-        const dB = b.cells[0].innerText.split('/').reverse().join('-');
-        return dA.localeCompare(dB);
+        const dA = a.cells[0].innerText.trim().split('/').reverse().join('-');
+        const dB = b.cells[0].innerText.trim().split('/').reverse().join('-');
+        if (dA !== dB) return dA.localeCompare(dB);
+        // Desempate por hora (coluna 3)
+        return (a.cells[3].innerText.trim()).localeCompare(b.cells[3].innerText.trim());
     });
     rows.forEach(row => tbody.appendChild(row));
 }
@@ -497,14 +524,11 @@ async function carregarVoluntarios() {
     const snap = await getDocs(collection(db, "voluntarios"));
     listaGlobal = [];
     listaVoluntariosUI.innerHTML = "";
-    const selectEvento = document.getElementById('selectEvento');
-    if(selectEvento) selectEvento.innerHTML = "<option value=''>Selecione...</option>";
     const mesSelecionadoPainel = document.getElementById('mesEscala').value;
     snap.forEach(d => {
         const v = d.data(); v.id = d.id;
         if(v.ministerios?.includes(ministerioSelecionado)) {
             listaGlobal.push(v);
-            // Aviso laranja para cadastro de mês anterior, mas inclui na equipe
             let txtStatus = v.mesReferencia !== mesSelecionadoPainel
                 ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>"
                 : textoDisp(v);
@@ -513,9 +537,10 @@ async function carregarVoluntarios() {
                     <span><b>${v.nome}</b><br><small>${txtStatus}</small></span>
                     <i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')" title="Desvincular do Ministério"></i>
                 </div>`;
-            if(selectEvento) selectEvento.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
         }
     });
+    // Atualiza selects do evento especial ao recarregar voluntários
+    atualizarSelectsVoluntarios();
 }
 
 window.excluirVol = async(id) => {
@@ -530,6 +555,57 @@ window.excluirVol = async(id) => {
             }
         } catch(error) { alert("Erro ao tentar desvincular o voluntário."); }
     }
+};
+
+// ── Selects dinâmicos do Evento Especial ──────────────────────────────────
+window.atualizarSelectsVoluntarios = function() {
+    const vagas = parseInt(document.getElementById('vagasEvento').value) || 1;
+    const container = document.getElementById('containerSelectsVoluntarios');
+    // Preserva valores já escolhidos
+    const valoresAtuais = Array.from(container.querySelectorAll('select')).map(s => s.value);
+    container.innerHTML = '';
+    for (let i = 0; i < vagas; i++) {
+        const label = document.createElement('label');
+        label.innerText = `Voluntário ${i + 1}:`;
+        const sel = document.createElement('select');
+        sel.id = `selectEventoVaga_${i}`;
+        sel.innerHTML = "<option value=''>Selecione...</option>";
+        listaGlobal.forEach(v => {
+            sel.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
+        });
+        if (valoresAtuais[i]) sel.value = valoresAtuais[i];
+        container.appendChild(label);
+        container.appendChild(sel);
+    }
+};
+
+// ── Adicionar evento especial à escala ────────────────────────────────────
+window.adicionarEventoEspecial = function() {
+    const nome = document.getElementById('nomeEvento').value.trim();
+    const hora = document.getElementById('horaEvento').value;
+    const dataStr = document.getElementById('dataEvento').value;
+    const vagas = parseInt(document.getElementById('vagasEvento').value) || 1;
+
+    if (!nome) return alert("Digite o nome do evento.");
+    if (!dataStr) return alert("Selecione a data do evento.");
+
+    for (let i = 0; i < vagas; i++) {
+        const sel = document.getElementById(`selectEventoVaga_${i}`);
+        const nomeVol = sel ? sel.value : '';
+        if (!nomeVol) return alert(`Selecione o Voluntário ${i + 1}.`);
+    }
+
+    // Adiciona uma linha por voluntário (ordenação acontece dentro de criarLinha)
+    for (let i = 0; i < vagas; i++) {
+        const sel = document.getElementById(`selectEventoVaga_${i}`);
+        criarLinha(new Date(dataStr + "T12:00:00"), nome, hora, sel.value);
+    }
+
+    // Limpa o formulário
+    document.getElementById('nomeEvento').value = '';
+    document.getElementById('dataEvento').value = '';
+    document.getElementById('vagasEvento').value = '1';
+    atualizarSelectsVoluntarios();
 };
 
 // ── Gerar escala ──────────────────────────────────────────────────────────
@@ -549,7 +625,6 @@ btnGerar.onclick = async () => {
         6: document.getElementById("checkSab").checked
     };
 
-    // Anti-conflito: busca escalas de outros ministérios já salvas no mesmo mês
     const snapHist = await getDocs(query(collection(db, "historico_escalas"), where("mesReferencia", "==", mesVal)));
     let ocupados = {};
     snapHist.forEach(d => {
@@ -573,7 +648,7 @@ btnGerar.onclick = async () => {
         6: { n: "Culto Sábado", h: "17:00" }
     };
     let contagemMes = {};
-    let ultimaData = {}; // rastreia última data escalada por voluntário (bloqueio de 7 dias)
+    let ultimaData = {};
 
     while(data.getMonth() === mes - 1) {
         const diaSemana = data.getDay();
@@ -586,7 +661,6 @@ btnGerar.onclick = async () => {
                     if(v.disponibilidade === "nenhum") return false;
                     if(v.datasIndisponiveis?.includes(dataISO)) return false;
                     if(nomesEscaladosNoDia.includes(v.nome)) return false;
-
                     let d2 = String(v.disponibilidade || "");
                     if(d2 !== "todos" && d2 !== "") {
                         if(d2.startsWith("nao_")) {
@@ -599,23 +673,17 @@ btnGerar.onclick = async () => {
                             if(d2 === "6" && diaSemana !== 6) return false;
                         }
                     }
-
                     if((contagemMes[v.nome] || 0) >= limiteMes) return false;
                     if(ocupados[v.nome]?.includes(dataISO)) return false;
-                    // Bloqueio de 7 dias: não pode atuar na mesma semana
-                    // Usa Date.UTC para evitar bug de fuso horário (Brasil UTC-3)
                     if(ultimaData[v.nome]) {
                         const [ay,am,ad] = dataISO.split('-').map(Number);
                         const [by,bm,bd] = ultimaData[v.nome].split('-').map(Number);
-                        const msA = Date.UTC(ay,am-1,ad);
-                        const msB = Date.UTC(by,bm-1,bd);
-                        const diffDias = (msA - msB) / 86400000;
+                        const diffDias = (Date.UTC(ay,am-1,ad) - Date.UTC(by,bm-1,bd)) / 86400000;
                         if(diffDias < 7) return false;
                     }
                     return true;
                 });
 
-                // Embaralha primeiro para máxima aleatoriedade, depois ordena por contagem como desempate
                 for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
                 candidatos.sort((a, b) => (contagemMes[a.nome] || 0) - (contagemMes[b.nome] || 0));
                 let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
@@ -638,7 +706,6 @@ btnSalvar.onclick = async () => {
     if(linhas.length === 0) return alert("Gere uma escala primeiro!");
     if(!mesReferencia) return alert("Selecione o mês!");
 
-    // Conta versões existentes para este mês/ministério
     const snapVersao = await getDocs(query(
         collection(db, "historico_escalas"),
         where("mesReferencia", "==", mesReferencia),
@@ -782,26 +849,6 @@ window.confirmarResgate = async function() {
             }
         }
     } catch(e) { alert("Erro ao tentar resgatar o voluntário do banco."); }
-};
-
-// ── Eventos especiais ─────────────────────────────────────────────────────
-window.addEvento = (n, h, idData, idSel) => {
-    const d = document.getElementById(idData).value;
-    const p = document.getElementById(idSel).value;
-    if(!d || !p) return alert("Preencha data e voluntário");
-    criarLinha(new Date(d + "T12:00:00"), n, h, p);
-};
-
-window.addEventoVagas = (n, h, idD, idS, idV) => {
-    const d = document.getElementById(idD).value;
-    const primNome = document.getElementById(idS).value;
-    const vagas = parseInt(document.getElementById(idV).value) || 1;
-    if(!d || !primNome) return alert("Preencha data e voluntário.");
-    const todosNomes = Array.from(document.getElementById(idS).options)
-        .map(o => o.value).filter(v => v !== '');
-    const outros = todosNomes.filter(nm => nm !== primNome).sort(() => Math.random() - 0.5);
-    const escolhidos = [primNome, ...outros].slice(0, vagas);
-    escolhidos.forEach(nome => criarLinha(new Date(d+"T12:00:00"), n, h, nome));
 };
 </script>
 </body>
