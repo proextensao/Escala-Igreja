@@ -247,28 +247,18 @@ tbody td { background:white; color:#1e293b; }
         </div>
 
         <div class="card">
-            <h3>Eventos especiais</h3>
-
-            <input type="text" id="nomeCaverna" value="Caverna de Adulão">
-            <input type="date" id="dataCaverna">
-            <select id="selectCaverna"></select>
-            <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
-            <select id="vagasCaverna"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-            <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeCaverna').value,'19:00','dataCaverna','selectCaverna','vagasCaverna')"><i class="ph ph-plus"></i> Adicionar</button>
-
-            <input type="text" id="nomeMulheres" value="Culto Mulheres">
-            <input type="date" id="dataMulheres">
-            <select id="selectMulheres"></select>
-            <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
-            <select id="vagasMulheres"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-            <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeMulheres').value,'17:00','dataMulheres','selectMulheres','vagasMulheres')"><i class="ph ph-plus"></i> Adicionar</button>
-
-            <input type="text" id="nomeOutro" placeholder="Outros Eventos">
-            <input type="date" id="dataOutros">
-            <select id="selectOutros"></select>
-            <label style="color:#475569; font-size:12px; font-weight:bold; margin-top:4px;">Vagas para este evento:</label>
-            <select id="vagasOutros"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
-            <button class="btn blue" onclick="addEventoVagas(document.getElementById('nomeOutro').value,'19:00','dataOutros','selectOutros','vagasOutros')"><i class="ph ph-plus"></i> Adicionar</button>
+            <h3>Evento Especial</h3>
+            <label style="color:#475569; font-size:12px; font-weight:bold;">Nome do evento:</label>
+            <input type="text" id="nomeEvento" placeholder="Ex: Caverna de Adulão">
+            <label style="color:#475569; font-size:12px; font-weight:bold;">Hora:</label>
+            <input type="time" id="horaEvento" value="19:00">
+            <label style="color:#475569; font-size:12px; font-weight:bold;">Data:</label>
+            <input type="date" id="dataEvento">
+            <label style="color:#475569; font-size:12px; font-weight:bold;">Voluntário:</label>
+            <select id="selectEvento"></select>
+            <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
+            <select id="vagasEvento"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option></select>
+            <button class="btn blue" style="margin-top:8px;" onclick="addEventoVagas(document.getElementById('nomeEvento').value, document.getElementById('horaEvento').value, 'dataEvento', 'selectEvento', 'vagasEvento')"><i class="ph ph-plus"></i> Adicionar à Escala</button>
         </div>
     </div>
 </div>
@@ -507,7 +497,8 @@ async function carregarVoluntarios() {
     const snap = await getDocs(collection(db, "voluntarios"));
     listaGlobal = [];
     listaVoluntariosUI.innerHTML = "";
-    [selectCaverna, selectMulheres, selectOutros].forEach(s => s.innerHTML = "<option value=''>Selecione...</option>");
+    const selectEvento = document.getElementById('selectEvento');
+    if(selectEvento) selectEvento.innerHTML = "<option value=''>Selecione...</option>";
     const mesSelecionadoPainel = document.getElementById('mesEscala').value;
     snap.forEach(d => {
         const v = d.data(); v.id = d.id;
@@ -522,7 +513,7 @@ async function carregarVoluntarios() {
                     <span><b>${v.nome}</b><br><small>${txtStatus}</small></span>
                     <i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')" title="Desvincular do Ministério"></i>
                 </div>`;
-            [selectCaverna, selectMulheres, selectOutros].forEach(s => s.innerHTML += `<option value="${v.nome}">${v.nome}</option>`);
+            if(selectEvento) selectEvento.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
         }
     });
 }
