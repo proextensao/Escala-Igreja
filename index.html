@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
 <title>Nação Santa - Sistema de Escala</title>
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -53,7 +54,17 @@ body.show-painel #screen-painel {
 
 /* ===== CADASTRO STYLES ===== */
 #screen-cadastro { background: #0f172a; display: flex; justify-content: center; padding: 50px 20px; }
-.card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); width: 450px; text-align: center; position: relative; height: fit-content; }
+.card { 
+  background: white; 
+  padding: 30px; 
+  border-radius: 12px; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25); 
+  width: 95%; /* Ocupa 95% da tela do celular */
+  max-width: 450px; /* Não passa de 450px em computadores */
+  margin: 0 auto;
+  text-align: center; 
+  position: relative; 
+}
 .logo-igreja { display: block; margin: 0 auto 15px auto; width: 150px; height: 150px; object-fit: contain; border-radius: 50%; background-color: #1a73e8; padding: 10px; }
 .card h3 { color: #1a73e8; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
 .mes-pequeno { position: absolute; top: 15px; right: 15px; font-size: 11px; color: #64748b; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
