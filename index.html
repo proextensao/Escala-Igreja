@@ -137,6 +137,73 @@ tbody td { background:white; color:#1e293b; }
 .selects-voluntarios-container label { color:#475569; font-size:12px; font-weight:bold; display:block; margin-bottom:4px; margin-top:8px; }
 .selects-voluntarios-container select { margin-bottom: 0; width:100%; padding:10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
+/* ===== JÁ POSSUI CADASTRO ===== */
+.btn-ja-cadastrado {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px; margin-top: 8px;
+  border-radius: 6px; border: 2px solid #0d9488 !important;
+  background: #f0fdfa !important; color: #0f766e !important;
+  font-weight: bold; font-size: 14px; cursor: pointer;
+  transition: all 0.25s ease; letter-spacing: 0.3px;
+}
+.btn-ja-cadastrado:hover { background: #ccfbf1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.15); }
+.btn-ja-cadastrado i { font-size: 18px; }
+
+.modal-ja-cadastrado { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 2000; justify-content: center; align-items: center; }
+.modal-ja-cadastrado.show { display: flex; }
+
+.modal-jc-box {
+  background: white; border-radius: 16px; width: 420px; max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-jc-header {
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  color: white; padding: 20px 25px; display: flex; align-items: center; gap: 12px;
+}
+.modal-jc-header i { font-size: 26px; }
+.modal-jc-header h3 { font-size: 17px; margin: 0; }
+.modal-jc-header p { font-size: 12px; opacity: 0.85; margin: 2px 0 0 0; }
+
+.modal-jc-body { padding: 25px; }
+.modal-jc-step { display: none; }
+.modal-jc-step.active { display: block; }
+
+.step-label { font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+.ministerio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px; }
+.ministerio-btn {
+  padding: 12px 8px; border: 2px solid #e2e8f0; border-radius: 8px;
+  background: white; cursor: pointer; font-size: 13px; font-weight: bold; color: #475569;
+  transition: all 0.2s ease; text-align: center;
+}
+.ministerio-btn:hover { border-color: #0d9488; color: #0f766e; background: #f0fdfa; }
+.ministerio-btn.selected { border-color: #0d9488; background: #0d9488; color: white; }
+
+.nome-lista { max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 5px; }
+.nome-item {
+  padding: 12px 16px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f1f5f9;
+  transition: all 0.15s ease; display: flex; align-items: center; gap: 10px; color: #1e293b;
+}
+.nome-item:last-child { border-bottom: none; }
+.nome-item:hover { background: #f0fdfa; color: #0f766e; }
+.nome-item.selected { background: #0d9488; color: white; font-weight: bold; }
+.nome-item i { font-size: 16px; }
+
+.jc-loading { text-align: center; padding: 20px; color: #94a3b8; font-size: 14px; }
+
+.modal-jc-footer { padding: 0 25px 25px; display: flex; gap: 10px; }
+.btn-jc-voltar { flex: 1; padding: 11px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-size: 14px; font-weight: bold; color: #64748b; transition: 0.2s; }
+.btn-jc-voltar:hover { background: #f8fafc; }
+.btn-jc-confirmar { flex: 2; padding: 11px; border: none; border-radius: 8px; background: #0d9488; color: white; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-jc-confirmar:hover { background: #0f766e; }
+.btn-jc-confirmar:disabled { background: #94a3b8; cursor: not-allowed; }
+
+.step-divider { display: flex; align-items: center; gap: 8px; margin: 16px 0; color: #94a3b8; font-size: 11px; }
+.step-divider::before, .step-divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
+
 @media print {
     #screen-cadastro { display: none !important; }
     .btn-voltar-cadastro, .tabs-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal > .main-grid { display: none !important; }
@@ -205,10 +272,88 @@ tbody td { background:white; color:#1e293b; }
 
     <button id="btnSalvar" style="margin-top: 20px;">Enviar Cadastro</button>
 
+    <div class="divider">ou</div>
+    <button class="btn-ja-cadastrado" onclick="abrirModalJaCadastrado()">
+      <i class="ph ph-user-check"></i> JÁ POSSUI CADASTRO?
+    </button>
+
     <div class="divider">acesso restrito</div>
     <button class="btn-ir-painel" onclick="irParaPainel()">
       <i class="ph ph-gauge"></i> Acessar Painel de Controle <i class="ph ph-arrow-right"></i>
     </button>
+  </div>
+</div>
+
+
+<!-- MODAL JÁ POSSUO CADASTRO -->
+<div class="modal-ja-cadastrado" id="modalJaCadastrado">
+  <div class="modal-jc-box">
+    <div class="modal-jc-header">
+      <i class="ph ph-user-check"></i>
+      <div>
+        <h3>Já Possuo Cadastro</h3>
+        <p>Atualize apenas sua disponibilidade deste mês</p>
+      </div>
+    </div>
+    <div class="modal-jc-body">
+
+      <!-- STEP 1: Escolher ministério -->
+      <div class="modal-jc-step active" id="jcStep1">
+        <div class="step-label"><i class="ph ph-church"></i> Qual é o seu ministério?</div>
+        <div class="ministerio-grid" id="jcMinisterioGrid">
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Fotografia', this)">📷 Fotografia</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Iluminação', this)">💡 Iluminação</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Projeção', this)">📽️ Projeção</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Produção', this)">🎬 Produção</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Rede Social', this)">📱 Rede Social</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Som', this)">🎧 Som</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Transmissão', this)" style="grid-column: span 2;">📡 Transmissão</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Escolher nome -->
+      <div class="modal-jc-step" id="jcStep2">
+        <div class="step-label"><i class="ph ph-user"></i> Qual é o seu nome?</div>
+        <div class="nome-lista" id="jcNomeLista">
+          <div class="jc-loading"><i class="ph ph-spinner"></i> Carregando...</div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Preencher disponibilidade -->
+      <div class="modal-jc-step" id="jcStep3">
+        <div class="step-label"><i class="ph ph-calendar-check"></i> Disponibilidade para <span id="jcMesLabel"></span></div>
+        <select id="jcDisponibilidade" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:15px; margin-bottom:12px;">
+          <option value="" disabled selected>Selecione uma opção...</option>
+          <optgroup label="Geral">
+            <option value="todos">Disponível todos os dias</option>
+            <option value="nenhum">Indisponível este mês</option>
+          </optgroup>
+          <optgroup label="Disponível Somente">
+            <option value="0">Somente aos domingos</option>
+            <option value="2">Somente às terças</option>
+            <option value="6">Somente aos sábados</option>
+          </optgroup>
+          <optgroup label="Indisponível Somente">
+            <option value="nao_domingo">Indisponível aos domingos</option>
+            <option value="nao_terca">Indisponível às terças</option>
+            <option value="nao_sabado">Indisponível aos sábados</option>
+          </optgroup>
+        </select>
+        <div class="step-label"><i class="ph ph-calendar-x"></i> Datas que NÃO pode comparecer (Opcional):</div>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <input type="date" id="jcInputData" style="flex:1; padding:9px; border:1px solid #ddd; border-radius:6px; font-size:14px;">
+          <button onclick="jcAdicionarData()" style="background:#0d9488; color:white; border:none; padding:9px 14px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
+        </div>
+        <div id="jcListaDatas" class="chips-container"></div>
+      </div>
+
+    </div>
+    <div class="modal-jc-footer">
+      <button class="btn-jc-voltar" id="jcBtnVoltar" onclick="jcVoltar()"><i class="ph ph-arrow-left"></i> Voltar</button>
+      <button class="btn-jc-confirmar" id="jcBtnConfirmar" onclick="jcAvancar()" disabled>
+        <span id="jcBtnLabel">Selecione um ministério</span> <i class="ph ph-arrow-right"></i>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -538,7 +683,8 @@ btnGerar.onclick = async () => {
     if (padrao[diaSem] && diasPermitidos[diaSem]) {
       let escaladosNoDia = [];
       for (let i = 0; i < numVagas; i++) {
-        let candidatos = listaGlobal.filter(v => {
+        // Função de filtro base (sem regra dos 7 dias)
+        const filtroBase = (v, ignorar7Dias = false) => {
           if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
           if (escaladosNoDia.includes(v.nome)) return false;
           let d2 = String(v.disponibilidade || "");
@@ -555,7 +701,7 @@ btnGerar.onclick = async () => {
           }
           if ((contagem[v.nome] || 0) >= limiteMês) return false;
           if (ocupados[v.nome]?.includes(dataISO)) return false;
-          if (ultimaData[v.nome]) {
+          if (!ignorar7Dias && ultimaData[v.nome]) {
             const [ay,am,ad] = dataISO.split('-').map(Number);
             const [by,bm,bd] = ultimaData[v.nome].split('-').map(Number);
             const msA = Date.UTC(ay,am-1,ad);
@@ -564,7 +710,12 @@ btnGerar.onclick = async () => {
             if (diffDias < 7) return false;
           }
           return true;
-        });
+        };
+        let candidatos = listaGlobal.filter(v => filtroBase(v, false));
+        // Se não há candidatos com a regra dos 7 dias, relaxa essa restrição (evita "A definir" quando existe pessoa disponível)
+        if (candidatos.length === 0) {
+          candidatos = listaGlobal.filter(v => filtroBase(v, true));
+        }
         for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
         candidatos.sort((a,b)=>(contagem[a.nome]||0)-(contagem[b.nome]||0));
         let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
@@ -748,6 +899,134 @@ window.adicionarEventoEspecial = function() {
     document.getElementById('vagasEvento').value = '1';
     atualizarSelectsVoluntarios();
 };
+
+// ── JÁ POSSUO CADASTRO ───────────────────────────────────────
+let jcStep = 1;
+let jcMinisterioSelecionado = "";
+let jcVoluntarioId = "";
+let jcVoluntarioNome = "";
+let jcDatasIndisponiveis = [];
+
+const stringMesJC = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+document.getElementById('jcMesLabel').innerText = stringMesJC[mesAlvo] + " " + anoAlvo;
+
+window.abrirModalJaCadastrado = function() {
+  jcStep = 1; jcMinisterioSelecionado = ""; jcVoluntarioId = ""; jcVoluntarioNome = ""; jcDatasIndisponiveis = [];
+  document.querySelectorAll('.ministerio-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('jcDisponibilidade').value = "";
+  document.getElementById('jcListaDatas').innerHTML = "";
+  document.getElementById('jcInputData').value = "";
+  mostrarStepJC(1);
+  document.getElementById('modalJaCadastrado').classList.add('show');
+};
+
+window.fecharModalJC = function() {
+  document.getElementById('modalJaCadastrado').classList.remove('show');
+};
+
+function mostrarStepJC(n) {
+  jcStep = n;
+  document.querySelectorAll('.modal-jc-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`jcStep${n}`).classList.add('active');
+  const btn = document.getElementById('jcBtnConfirmar');
+  const label = document.getElementById('jcBtnLabel');
+  const voltar = document.getElementById('jcBtnVoltar');
+  if(n === 1) { btn.disabled = true; label.innerText = "Selecione um ministério"; voltar.innerHTML = '<i class="ph ph-x"></i> Fechar'; voltar.onclick = fecharModalJC; }
+  if(n === 2) { btn.disabled = true; label.innerText = "Selecione seu nome"; voltar.innerHTML = '<i class="ph ph-arrow-left"></i> Voltar'; voltar.onclick = jcVoltar; }
+  if(n === 3) { btn.disabled = false; label.innerText = "Salvar disponibilidade"; voltar.innerHTML = '<i class="ph ph-arrow-left"></i> Voltar'; voltar.onclick = jcVoltar; }
+}
+
+window.selecionarMinisterioJC = function(nome, el) {
+  jcMinisterioSelecionado = nome;
+  document.querySelectorAll('.ministerio-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  const btn = document.getElementById('jcBtnConfirmar');
+  document.getElementById('jcBtnLabel').innerText = "Ver voluntários";
+  btn.disabled = false;
+};
+
+window.jcAvancar = async function() {
+  if(jcStep === 1) {
+    if(!jcMinisterioSelecionado) return;
+    mostrarStepJC(2);
+    await jcCarregarNomes();
+  } else if(jcStep === 2) {
+    if(!jcVoluntarioId) return;
+    mostrarStepJC(3);
+  } else if(jcStep === 3) {
+    await jcSalvar();
+  }
+};
+
+window.jcVoltar = function() {
+  if(jcStep === 2) { mostrarStepJC(1); }
+  else if(jcStep === 3) { mostrarStepJC(2); }
+};
+
+async function jcCarregarNomes() {
+  const lista = document.getElementById('jcNomeLista');
+  lista.innerHTML = '<div class="jc-loading">Carregando membros...</div>';
+  const snap = await getDocs(collection(db, "voluntarios"));
+  const membros = [];
+  snap.forEach(d => {
+    const v = d.data(); v.id = d.id;
+    if(v.ministerios?.includes(jcMinisterioSelecionado)) membros.push(v);
+  });
+  membros.sort((a,b) => a.nome.localeCompare(b.nome));
+  if(membros.length === 0) { lista.innerHTML = '<div class="jc-loading">Nenhum membro encontrado neste ministério.</div>'; return; }
+  lista.innerHTML = "";
+  membros.forEach(v => {
+    const div = document.createElement('div');
+    div.className = 'nome-item';
+    div.innerHTML = `<i class="ph ph-user-circle"></i> ${v.nome}`;
+    div.onclick = () => {
+      document.querySelectorAll('.nome-item').forEach(x => x.classList.remove('selected'));
+      div.classList.add('selected');
+      jcVoluntarioId = v.id; jcVoluntarioNome = v.nome;
+      document.getElementById('jcBtnConfirmar').disabled = false;
+      document.getElementById('jcBtnLabel').innerText = `Continuar com ${v.nome.split(' ')[0]}`;
+    };
+    lista.appendChild(div);
+  });
+}
+
+window.jcAdicionarData = function() {
+  const val = document.getElementById('jcInputData').value;
+  if(!val || jcDatasIndisponiveis.includes(val)) return;
+  jcDatasIndisponiveis.push(val); jcDatasIndisponiveis.sort();
+  jcRenderizarDatas();
+  document.getElementById('jcInputData').value = "";
+};
+window.jcRemoverData = function(index) { jcDatasIndisponiveis.splice(index, 1); jcRenderizarDatas(); };
+function jcRenderizarDatas() {
+  const container = document.getElementById('jcListaDatas'); container.innerHTML = "";
+  jcDatasIndisponiveis.forEach((data, index) => {
+    const [a, m, d] = data.split('-');
+    container.innerHTML += `<div class="chip">${d}/${m}/${a} <span onclick="jcRemoverData(${index})">✖</span></div>`;
+  });
+}
+
+async function jcSalvar() {
+  const disp = document.getElementById('jcDisponibilidade').value;
+  if(!disp) return alert("Selecione sua disponibilidade.");
+  const inputPend = document.getElementById('jcInputData').value;
+  if(inputPend && !jcDatasIndisponiveis.includes(inputPend)) jcDatasIndisponiveis.push(inputPend);
+  const r = doc(db, "voluntarios", jcVoluntarioId);
+  const s = await getDoc(r);
+  const dadosAtuais = s.data();
+  await updateDoc(r, {
+    disponibilidade: disp,
+    datasIndisponiveis: jcDatasIndisponiveis,
+    mesReferencia: mesReferenciaBanco
+  });
+  fecharModalJC();
+  alert(`✅ Disponibilidade de ${jcVoluntarioNome} atualizada com sucesso para ${stringMesJC[mesAlvo]}!`);
+}
+
+// Fechar modal ao clicar fora
+document.getElementById('modalJaCadastrado').addEventListener('click', function(e) {
+  if(e.target === this) fecharModalJC();
+});
 </script>
 </body>
 </html>
