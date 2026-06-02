@@ -609,7 +609,8 @@ btnGerar.onclick = async () => {
         if(eventosPadrao[diaSemana] && diasPermitidos[diaSemana]) {
             let nomesEscaladosNoDia = [];
             for(let i = 0; i < numVagas; i++) {
-                let candidatos = listaGlobal.filter(v => {
+
+                const filtroBase = (v, ignorar7Dias = false) => {
                     if(v.disponibilidade === "nenhum") return false;
                     if(v.datasIndisponiveis?.includes(dataISO)) return false;
                     if(nomesEscaladosNoDia.includes(v.nome)) return false;
@@ -627,14 +628,20 @@ btnGerar.onclick = async () => {
                     }
                     if((contagemMes[v.nome] || 0) >= limiteMes) return false;
                     if(ocupados[v.nome]?.includes(dataISO)) return false;
-                    if(ultimaData[v.nome]) {
+                    if(!ignorar7Dias && ultimaData[v.nome]) {
                         const [ay,am,ad] = dataISO.split('-').map(Number);
                         const [by,bm,bd] = ultimaData[v.nome].split('-').map(Number);
                         const diffDias = (Date.UTC(ay,am-1,ad) - Date.UTC(by,bm-1,bd)) / 86400000;
                         if(diffDias < 7) return false;
                     }
                     return true;
-                });
+                };
+
+                // Tenta primeiro com regra dos 7 dias; se não achar ninguém, flexibiliza
+                let candidatos = listaGlobal.filter(v => filtroBase(v, false));
+                if(candidatos.length === 0) {
+                    candidatos = listaGlobal.filter(v => filtroBase(v, true));
+                }
 
                 for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
                 candidatos.sort((a, b) => (contagemMes[a.nome] || 0) - (contagemMes[b.nome] || 0));
