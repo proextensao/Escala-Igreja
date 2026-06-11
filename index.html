@@ -210,7 +210,7 @@ body.show-painel #screen-painel {
 
 #painel-body { font-family:'Segoe UI'; position: relative; }
 
-#painel-body h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 60px; }
+#painel-body h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
 
 .mes-pequeno-painel { position: absolute; top: 20px; right: 20px; font-size: 11px; color: #1e293b; background: #f8fafc; padding: 5px 10px; border-radius: 4px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase; }
 
@@ -435,22 +435,18 @@ tbody td { background:white; color:#1e293b; }
 .step-divider::before, .step-divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
 
 
-/* ===== CORREÇÕES MOBILE — PAINEL EMBUTIDO ===== */
+
+/* ===== CORREÇÕES MOBILE ===== */
 @media (max-width: 600px) {
 
-    #screen-painel {
-        padding: 15px !important;
-    }
+    #screen-painel { padding: 12px !important; }
 
     #painel-body h1 {
-        padding-top: 65px !important;
+        padding-top: 70px !important;
         font-size: 20px !important;
         line-height: 1.3 !important;
-    }
-
-    .subtitulo {
-        font-size: 14px !important;
-        padding: 0 10px;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
     }
 
     .mes-pequeno-painel {
@@ -467,45 +463,47 @@ tbody td { background:white; color:#1e293b; }
         padding: 6px 12px !important;
     }
 
+    .subtitulo {
+        font-size: 14px !important;
+        padding: 0 10px !important;
+    }
+
     .tabs-container {
         gap: 8px !important;
         padding: 0 5px !important;
         margin-bottom: 20px !important;
-    }
-
-    /* 2 botões por linha */
-    .tab-btn {
-        width: calc(50% - 4px) !important;
-        padding: 10px 8px !important;
-        font-size: 13px !important;
         justify-content: center !important;
     }
 
-    /* Grid: 1 coluna */
+    .tab-btn {
+        width: calc(50% - 4px) !important;
+        padding: 10px 6px !important;
+        font-size: 12px !important;
+        justify-content: center !important;
+        gap: 6px !important;
+    }
+
     .main-grid {
         grid-template-columns: 1fr !important;
     }
 
-    /* Tabela com scroll horizontal */
     #secaoPrint {
         overflow-x: auto !important;
         display: block !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 
-    table {
-        min-width: 480px !important;
-    }
+    table { min-width: 480px !important; }
 
     .modal-box {
-        width: 90vw !important;
+        width: 92vw !important;
         max-width: 340px !important;
         padding: 20px !important;
     }
 
-    .card {
-        padding: 15px !important;
-    }
+    .card-painel { padding: 15px !important; }
 }
+
 @media print {
 
     #screen-cadastro { display: none !important; }
