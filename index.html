@@ -1394,6 +1394,14 @@ async function carregarVoluntarios(){
 
     if(v.ministerios?.includes(ministerioSelecionado)) {
 
+      // Se tiver disponibilidades por mês, usa a do mês selecionado no painel
+      if(v.disponibilidades && v.disponibilidades[mesSelecionadoPainel]) {
+        const dispMes = v.disponibilidades[mesSelecionadoPainel];
+        v.disponibilidade = dispMes.disponibilidade;
+        v.datasIndisponiveis = dispMes.datasIndisponiveis;
+        v.mesReferencia = mesSelecionadoPainel;
+      }
+
       listaGlobal.push(v);
 
       let txtStatus = v.mesReferencia !== mesSelecionadoPainel
@@ -2134,14 +2142,18 @@ async function jcSalvar() {
 
   const dadosAtuais = s.data();
 
-  await updateDoc(r, {
-
+  // Preserva disponibilidades de outros meses sem sobrescrever
+  const disponibilidades = dadosAtuais.disponibilidades || {};
+  disponibilidades[mesReferenciaBanco] = {
     disponibilidade: disp,
+    datasIndisponiveis: jcDatasIndisponiveis
+  };
 
+  await updateDoc(r, {
+    disponibilidades: disponibilidades,
+    disponibilidade: disp,
     datasIndisponiveis: jcDatasIndisponiveis,
-
     mesReferencia: mesReferenciaBanco
-
   });
 
   fecharModalJC();
