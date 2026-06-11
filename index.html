@@ -914,6 +914,17 @@ tbody td { background:white; color:#1e293b; }
 
     </div>
 
+    <!-- MODAL EDITAR EMAIL -->
+    <div class="modal-overlay" id="modalEditarEmail">
+      <div class="modal-box">
+        <h3><i class="ph ph-envelope" style="color:#2563eb;"></i> Editar E-mail</h3>
+        <p id="nomeEditarEmail" style="color:#475569; font-size:13px; margin-bottom:4px;"></p>
+        <input type="email" id="inputEditarEmail" placeholder="email@exemplo.com">
+        <button class="btn blue" onclick="salvarEmail()"><i class="ph ph-floppy-disk"></i> Salvar</button>
+        <button class="btn btn-cancelar" onclick="fecharModal('modalEditarEmail')">Cancelar</button>
+      </div>
+    </div>
+
 
 
     <div id="painelPrincipal">
@@ -1408,7 +1419,8 @@ async function carregarVoluntarios(){
 
         ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>" : textoDisp(v);
 
-      listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div>`;
+      const emailLabel = v.email ? `<i class="ph ph-envelope" style="color:#22c55e; margin-right:4px;" title="${v.email}"></i>` : `<i class="ph ph-envelope" style="color:#cbd5e1; margin-right:4px;" title="Sem e-mail"></i>`;
+      listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><div style="display:flex;gap:8px;align-items:center;">${emailLabel}<i class="ph ph-pencil-simple" style="cursor:pointer;color:#2563eb;font-size:16px;" onclick="abrirEditarEmail('${v.id}','${v.nome}','${v.email||''}')" title="Editar e-mail"></i><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div></div>`;
 
     }
 
@@ -2163,6 +2175,26 @@ async function jcSalvar() {
 }
 
 
+
+// ── EDITAR EMAIL ─────────────────────────────────────────────
+let editarEmailId = "";
+
+window.abrirEditarEmail = function(id, nome, emailAtual) {
+  editarEmailId = id;
+  document.getElementById('nomeEditarEmail').innerText = nome;
+  document.getElementById('inputEditarEmail').value = emailAtual || "";
+  document.getElementById('modalEditarEmail').style.display = "flex";
+  setTimeout(() => document.getElementById('inputEditarEmail').focus(), 100);
+};
+
+window.salvarEmail = async function() {
+  const novoEmail = document.getElementById('inputEditarEmail').value.trim();
+  if(!novoEmail) return alert("Digite um e-mail válido.");
+  await updateDoc(doc(db, "voluntarios", editarEmailId), { email: novoEmail });
+  fecharModal('modalEditarEmail');
+  carregarVoluntarios();
+  alert("✅ E-mail salvo com sucesso!");
+};
 
 // Fechar modal ao clicar fora
 
