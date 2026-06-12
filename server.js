@@ -87,34 +87,21 @@ const mesRef = `${aaaa}-${mm}`;
       if (v.nome && v.email) emailMap[v.nome] = v.email;
     });
 
-    escalasSnap.forEach(doc => {
-      const escala = doc.data();
-      escala.linhas.forEach(async (linha) => {
-        // Se a data do evento for amanhã...
-        if (linha.data === dataAlvo && linha.voluntario && linha.voluntario !== "A definir") {
-          const email = emailMap[linha.voluntario];
-          if (email) {
-            const primeiroNome = linha.voluntario.split(" ")[0];
-            const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
-            const html = `
-              <div style="font-family:sans-serif; max-width:500px; margin:0 auto; background:#f8fafc; padding:20px; border-radius:10px;">
-                <h2 style="color:#1e293b;">Olá, ${primeiroNome}! 👋</h2>
-                <p style="color:#475569; font-size:15px;">Este é um lembrete automático de que você está escalado(a) para servir <b>amanhã</b>.</p>
-                <div style="background:white; padding:15px; border-radius:8px; border-left:4px solid #2563eb; margin:20px 0;">
-                  <p style="margin:5px 0;"><b>Ministério:</b> ${escala.ministerio}</p>
-                  <p style="margin:5px 0;"><b>Evento:</b> ${linha.evento}</p>
-                  <p style="margin:5px 0;"><b>Data:</b> ${linha.data} (${linha.dia})</p>
-                  <p style="margin:5px 0;"><b>Hora:</b> ${linha.hora}</p>
-                </div>
-                <p style="color:#64748b; font-size:12px; text-align:center;">Nação Santa — Gerenciador de Escala</p>
-              </div>
-            `;
-            await enviarEmail(email, linha.voluntario, assunto, html);
-            console.log(`Lembrete automático enviado para ${linha.voluntario}`);
-          }
-        }
-      });
-    });
+    for (const doc of escalasSnap.docs) {
+  const escala = doc.data();
+  for (const linha of escala.linhas) {
+    if (linha.data === dataAlvo && linha.voluntario && linha.voluntario !== "A definir") {
+      const email = emailMap[linha.voluntario];
+      if (email) {
+        const primeiroNome = linha.voluntario.split(" ")[0];
+        const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
+        const html = `...`;
+        await enviarEmail(email, linha.voluntario, assunto, html);
+        console.log(`Lembrete enviado para ${linha.voluntario}`);
+      }
+    }
+  }
+}
   } catch (error) {
     console.error("Erro no lembrete automático:", error);
   }
