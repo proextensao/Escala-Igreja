@@ -65,20 +65,28 @@ app.post("/enviar-email", async (req, res) => {
 async function dispararLembretesDeAmanha() {
   try {
     console.log("Iniciando verificação de lembretes automáticos...");
-    const agora = new Date();
-// Converte para horário de Brasília (UTC-3) e já pega "amanhã"
-const amanha = new Date(agora.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
-amanha.setDate(amanha.getDate() + 1);
 
-const dd = String(amanha.getDate()).padStart(2, '0');
-const mm = String(amanha.getMonth() + 1).padStart(2, '0');
-const aaaa = amanha.getFullYear();
-const dataAlvo = `${dd}/${mm}/${aaaa}`;
-const mesRef = `${aaaa}-${mm}`;
+    // ✅ CORREÇÃO BUG #1: Calcula "amanhã" no fuso horário de Brasília corretamente
+    const agora = new Date();
+    const amanha = new Date(agora.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+    amanha.setDate(amanha.getDate() + 1);
+
+    const dd = String(amanha.getDate()).padStart(2, '0');
+    const mm = String(amanha.getMonth() + 1).padStart(2, '0');
+    const aaaa = amanha.getFullYear();
+    const dataAlvo = `${dd}/${mm}/${aaaa}`; // Formato exato da tabela: 13/06/2026
+    const mesRef = `${aaaa}-${mm}`;
+
+    console.log(`Buscando escalas para a data: ${dataAlvo} (mesRef: ${mesRef})`);
 
     // Busca as escalas salvas do mês atual
     const escalasSnap = await db.collection("historico_escalas").where("mesReferencia", "==", mesRef).get();
-    
+
+    if (escalasSnap.empty) {
+      console.log("Nenhuma escala encontrada para o mês:", mesRef);
+      return;
+    }
+
     // Busca os e-mails dos voluntários
     const volSnap = await db.collection("voluntarios").get();
     const emailMap = {};
@@ -87,27 +95,52 @@ const mesRef = `${aaaa}-${mm}`;
       if (v.nome && v.email) emailMap[v.nome] = v.email;
     });
 
-    for (const doc of escalasSnap.docs) {
-  const escala = doc.data();
-  for (const linha of escala.linhas) {
-    if (linha.data === dataAlvo && linha.voluntario && linha.voluntario !== "A definir") {
-      const email = emailMap[linha.voluntario];
-      if (email) {
-        const primeiroNome = linha.voluntario.split(" ")[0];
-        const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
-        const html = `...`;
-        await enviarEmail(email, linha.voluntario, assunto, html);
-        console.log(`Lembrete enviado para ${linha.voluntario}`);
+    // ✅ CORREÇÃO BUG #2: Usa for...of em vez de forEach com async
+    // forEach ignora o await interno — os e-mails disparavam sem ser esperados
+    for (const docEscala of escalasSnap.docs) {
+      const escala = docEscala.data();
+
+      for (const linha of escala.linhas) {
+        // Se a data do evento for amanhã...
+        if (linha.data === dataAlvo && linha.voluntario && linha.voluntario !== "A definir") {
+          const email = emailMap[linha.voluntario];
+          if (email) {
+            const primeiroNome = linha.voluntario.split(" ")[0];
+            const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
+            const html = `
+              <div style="font-family:sans-serif; max-width:500px; margin:0 auto; background:#f8fafc; padding:20px; border-radius:10px;">
+                <h2 style="color:#1e293b;">Olá, ${primeiroNome}! 👋</h2>
+                <p style="color:#475569; font-size:15px;">Este é um lembrete automático de que você está escalado(a) para servir <b>amanhã</b>.</p>
+                <div style="background:white; padding:15px; border-radius:8px; border-left:4px solid #2563eb; margin:20px 0;">
+                  <p style="margin:5px 0;"><b>Ministério:</b> ${escala.ministerio}</p>
+                  <p style="margin:5px 0;"><b>Evento:</b> ${linha.evento}</p>
+                  <p style="margin:5px 0;"><b>Data:</b> ${linha.data} (${linha.dia})</p>
+                  <p style="margin:5px 0;"><b>Hora:</b> ${linha.hora}</p>
+                </div>
+                <p style="color:#64748b; font-size:12px; text-align:center;">Nação Santa — Gerenciador de Escala</p>
+              </div>
+            `;
+            try {
+              await enviarEmail(email, linha.voluntario, assunto, html);
+              console.log(`✅ Lembrete enviado para ${linha.voluntario} (${email})`);
+            } catch (errEmail) {
+              // ✅ Erro em um voluntário não cancela os demais
+              console.error(`❌ Falha ao enviar lembrete para ${linha.voluntario}:`, errEmail.message);
+            }
+          } else {
+            console.log(`⚠️ Voluntário sem e-mail cadastrado: ${linha.voluntario}`);
+          }
+        }
       }
     }
-  }
-}
+
+    console.log("Verificação de lembretes concluída.");
   } catch (error) {
     console.error("Erro no lembrete automático:", error);
   }
 }
 
-// Endpoint para disparar o lembrete (O Render usará isso)
+// Endpoint para disparar o lembrete (O Render usará isso via cron job)
 app.get("/disparar-lembretes-diarios", async (req, res) => {
   await dispararLembretesDeAmanha();
   res.send("Verificação de lembretes rodada com sucesso!");
