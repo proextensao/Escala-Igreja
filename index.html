@@ -1310,17 +1310,14 @@ document.getElementById('btnSalvar').onclick = async () => {
         </p>
       </div>`;
 
-      await fetch("https://api.brevo.com/v3/smtp/email", {
+      await fetch("https://escala-igreja.onrender.com/enviar-email", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "api-key": "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"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sender: { name: "Escala Nação Santa", email: "escala@nacaosanta.com.br" },
-          to: [{ email: emailVal, name: nome }],
-          subject: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
-          htmlContent: htmlEmail
+          para: emailVal,
+          nomePara: nome,
+          assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
+          html: htmlEmail
         })
       });
     } catch(e) {
