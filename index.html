@@ -1311,30 +1311,26 @@ document.getElementById('btnSalvar').onclick = async () => {
       </div>`;
 
       // ✅ CORREÇÃO BUG #3: Verifica se o servidor retornou erro HTTP (ex: Brevo bloqueado, servidor hibernando)
-     try {
-        const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            para: emailVal,
-            nomePara: nome,
-            assunto: `✅ Cadastro confirmado — Nação Santa`,
-            html: htmlEmail
-          })
-        });
-        
-        if (resp.ok) {
-            console.log("✅ E-mail enviado com sucesso!");
-            alert("Cadastro ENVIADO com sucesso!");
-        } else {
-            const erro = await resp.text();
-            console.error("❌ Erro do servidor ao enviar e-mail:", erro);
-            alert("Cadastro salvo, mas erro ao enviar e-mail (verifique o console).");
-        }
-      } catch (e) {
-        console.error("❌ Erro de conexão com o servidor:", e.message);
-        alert("Erro de conexão ao enviar e-mail.");
+      const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          para: emailVal,
+          nomePara: nome,
+          assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
+          html: htmlEmail
+        })
+      });
+      if (!resp.ok) {
+        const erroTexto = await resp.text();
+        console.warn("Servidor retornou erro ao enviar e-mail de boas-vindas:", erroTexto);
+      } else {
+        console.log("✅ E-mail de confirmação enviado com sucesso para:", emailVal);
       }
+    } catch(e) {
+      // Falha no e-mail não bloqueia o cadastro (ex: servidor hibernando no Render)
+      console.warn("Erro de rede ao enviar e-mail de boas-vindas:", e.message);
+    }
   }
   // ─────────────────────────────────────────────────────────────────────
 
