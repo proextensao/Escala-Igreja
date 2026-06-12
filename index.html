@@ -1182,42 +1182,30 @@ function renderizarDatas() {
 
 
 document.getElementById('btnSalvar').onclick = async () => {
-
   const nome = document.getElementById('nome').value.trim();
-
   const zap = document.getElementById('whatsapp').value;
-
   const emailVal = document.getElementById('email').value.trim();
-
   const disp = document.getElementById('disponibilidade').value;
-
   const marcados = document.querySelectorAll('#dropdownOptions input[type="checkbox"]:checked');
-
   const ministeriosSelecionados = Array.from(marcados).map(cb => cb.value);
 
   if (!nome) return alert("Por favor, digite seu nome.");
-
   if (zap.length < 14) return alert("Preencha seu WhatsApp com o DDD.");
-
   if (ministeriosSelecionados.length === 0) return alert("Selecione pelo menos um ministério.");
-
   if (!disp) return alert("Selecione sua disponibilidade.");
 
   const inputPend = document.getElementById('inputData').value;
-
   if (inputPend && !datasSelecionadas.includes(inputPend)) datasSelecionadas.push(inputPend);
 
   const snap = await getDocs(collection(db, "voluntarios"));
-
   let docExistente = null; let ministeriosAntigos = [];
-
   snap.forEach(d => { if (d.data().whatsapp === zap) { docExistente = d; ministeriosAntigos = d.data().ministerios || []; } });
 
   const ministeriosFinais = [...new Set([...ministeriosAntigos, ...ministeriosSelecionados])];
-
   const dadosFinal = { nome, whatsapp: zap, email: emailVal, ministerios: ministeriosFinais, disponibilidade: disp, datasIndisponiveis: datasSelecionadas, mesReferencia: mesReferenciaBanco };
 
- let mensagemFinal = "";
+  // 1. Salva no Firebase primeiro
+  let mensagemFinal = "";
   if (docExistente) {
     await updateDoc(doc(db, "voluntarios", docExistente.id), dadosFinal);
     mensagemFinal = "Cadastro ATUALIZADO com sucesso!";
@@ -1232,7 +1220,7 @@ document.getElementById('btnSalvar').onclick = async () => {
   btnSalvar.innerText = "Enviando confirmação aguarde...";
   btnSalvar.disabled = true;
 
-  // 3. BREVO: e-mail de boas-vindas ─────────────────────────────────────
+  // 3. BREVO: e-mail de boas-vindas
   if (emailVal) {
     try {
       const mapaDisp = {
@@ -1314,17 +1302,14 @@ document.getElementById('btnSalvar').onclick = async () => {
         })
       });
       if (!resp.ok) {
-        const erroTexto = await resp.text();
-        console.warn("Servidor retornou erro ao enviar e-mail de boas-vindas:", erroTexto);
-      } else {
-        console.log("✅ E-mail de confirmação enviado com sucesso para:", emailVal);
+        console.warn("Servidor retornou erro.");
       }
     } catch(e) {
-      console.warn("Erro de rede ao enviar e-mail de boas-vindas:", e.message);
+      console.warn("Erro de rede ao enviar e-mail:", e.message);
     }
   }
 
-  // 4. Só AGORA limpamos o formulário, destravamos o botão e avisamos o usuário
+  // 4. Limpa o formulário, destrava o botão e avisa o usuário
   btnSalvar.innerText = textoOriginal;
   btnSalvar.disabled = false;
 
@@ -1342,26 +1327,7 @@ document.getElementById('btnSalvar').onclick = async () => {
   // O alerta segura a tela, então fica por último!
   alert(mensagemFinal);
 };
-  }
-  // ─────────────────────────────────────────────────────────────────────
-
-  document.getElementById('nome').value = ""; document.getElementById('whatsapp').value = "";
-
-  document.getElementById('email').value = "";
-
-  document.getElementById('disponibilidade').value = ""; document.getElementById('inputData').value = "";
-
-  checkboxesMinisterio.forEach(cb => cb.checked = false);
-
-  dropdownDisplay.innerText = "Selecionar ministério(s)"; dropdownDisplay.classList.remove('selected');
-
-  datasSelecionadas = []; renderizarDatas();
-
-};
-
-
-
-/* ===== PAINEL LOGIC ===== */
+  /* ===== PAINEL LOGIC ===== */
 
 let listaGlobal = []; let ministerioSelecionado = ""; let ministerioPendente = ""; let botaoPendente = null; let acessoMestreLiberado = false; let ministeriosDestravados = {};
 
