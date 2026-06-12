@@ -279,6 +279,17 @@ tbody td { background:white; color:#1e293b; }
     </div>
 </div>
 
+<!-- Modal Lembretes -->
+<div class="modal-overlay" id="modalLembretes">
+    <div class="modal-box" style="width:380px; max-width:95vw;">
+        <h3 style="color:#7c3aed;"><i class="ph ph-envelope-simple"></i> Enviar Lembretes</h3>
+        <p style="font-size:13px; color:#64748b; margin-top:-10px;">Será enviado um e-mail para cada voluntário escalado que tiver e-mail cadastrado.</p>
+        <div id="previewLembretes" style="max-height:200px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:8px; padding:8px; margin:15px 0; text-align:left; font-size:13px;"></div>
+        <button class="btn" style="background:#7c3aed; color:white;" onclick="confirmarEnvioLembretes()"><i class="ph ph-paper-plane-tilt"></i> Confirmar e Enviar</button>
+        <button class="btn btn-cancelar" onclick="fecharModal('modalLembretes')">Cancelar</button>
+    </div>
+</div>
+
 <div id="painelPrincipal">
     <div class="main-grid">
         <div class="card">
@@ -319,6 +330,7 @@ tbody td { background:white; color:#1e293b; }
             <button class="btn green" id="btnGerar"><i class="ph ph-calendar-plus"></i> Gerar escala</button>
             <button class="btn gray" id="btnSalvar"><i class="ph ph-floppy-disk"></i> Salvar escala</button>
             <button class="btn orange" id="btnEditar" style="display:none;"><i class="ph ph-pencil-simple"></i> Editar escala</button>
+            <button class="btn" id="btnEnviarLembretes" style="background:#7c3aed; color:white; display:none;"><i class="ph ph-envelope-simple"></i> Enviar Lembretes por E-mail</button>
 
             <h3 style="margin-top:15px;">Histórico de Escalas</h3>
             <div id="listaHistorico" class="voluntarios-container"></div>
@@ -762,11 +774,142 @@ btnSalvar.onclick = async () => {
     carregarHistorico();
 
     setEdicao(false); btnSalvar.style.display = 'none'; btnEditar.style.display = 'block';
+    document.getElementById('btnEnviarLembretes').style.display = 'block';
     document.title = `Escala ${mesReferencia} - ${ministerioSelecionado}`; window.print();
     document.title = "Gerenciador de Escala - Nação Santa";
 };
 
-btnEditar.onclick = () => { setEdicao(true); btnSalvar.style.display = 'block'; btnEditar.style.display = 'none'; };
+btnEditar.onclick = () => { setEdicao(true); btnSalvar.style.display = 'block'; btnEditar.style.display = 'none'; btnEnviarLembretes.style.display = 'none'; };
+
+// ── BREVO - LEMBRETES POR E-MAIL ─────────────────────────────────────────────
+const BREVO_API_KEY = "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";
+const BREVO_REMETENTE_EMAIL = "escala@nacaosanta.com.br"; // ← troque pelo e-mail verificado no Brevo
+const BREVO_REMETENTE_NOME  = "Escala Nação Santa";
+
+const btnEnviarLembretes = document.getElementById('btnEnviarLembretes');
+
+// Coleta dados da tabela e abre preview
+btnEnviarLembretes.onclick = async () => {
+    const linhas = Array.from(corpoTabela.querySelectorAll("tr"));
+    if(linhas.length === 0) return alert("Nenhuma escala gerada.");
+
+    // Agrupa eventos por voluntário
+    const porVoluntario = {};
+    linhas.forEach(tr => {
+        const nome = tr.cells[4]?.innerText?.trim();
+        if(!nome || nome === "A definir") return;
+        if(!porVoluntario[nome]) porVoluntario[nome] = [];
+        porVoluntario[nome].push({
+            data:  tr.cells[0]?.innerText?.trim(),
+            dia:   tr.cells[1]?.innerText?.trim(),
+            evento:tr.cells[2]?.innerText?.trim(),
+            hora:  tr.cells[3]?.innerText?.trim()
+        });
+    });
+
+    // Busca e-mails no Firebase
+    const snap = await getDocs(collection(db, "voluntarios"));
+    const emailMap = {};
+    snap.forEach(d => { const v = d.data(); if(v.email) emailMap[v.nome] = v.email; });
+
+    // Monta preview
+    const preview = document.getElementById('previewLembretes');
+    preview.innerHTML = "";
+    let semEmail = [];
+    Object.keys(porVoluntario).forEach(nome => {
+        const email = emailMap[nome];
+        if(email) {
+            preview.innerHTML += `<div style="padding:6px 0; border-bottom:1px solid #f1f5f9;">
+                <b>${nome}</b> <span style="color:#7c3aed;">${email}</span>
+                <br><span style="color:#64748b;">${porVoluntario[nome].length} evento(s)</span>
+            </div>`;
+        } else {
+            semEmail.push(nome);
+        }
+    });
+    if(semEmail.length > 0) {
+        preview.innerHTML += `<div style="margin-top:8px; color:#f97316; font-size:12px;">
+            <b>Sem e-mail cadastrado:</b> ${semEmail.join(', ')}
+        </div>`;
+    }
+    if(preview.innerHTML === "") {
+        preview.innerHTML = '<p style="color:#94a3b8; text-align:center;">Nenhum voluntário com e-mail cadastrado.</p>';
+    }
+
+    // Salva para usar no envio
+    window._dadosLembrete = { porVoluntario, emailMap };
+    document.getElementById('modalLembretes').style.display = 'flex';
+};
+
+window.confirmarEnvioLembretes = async function() {
+    const { porVoluntario, emailMap } = window._dadosLembrete || {};
+    if(!porVoluntario) return;
+
+    const mesReferencia = document.getElementById('mesEscala').value;
+    const [anoRef, mesRef] = mesReferencia.split('-');
+    const nomeMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][parseInt(mesRef)-1];
+
+    let enviados = 0, falhas = 0;
+    fecharModal('modalLembretes');
+    const toast = document.createElement('div');
+    toast.style.cssText = "position:fixed;bottom:20px;right:20px;background:#7c3aed;color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:bold;z-index:9999;box-shadow:0 4px 15px rgba(124,58,237,0.4);";
+    toast.innerText = "Enviando lembretes...";
+    document.body.appendChild(toast);
+
+    for(const nome of Object.keys(porVoluntario)) {
+        const email = emailMap[nome];
+        if(!email) continue;
+
+        const eventos = porVoluntario[nome];
+        const linhasHtml = eventos.map(e =>
+            `<tr><td style="padding:8px 12px; border-bottom:1px solid #e2e8f0;">${e.data} (${e.dia})</td><td style="padding:8px 12px; border-bottom:1px solid #e2e8f0;">${e.evento}</td><td style="padding:8px 12px; border-bottom:1px solid #e2e8f0;">${e.hora}</td></tr>`
+        ).join('');
+
+        const htmlEmail = `
+        <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
+            <div style="background:#1e293b; padding:20px; border-radius:8px; text-align:center; margin-bottom:24px;">
+                <h2 style="color:white; margin:0; font-size:20px;">📋 Escala ${nomeMes} ${anoRef}</h2>
+                <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">Ministério de ${ministerioSelecionado} — Nação Santa</p>
+            </div>
+            <p style="color:#1e293b; font-size:15px;">Olá, <b>${nome.split(' ')[0]}</b>! 👋</p>
+            <p style="color:#475569; font-size:14px;">Você está escalado(a) nos seguintes eventos em <b>${nomeMes}</b>:</p>
+            <table style="width:100%; border-collapse:collapse; background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin:16px 0;">
+                <thead>
+                    <tr style="background:#2563eb; color:white;">
+                        <th style="padding:10px 12px; text-align:left;">Data</th>
+                        <th style="padding:10px 12px; text-align:left;">Evento</th>
+                        <th style="padding:10px 12px; text-align:left;">Hora</th>
+                    </tr>
+                </thead>
+                <tbody>${linhasHtml}</tbody>
+            </table>
+            <p style="color:#64748b; font-size:12px; text-align:center; margin-top:20px;">
+                Em caso de dúvidas, entre em contato com o líder do ministério.<br>
+                <span style="color:#94a3b8;">Enviado automaticamente pelo sistema de escala — Nação Santa</span>
+            </p>
+        </div>`;
+
+        try {
+            const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "api-key": BREVO_API_KEY
+                },
+                body: JSON.stringify({
+                    sender: { name: BREVO_REMETENTE_NOME, email: BREVO_REMETENTE_EMAIL },
+                    to: [{ email, name: nome }],
+                    subject: `📋 Sua escala de ${nomeMes} — ${ministerioSelecionado} | Nação Santa`,
+                    htmlContent: htmlEmail
+                })
+            });
+            if(res.ok) enviados++; else falhas++;
+        } catch(e) { falhas++; }
+    }
+
+    document.body.removeChild(toast);
+    alert(`✅ Lembretes enviados!\n\n📨 Enviados: ${enviados}\n❌ Falhas: ${falhas}`);
+};
 
 async function carregarHistorico() {
     if(!ministerioSelecionado) return;
