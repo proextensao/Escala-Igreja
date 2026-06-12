@@ -1231,6 +1231,105 @@ document.getElementById('btnSalvar').onclick = async () => {
 
   }
 
+  // ── BREVO: e-mail de boas-vindas ─────────────────────────────────────
+  if (emailVal) {
+    try {
+      const mapaDisp = {
+        "todos": "✅ Disponível todos os dias",
+        "nenhum": "❌ Indisponível este mês",
+        "0": "📅 Somente aos domingos",
+        "2": "📅 Somente às terças",
+        "6": "📅 Somente aos sábados",
+        "nao_domingo": "🚫 Indisponível aos domingos",
+        "nao_terca": "🚫 Indisponível às terças",
+        "nao_sabado": "🚫 Indisponível aos sábados"
+      };
+      const textoDisponibilidade = mapaDisp[disp] || disp;
+
+      let chipsHtml = "";
+      if (datasSelecionadas.length > 0) {
+        chipsHtml = datasSelecionadas.map(dt => {
+          const [a, m, d] = dt.split('-');
+          return `<span style="display:inline-block; background:#fee2e2; color:#ef4444; padding:4px 10px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${d}/${m}</span>`;
+        }).join('');
+      } else {
+        chipsHtml = `<span style="color:#94a3b8; font-size:13px;">Nenhuma data específica informada.</span>`;
+      }
+
+      const ministeriosHtml = ministeriosSelecionados.map(m =>
+        `<span style="display:inline-block; background:#dbeafe; color:#1d4ed8; padding:4px 12px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${m}</span>`
+      ).join('');
+
+      const primeiroNome = nome.split(' ')[0];
+      const mesExtenso = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][parseInt(mesReferenciaBanco.split('-')[1]) - 1];
+      const anoRef = mesReferenciaBanco.split('-')[0];
+
+      const htmlEmail = `
+      <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
+
+        <div style="background:#1e293b; padding:24px; border-radius:10px; text-align:center; margin-bottom:24px;">
+          <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png"
+               alt="Nação Santa" style="height:50px; object-fit:contain; margin-bottom:12px;">
+          <h2 style="color:white; margin:0; font-size:20px;">✅ Cadastro Confirmado!</h2>
+          <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${mesExtenso} ${anoRef} — Nação Santa</p>
+        </div>
+
+        <p style="color:#1e293b; font-size:16px; margin-bottom:4px;">Olá, <b>${primeiroNome}</b>! 👋</p>
+        <p style="color:#475569; font-size:14px; margin-bottom:20px;">
+          Seu cadastro de voluntário foi confirmado com sucesso. Aqui está um resumo do que você informou:
+        </p>
+
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">👤 Nome</p>
+          <p style="font-size:15px; color:#1e293b; margin:0; font-weight:bold;">${nome}</p>
+        </div>
+
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 10px 0;">⛪ Ministério(s)</p>
+          <div>${ministeriosHtml}</div>
+        </div>
+
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">📆 Disponibilidade em ${mesExtenso}</p>
+          <p style="font-size:14px; color:#1e293b; margin:0;">${textoDisponibilidade}</p>
+        </div>
+
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 10px 0;">🗓️ Datas que NÃO pode comparecer</p>
+          <div>${chipsHtml}</div>
+        </div>
+
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center; margin-bottom:20px;">
+          <p style="color:#15803d; font-size:14px; margin:0;">
+            🙏 Obrigado por servir! Em breve você receberá sua escala do mês por e-mail.
+          </p>
+        </div>
+
+        <p style="color:#94a3b8; font-size:11px; text-align:center; margin:0;">
+          Enviado automaticamente pelo sistema de escala — Nação Santa
+        </p>
+      </div>`;
+
+      await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": "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"
+        },
+        body: JSON.stringify({
+          sender: { name: "Escala Nação Santa", email: "escala@nacaosanta.com.br" },
+          to: [{ email: emailVal, name: nome }],
+          subject: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
+          htmlContent: htmlEmail
+        })
+      });
+    } catch(e) {
+      // Falha no e-mail não bloqueia o cadastro
+      console.warn("Erro ao enviar e-mail de boas-vindas:", e);
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────
+
   document.getElementById('nome').value = ""; document.getElementById('whatsapp').value = "";
 
   document.getElementById('email').value = "";
@@ -2209,4 +2308,3 @@ document.getElementById('modalJaCadastrado').addEventListener('click', function(
 </body>
 
 </html>
-
