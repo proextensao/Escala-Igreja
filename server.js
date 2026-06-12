@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ── Firebase Admin ────────────────────────────────────────────────────────
+// ── Firebase Admin ──
 initializeApp({
   credential: cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
@@ -18,7 +18,7 @@ initializeApp({
 
 const db = getFirestore();
 
-// ── Brevo ─────────────────────────────────────────────────────────────────
+// ── Brevo ──
 const BREVO_KEY = process.env.BREVO_API_KEY;
 const SENDER_EMAIL = process.env.SENDER_EMAIL || "escala@nacaosanta.com.br";
 const SENDER_NAME = process.env.SENDER_NAME || "Escala Nação Santa";
@@ -44,147 +44,88 @@ async function enviarEmail(para, nomePara, assunto, htmlContent) {
   return res.json();
 }
 
-// ── Helper: mês por extenso ───────────────────────────────────────────────
-const MESES = [
-  "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-  "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro",
-];
-
-function mesExtenso(mesRef) {
-  // mesRef formato: "2025-07"
-  const [, m] = mesRef.split("-");
-  return MESES[parseInt(m) - 1];
-}
-
-// ── Endpoint: enviar lembretes da escala ──────────────────────────────────
-// Body: { historicoId: "abc123" }
-app.post("/enviar-lembretes", async (req, res) => {
-  const { historicoId } = req.body;
-
-  if (!historicoId) {
-    return res.status(400).json({ erro: "historicoId é obrigatório" });
-  }
-
+// ============================================================================
+// OBJETIVOS 1 E 2: ROTA PARA O CADASTRO E PARA O BOTÃO DO PAINEL
+// ============================================================================
+app.post("/enviar-email", async (req, res) => {
+  const { para, nomePara, assunto, html } = req.body;
   try {
-    // 1. Busca a escala no Firestore
-    const snap = await db.collection("historico_escalas").doc(historicoId).get();
-    if (!snap.exists) {
-      return res.status(404).json({ erro: "Escala não encontrada" });
-    }
-
-    const escala = snap.data();
-    const { ministerio, mesReferencia, linhas, nomeExibicao } = escala;
-    const mesNome = mesExtenso(mesReferencia);
-    const ano = mesReferencia.split("-")[0];
-
-    // 2. Agrupa linhas por voluntário
-    const porVoluntario = {}; // { "Nome Completo": [{data, evento, hora}, ...] }
-    for (const linha of linhas) {
-      if (!linha.voluntario) continue;
-      if (!porVoluntario[linha.voluntario]) porVoluntario[linha.voluntario] = [];
-      porVoluntario[linha.voluntario].push(linha);
-    }
-
-    // 3. Busca e-mails dos voluntários no Firestore
-    const volSnap = await db.collection("voluntarios").get();
-    const emailMap = {}; // { "Nome Completo": { email, nome } }
-    volSnap.forEach((d) => {
-      const v = d.data();
-      if (v.nome && v.email) emailMap[v.nome] = { email: v.email, nome: v.nome };
-    });
-
-    // 4. Envia um e-mail para cada voluntário escalado
-    const resultados = [];
-    for (const [nomeVol, dias] of Object.entries(porVoluntario)) {
-      const volInfo = emailMap[nomeVol];
-      if (!volInfo || !volInfo.email) {
-        resultados.push({ nome: nomeVol, status: "sem_email" });
-        continue;
-      }
-
-      // Ordena os dias cronologicamente
-      dias.sort((a, b) => {
-        const toISO = (d) => {
-          const p = d.split("/");
-          return p.length === 3 ? `${p[2]}-${p[1].padStart(2,"0")}-${p[0].padStart(2,"0")}` : d;
-        };
-        return toISO(a.data).localeCompare(toISO(b.data));
-      });
-
-      const diasHtml = dias
-        .map((l) => {
-          const [d, m] = l.data.split("/");
-          return `
-            <tr>
-              <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; font-weight:bold; color:#1e293b;">${d}/${m}</td>
-              <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; color:#475569;">${l.evento}</td>
-              <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; color:#475569;">${l.hora}</td>
-            </tr>`;
-        })
-        .join("");
-
-      const primeiroNome = nomeVol.split(" ")[0];
-
-      const html = `
-        <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
-
-          <div style="background:#1e293b; padding:24px; border-radius:10px; text-align:center; margin-bottom:24px;">
-            <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png"
-                 alt="Nação Santa" style="height:50px; object-fit:contain; margin-bottom:12px;">
-            <h2 style="color:white; margin:0; font-size:20px;">📅 Sua Escala de ${mesNome}</h2>
-            <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${ministerio} — Nação Santa</p>
-          </div>
-
-          <p style="color:#1e293b; font-size:16px; margin-bottom:4px;">Olá, <b>${primeiroNome}</b>! 👋</p>
-          <p style="color:#475569; font-size:14px; margin-bottom:20px;">
-            Aqui estão os seus dias de escala em <b>${mesNome} ${ano}</b> no ministério de <b>${ministerio}</b>:
-          </p>
-
-          <div style="background:white; border-radius:10px; overflow:hidden; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
-            <table style="width:100%; border-collapse:collapse;">
-              <thead>
-                <tr style="background:#2563eb; color:white;">
-                  <th style="padding:10px 14px; text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">Data</th>
-                  <th style="padding:10px 14px; text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">Evento</th>
-                  <th style="padding:10px 14px; text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">Hora</th>
-                </tr>
-              </thead>
-              <tbody>${diasHtml}</tbody>
-            </table>
-          </div>
-
-          <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:16px; text-align:center; margin-bottom:20px;">
-            <p style="color:#1d4ed8; font-size:14px; margin:0;">
-              🙏 Obrigado por servir! Que Deus abençoe o seu ministério.
-            </p>
-          </div>
-
-          <p style="color:#94a3b8; font-size:11px; text-align:center; margin:0;">
-            Enviado automaticamente pelo sistema de escala — Nação Santa
-          </p>
-        </div>`;
-
-      try {
-        await enviarEmail(
-          volInfo.email,
-          volInfo.nome,
-          `📅 Sua escala de ${mesNome} ${ano} — ${ministerio} | Nação Santa`,
-          html
-        );
-        resultados.push({ nome: nomeVol, status: "enviado", email: volInfo.email });
-      } catch (err) {
-        resultados.push({ nome: nomeVol, status: "erro", detalhe: err.message });
-      }
-    }
-
-    res.json({ ok: true, mesReferencia, ministerio, resultados });
+    await enviarEmail(para, nomePara, assunto, html);
+    res.json({ sucesso: true });
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao enviar email:", err.message);
     res.status(500).json({ erro: err.message });
   }
 });
 
-// ── Health check ──────────────────────────────────────────────────────────
+
+// ============================================================================
+// OBJETIVO 3: LÓGICA DO LEMBRETE AUTOMÁTICO (1 DIA ANTES)
+// ============================================================================
+async function dispararLembretesDeAmanha() {
+  try {
+    console.log("Iniciando verificação de lembretes automáticos...");
+    const amanha = new Date();
+    amanha.setUTCHours(amanha.getUTCHours() - 3); // Fuso horário do Brasil
+    amanha.setDate(amanha.getDate() + 1); // Calcula o dia de amanhã
+
+    const dd = String(amanha.getDate()).padStart(2, '0');
+    const mm = String(amanha.getMonth() + 1).padStart(2, '0');
+    const aaaa = amanha.getFullYear();
+    const dataAlvo = `${dd}/${mm}/${aaaa}`; // Fica no formato exato da sua tabela: 13/06/2026
+    const mesRef = `${aaaa}-${mm}`;
+
+    // Busca as escalas salvas do mês atual
+    const escalasSnap = await db.collection("historico_escalas").where("mesReferencia", "==", mesRef).get();
+    
+    // Busca os e-mails dos voluntários
+    const volSnap = await db.collection("voluntarios").get();
+    const emailMap = {};
+    volSnap.forEach(d => {
+      const v = d.data();
+      if (v.nome && v.email) emailMap[v.nome] = v.email;
+    });
+
+    escalasSnap.forEach(doc => {
+      const escala = doc.data();
+      escala.linhas.forEach(async (linha) => {
+        // Se a data do evento for amanhã...
+        if (linha.data === dataAlvo && linha.voluntario && linha.voluntario !== "A definir") {
+          const email = emailMap[linha.voluntario];
+          if (email) {
+            const primeiroNome = linha.voluntario.split(" ")[0];
+            const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
+            const html = `
+              <div style="font-family:sans-serif; max-width:500px; margin:0 auto; background:#f8fafc; padding:20px; border-radius:10px;">
+                <h2 style="color:#1e293b;">Olá, ${primeiroNome}! 👋</h2>
+                <p style="color:#475569; font-size:15px;">Este é um lembrete automático de que você está escalado(a) para servir <b>amanhã</b>.</p>
+                <div style="background:white; padding:15px; border-radius:8px; border-left:4px solid #2563eb; margin:20px 0;">
+                  <p style="margin:5px 0;"><b>Ministério:</b> ${escala.ministerio}</p>
+                  <p style="margin:5px 0;"><b>Evento:</b> ${linha.evento}</p>
+                  <p style="margin:5px 0;"><b>Data:</b> ${linha.data} (${linha.dia})</p>
+                  <p style="margin:5px 0;"><b>Hora:</b> ${linha.hora}</p>
+                </div>
+                <p style="color:#64748b; font-size:12px; text-align:center;">Nação Santa — Gerenciador de Escala</p>
+              </div>
+            `;
+            await enviarEmail(email, linha.voluntario, assunto, html);
+            console.log(`Lembrete automático enviado para ${linha.voluntario}`);
+          }
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Erro no lembrete automático:", error);
+  }
+}
+
+// Endpoint para disparar o lembrete (O Render usará isso)
+app.get("/disparar-lembretes-diarios", async (req, res) => {
+  await dispararLembretesDeAmanha();
+  res.send("Verificação de lembretes rodada com sucesso!");
+});
+
+// ── Health check ──
 app.get("/", (req, res) => res.send("Servidor de escala Nação Santa — ok"));
 
 const PORT = process.env.PORT || 3000;
