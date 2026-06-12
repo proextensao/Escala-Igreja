@@ -4,7 +4,11 @@ const { initializeApp, cert } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*", 
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 // ── Firebase Admin ──
