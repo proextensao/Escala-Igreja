@@ -1310,21 +1310,20 @@ document.getElementById('btnSalvar').onclick = async () => {
         </p>
       </div>`;
 
-      await fetch("https://escala-igreja.onrender.com/enviar-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          para: emailVal,
-          nomePara: nome,
-          assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
-          html: htmlEmail
-        })
-      });
-    } catch(e) {
-      // Falha no e-mail não bloqueia o cadastro
-      console.warn("Erro ao enviar e-mail de boas-vindas:", e);
-    }
-  }
+     const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    para: emailVal,
+    nomePara: nome,
+    assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
+    html: htmlEmail
+  })
+});
+if (!resp.ok) {
+  const erro = await resp.text();
+  console.warn("Servidor retornou erro ao enviar e-mail:", erro);
+}
   // ─────────────────────────────────────────────────────────────────────
 
   document.getElementById('nome').value = ""; document.getElementById('whatsapp').value = "";
