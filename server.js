@@ -92,24 +92,33 @@ async function dispararLembretesDeAmanha() {
     }
 
     // Busca os e-mails dos voluntários
-    const volSnap = await db.collection("voluntarios").get();
+  const volSnap = await db.collection("voluntarios").get();
     const emailMap = {};
     volSnap.forEach(d => {
       const v = d.data();
-      if (v.nome && v.email) emailMap[v.nome] = v.email;
+      // O .trim() garante que "José " seja tratado como "José"
+      if (v.nome && v.email) emailMap[v.nome.trim()] = v.email.trim();
     });
 
-    // ✅ CORREÇÃO BUG #2: Usa for...of em vez de forEach com async
-    // forEach ignora o await interno — os e-mails disparavam sem ser esperados
     for (const docEscala of escalasSnap.docs) {
       const escala = docEscala.data();
 
       for (const linha of escala.linhas) {
+        // Normaliza a data vinda do banco (Garante DD/MM/AAAA mesmo se vier D/M/AAAA)
+        let dataLinhaNorm = linha.data ? String(linha.data).trim() : "";
+        const partesData = dataLinhaNorm.split('/');
+        if (partesData.length === 3) {
+          dataLinhaNorm = `${partesData[0].padStart(2, '0')}/${partesData[1].padStart(2, '0')}/${partesData[2]}`;
+        }
+
+        const nomeVoluntario = linha.voluntario ? String(linha.voluntario).trim() : "";
+
         // Se a data do evento for amanhã...
-        if (linha.data === dataAlvo && linha.voluntario && linha.voluntario !== "A definir") {
-          const email = emailMap[linha.voluntario];
+        if (dataLinhaNorm === dataAlvo && nomeVoluntario && nomeVoluntario !== "A definir") {
+          const email = emailMap[nomeVoluntario];
+          
           if (email) {
-            const primeiroNome = linha.voluntario.split(" ")[0];
+            const primeiroNome = nomeVoluntario.split(" ")[0];
             const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
             const html = `
               <div style="font-family:sans-serif; max-width:500px; margin:0 auto; background:#f8fafc; padding:20px; border-radius:10px;">
@@ -125,14 +134,13 @@ async function dispararLembretesDeAmanha() {
               </div>
             `;
             try {
-              await enviarEmail(email, linha.voluntario, assunto, html);
-              console.log(`✅ Lembrete enviado para ${linha.voluntario} (${email})`);
+              await enviarEmail(email, nomeVoluntario, assunto, html);
+              console.log(`✅ Lembrete enviado para ${nomeVoluntario} (${email})`);
             } catch (errEmail) {
-              // ✅ Erro em um voluntário não cancela os demais
-              console.error(`❌ Falha ao enviar lembrete para ${linha.voluntario}:`, errEmail.message);
+              console.error(`❌ Falha ao enviar lembrete para ${nomeVoluntario}:`, errEmail.message);
             }
           } else {
-            console.log(`⚠️ Voluntário sem e-mail cadastrado: ${linha.voluntario}`);
+            console.log(`⚠️ Voluntário escalado amanhã mas sem e-mail: ${nomeVoluntario}`);
           }
         }
       }
