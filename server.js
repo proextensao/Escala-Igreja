@@ -65,15 +65,16 @@ app.post("/enviar-email", async (req, res) => {
 async function dispararLembretesDeAmanha() {
   try {
     console.log("Iniciando verificação de lembretes automáticos...");
-    const amanha = new Date();
-    amanha.setUTCHours(amanha.getUTCHours() - 3); // Fuso horário do Brasil
-    amanha.setDate(amanha.getDate() + 1); // Calcula o dia de amanhã
+    const agora = new Date();
+// Converte para horário de Brasília (UTC-3) e já pega "amanhã"
+const amanha = new Date(agora.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+amanha.setDate(amanha.getDate() + 1);
 
-    const dd = String(amanha.getDate()).padStart(2, '0');
-    const mm = String(amanha.getMonth() + 1).padStart(2, '0');
-    const aaaa = amanha.getFullYear();
-    const dataAlvo = `${dd}/${mm}/${aaaa}`; // Fica no formato exato da sua tabela: 13/06/2026
-    const mesRef = `${aaaa}-${mm}`;
+const dd = String(amanha.getDate()).padStart(2, '0');
+const mm = String(amanha.getMonth() + 1).padStart(2, '0');
+const aaaa = amanha.getFullYear();
+const dataAlvo = `${dd}/${mm}/${aaaa}`;
+const mesRef = `${aaaa}-${mm}`;
 
     // Busca as escalas salvas do mês atual
     const escalasSnap = await db.collection("historico_escalas").where("mesReferencia", "==", mesRef).get();
