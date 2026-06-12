@@ -1310,20 +1310,28 @@ document.getElementById('btnSalvar').onclick = async () => {
         </p>
       </div>`;
 
-     const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    para: emailVal,
-    nomePara: nome,
-    assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
-    html: htmlEmail
-  })
-});
-if (!resp.ok) {
-  const erro = await resp.text();
-  console.warn("Servidor retornou erro ao enviar e-mail:", erro);
-}
+      // ✅ CORREÇÃO BUG #3: Verifica se o servidor retornou erro HTTP (ex: Brevo bloqueado, servidor hibernando)
+      const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          para: emailVal,
+          nomePara: nome,
+          assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
+          html: htmlEmail
+        })
+      });
+      if (!resp.ok) {
+        const erroTexto = await resp.text();
+        console.warn("Servidor retornou erro ao enviar e-mail de boas-vindas:", erroTexto);
+      } else {
+        console.log("✅ E-mail de confirmação enviado com sucesso para:", emailVal);
+      }
+    } catch(e) {
+      // Falha no e-mail não bloqueia o cadastro (ex: servidor hibernando no Render)
+      console.warn("Erro de rede ao enviar e-mail de boas-vindas:", e.message);
+    }
+  }
   // ─────────────────────────────────────────────────────────────────────
 
   document.getElementById('nome').value = ""; document.getElementById('whatsapp').value = "";
