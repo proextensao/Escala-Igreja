@@ -1217,21 +1217,22 @@ document.getElementById('btnSalvar').onclick = async () => {
 
   const dadosFinal = { nome, whatsapp: zap, email: emailVal, ministerios: ministeriosFinais, disponibilidade: disp, datasIndisponiveis: datasSelecionadas, mesReferencia: mesReferenciaBanco };
 
+ let mensagemFinal = "";
   if (docExistente) {
-
     await updateDoc(doc(db, "voluntarios", docExistente.id), dadosFinal);
-
-    alert("Cadastro ATUALIZADO com sucesso!");
-
+    mensagemFinal = "Cadastro ATUALIZADO com sucesso!";
   } else {
-
     await addDoc(collection(db, "voluntarios"), dadosFinal);
-
-    alert("Cadastro ENVIADO com sucesso!");
-
+    mensagemFinal = "Cadastro ENVIADO com sucesso!";
   }
 
-  // ── BREVO: e-mail de boas-vindas ─────────────────────────────────────
+  // 2. Trava o botão para evitar cliques duplos e avisa o usuário
+  const btnSalvar = document.getElementById('btnSalvar');
+  const textoOriginal = btnSalvar.innerText;
+  btnSalvar.innerText = "Enviando confirmação aguarde...";
+  btnSalvar.disabled = true;
+
+  // 3. BREVO: e-mail de boas-vindas ─────────────────────────────────────
   if (emailVal) {
     try {
       const mapaDisp = {
@@ -1266,51 +1267,42 @@ document.getElementById('btnSalvar').onclick = async () => {
 
       const htmlEmail = `
       <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
-
         <div style="background:#1e293b; padding:24px; border-radius:10px; text-align:center; margin-bottom:24px;">
           <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png"
                alt="Nação Santa" style="height:50px; object-fit:contain; margin-bottom:12px;">
           <h2 style="color:white; margin:0; font-size:20px;">✅ Cadastro Confirmado!</h2>
           <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${mesExtenso} ${anoRef} — Nação Santa</p>
         </div>
-
         <p style="color:#1e293b; font-size:16px; margin-bottom:4px;">Olá, <b>${primeiroNome}</b>! 👋</p>
         <p style="color:#475569; font-size:14px; margin-bottom:20px;">
           Seu cadastro de voluntário foi confirmado com sucesso. Aqui está um resumo do que você informou:
         </p>
-
         <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
           <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">👤 Nome</p>
           <p style="font-size:15px; color:#1e293b; margin:0; font-weight:bold;">${nome}</p>
         </div>
-
         <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
           <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 10px 0;">⛪ Ministério(s)</p>
           <div>${ministeriosHtml}</div>
         </div>
-
         <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
           <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">📆 Disponibilidade em ${mesExtenso}</p>
           <p style="font-size:14px; color:#1e293b; margin:0;">${textoDisponibilidade}</p>
         </div>
-
         <div style="background:white; border-radius:10px; padding:18px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
           <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 10px 0;">🗓️ Datas que NÃO pode comparecer</p>
           <div>${chipsHtml}</div>
         </div>
-
         <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center; margin-bottom:20px;">
           <p style="color:#15803d; font-size:14px; margin:0;">
             🙏 Obrigado por servir! Em breve você receberá sua escala do mês por e-mail.
           </p>
         </div>
-
         <p style="color:#94a3b8; font-size:11px; text-align:center; margin:0;">
           Enviado automaticamente pelo sistema de escala — Nação Santa
         </p>
       </div>`;
 
-      // ✅ CORREÇÃO BUG #3: Verifica se o servidor retornou erro HTTP (ex: Brevo bloqueado, servidor hibernando)
       const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1328,9 +1320,28 @@ document.getElementById('btnSalvar').onclick = async () => {
         console.log("✅ E-mail de confirmação enviado com sucesso para:", emailVal);
       }
     } catch(e) {
-      // Falha no e-mail não bloqueia o cadastro (ex: servidor hibernando no Render)
       console.warn("Erro de rede ao enviar e-mail de boas-vindas:", e.message);
     }
+  }
+
+  // 4. Só AGORA limpamos o formulário, destravamos o botão e avisamos o usuário
+  btnSalvar.innerText = textoOriginal;
+  btnSalvar.disabled = false;
+
+  document.getElementById('nome').value = ""; 
+  document.getElementById('whatsapp').value = "";
+  document.getElementById('email').value = "";
+  document.getElementById('disponibilidade').value = ""; 
+  document.getElementById('inputData').value = "";
+  checkboxesMinisterio.forEach(cb => cb.checked = false);
+  dropdownDisplay.innerText = "Selecionar ministério(s)"; 
+  dropdownDisplay.classList.remove('selected');
+  datasSelecionadas = []; 
+  renderizarDatas();
+
+  // O alerta segura a tela, então fica por último!
+  alert(mensagemFinal);
+};
   }
   // ─────────────────────────────────────────────────────────────────────
 
