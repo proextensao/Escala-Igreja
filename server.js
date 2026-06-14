@@ -152,11 +152,16 @@ async function dispararLembretesDeAmanha() {
   }
 }
 
-// Endpoint para disparar o lembrete (O Render usará isso via cron job)
+// Endpoint para disparar o lembrete
 app.get("/disparar-lembretes-diarios", async (req, res) => {
-  await dispararLembretesDeAmanha();
-  res.send("Verificação de lembretes rodada com sucesso!");
+  // Chamamos a função, mas NÃO esperamos ela terminar para responder ao cron-job
+  // Assim a resposta é imediata e o cron-job não dá erro
+  dispararLembretesDeAmanha(); 
+  
+  // Resposta curta que o cron-job entende sem reclamar
+  res.status(200).send("OK");
 });
+
 
 // ── Health check ──
 app.get("/", (req, res) => res.send("Servidor de escala Nação Santa — ok"));
