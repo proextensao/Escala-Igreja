@@ -166,5 +166,146 @@ app.get("/disparar-lembretes-diarios", async (req, res) => {
 // ── Health check ──
 app.get("/", (req, res) => res.send("Servidor de escala Nação Santa — ok"));
 
+// ============================================================================
+// OBJETIVO 4: MENSAGEM SEMANAL AUTOMÁTICA (TODA SEGUNDA DE MANHÃ)
+// ============================================================================
+
+
+// Banco de mensagens positivas / versículos (rotação automática por semana)
+const MENSAGENS_SEMANAIS = [
+  {
+    versiculo: "Tudo posso naquele que me fortalece.",
+    referencia: "Filipenses 4:13",
+    reflexao: "Nesta semana, lembre-se: suas forças têm uma fonte maior. Caminhe com confiança!"
+  },
+  {
+    versiculo: "O Senhor é o meu pastor; de nada terei falta.",
+    referencia: "Salmos 23:1",
+    reflexao: "Comece a semana descansando na certeza de que Deus cuida de cada detalhe da sua vida."
+  },
+  {
+    versiculo: "Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus.",
+    referencia: "Isaías 41:10",
+    reflexao: "Se o medo tentar te paralisar essa semana, lembre-se: você não está sozinho(a)."
+  },
+  {
+    versiculo: "Entrega o teu caminho ao Senhor, confia nele, e ele tudo fará.",
+    referencia: "Salmos 37:5",
+    reflexao: "Que essa semana seja marcada por confiança e entrega. Deus está no controle!"
+  },
+  {
+    versiculo: "Alegrai-vos sempre no Senhor; outra vez digo, alegrai-vos.",
+    referencia: "Filipenses 4:4",
+    reflexao: "A alegria do Senhor é a nossa força. Comece essa semana com um coração agradecido!"
+  },
+  {
+    versiculo: "Tudo o que fizerem, façam de todo o coração, como para o Senhor.",
+    referencia: "Colossenses 3:23",
+    reflexao: "Seu serviço faz diferença! Que cada tarefa dessa semana seja feita com excelência e amor."
+  },
+  {
+    versiculo: "Os que esperam no Senhor renovarão as forças; subirão com asas como águias.",
+    referencia: "Isaías 40:31",
+    reflexao: "Renove suas energias essa semana. Há novas forças disponíveis para você!"
+  },
+  {
+    versiculo: "Sede fortes e corajosos... o Senhor, vosso Deus, é contigo por onde quer que andares.",
+    referencia: "Josué 1:9",
+    reflexao: "Coragem para os desafios dessa semana! Deus caminha ao seu lado."
+  }
+];
+
+// Calcula o número da semana do ano para escolher a mensagem em rotação
+function obterMensagemDaSemana() {
+  const agora = new Date();
+  const inicioAno = new Date(agora.getFullYear(), 0, 1);
+  const diasPassados = Math.floor((agora - inicioAno) / 86400000);
+  const numeroSemana = Math.floor(diasPassados / 7);
+  const indice = numeroSemana % MENSAGENS_SEMANAIS.length;
+  return MENSAGENS_SEMANAIS[indice];
+}
+
+// Mensagem fixa de início de semana — {NOME} é substituído pelo primeiro nome do voluntário
+const MENSAGEM_FIXA_TEMPLATE = `Bom dia!! {NOME}
+Desejamos a você uma semana abençoada e queremos lembrar a você do quanto é precioso(a) para nós e para o Reino. Sei que a rotina é corrida, mas nunca se esqueça que o que nos une é um propósito maior de amor e serviço.
+Que, nesta semana, o Senhor renove suas forças e coloque paz em cada detalhe. Vamos cuidar uns dos outros, caminhar juntos e confiar que Ele está no controle de cada passo nosso.`;
+
+function montarHtmlMensagemSemanal(nomeVoluntario, mensagemBiblica) {
+  const primeiroNome = (nomeVoluntario || "").split(" ")[0];
+
+  const nomesMeses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const agora = new Date();
+  const mesAtual = nomesMeses[agora.getMonth()];
+  const anoAtual = agora.getFullYear();
+
+  const mensagemPersonalizada = MENSAGEM_FIXA_TEMPLATE
+    .replace("{NOME}", primeiroNome)
+    .split("\n")
+    .map(linha => `<p style="color:#475569; font-size:14px; line-height:1.6; margin:0 0 12px 0;">${linha}</p>`)
+    .join("");
+
+  return `
+    <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
+      <div style="background:#1e293b; padding:24px; border-radius:8px; text-align:center; margin-bottom:24px;">
+        <h1 style="margin:0 0 12px 0; font-size:28px;"><b style="color:white;">Nação</b><span style="color:#94a3b8;">Santa</span></h1>
+        <h2 style="color:white; margin:0; font-size:20px;">🌅 Início de Semana</h2>
+        <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${mesAtual} ${anoAtual} — Nação Santa</p>
+      </div>
+
+      ${mensagemPersonalizada}
+
+      <div style="background:white; padding:18px; border-radius:8px; border-left:4px solid #2563eb; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <p style="margin:0 0 8px 0; color:#1e293b; font-size:15px; font-style:italic;">"${mensagemBiblica.versiculo}"</p>
+        <p style="margin:0 0 12px 0; color:#2563eb; font-size:13px; font-weight:bold;">${mensagemBiblica.referencia}</p>
+        <p style="margin:0; color:#475569; font-size:13px; line-height:1.6;">${mensagemBiblica.reflexao}</p>
+      </div>
+
+      <p style="color:#64748b; font-size:12px; text-align:center; margin-top:20px;">
+        Que Deus abençoe sua semana! 🙏<br>
+        <span style="color:#94a3b8;">Enviado automaticamente pelo sistema — Nação Santa</span>
+      </p>
+    </div>`;
+}
+
+async function dispararMensagemSemanal() {
+  try {
+    console.log("Iniciando envio da mensagem semanal...");
+
+    const mensagemBiblica = obterMensagemDaSemana();
+
+    const volSnap = await db.collection("voluntarios").get();
+
+    let enviados = 0, falhas = 0;
+
+    for (const docVol of volSnap.docs) {
+      const v = docVol.data();
+      if (!v.email || !v.nome) continue;
+
+      const html = montarHtmlMensagemSemanal(v.nome.trim(), mensagemBiblica);
+      const assunto = "🌅 Bom dia! Mensagem de início de semana — Nação Santa";
+
+      try {
+        await enviarEmail(v.email.trim(), v.nome.trim(), assunto, html);
+        enviados++;
+        console.log(`✅ Mensagem semanal enviada para ${v.nome} (${v.email})`);
+      } catch (errEmail) {
+        falhas++;
+        console.error(`❌ Falha ao enviar para ${v.nome}:`, errEmail.message);
+      }
+    }
+
+    console.log(`Mensagem semanal concluída. Enviados: ${enviados} | Falhas: ${falhas}`);
+  } catch (error) {
+    console.error("Erro na mensagem semanal:", error);
+  }
+}
+
+// Endpoint para o cron job chamar toda segunda de manhã
+app.get("/disparar-mensagem-semanal", async (req, res) => {
+  dispararMensagemSemanal();
+  res.status(200).send("OK");
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
