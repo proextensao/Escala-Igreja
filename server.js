@@ -52,6 +52,11 @@ async function enviarEmail(para, nomePara, assunto, htmlContent) {
 // OBJETIVOS 1 E 2: ROTA PARA O CADASTRO E PARA O BOTÃO DO PAINEL
 // ============================================================================
 app.post("/enviar-email", async (req, res) => {
+  const apiKey = req.headers["api-key"];
+  if (apiKey !== process.env.INTERNAL_API_KEY) {
+    return res.status(401).json({ erro: "Não autorizado" });
+  }
+
   const { para, nomePara, assunto, html } = req.body;
   try {
     await enviarEmail(para, nomePara, assunto, html);
@@ -70,14 +75,22 @@ async function dispararLembretesDeAmanha() {
   try {
     console.log("Iniciando verificação de lembretes automáticos...");
 
-    // Calcula "amanhã" no fuso horário de Brasília corretamente
+    // Calcula "amanhã" adicionando 24 horas em milissegundos
     const agora = new Date();
-    const amanha = new Date(agora.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
-    amanha.setDate(amanha.getDate() + 1);
+    const amanhaMs = agora.getTime() + (24 * 60 * 60 * 1000);
+    const amanha = new Date(amanhaMs);
 
-    const dd = String(amanha.getDate()).padStart(2, '0');
-    const mm = String(amanha.getMonth() + 1).padStart(2, '0');
-    const aaaa = amanha.getFullYear();
+    // Extrai com segurança os componentes no fuso horário de Brasília
+    const formatter = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      year: "numeric", month: "2-digit", day: "2-digit"
+    });
+
+    const partes = formatter.formatToParts(amanha);
+    const dd = partes.find(p => p.type === 'day').value;
+    const mm = partes.find(p => p.type === 'month').value;
+    const aaaa = partes.find(p => p.type === 'year').value;
+
     const dataAlvo = `${dd}/${mm}/${aaaa}`; // Formato exato da tabela: 13/06/2026
     const mesRef = `${aaaa}-${mm}`;
 
