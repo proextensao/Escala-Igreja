@@ -1007,7 +1007,10 @@ window.confirmarEnvioLembretes = async function() {
         try {
             const res = await fetch("https://escala-igreja.onrender.com/enviar-email", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "api-key": "COLOQUE_A_MESMA_SENHA_DO_RENDER_AQUI"
+                },
                 body: JSON.stringify({
                     para: email,
                     nomePara: nome,
@@ -1017,6 +1020,7 @@ window.confirmarEnvioLembretes = async function() {
             });
             if(res.ok) enviados++; else falhas++;
         } catch(e) { falhas++; }
+    } // <-- ADICIONE ESTA CHAVE PARA FECHAR O FOR AQUI
 
     document.body.removeChild(toast);
     alert(`✅ Lembretes enviados!\n\n📨 Enviados: ${enviados}\n❌ Falhas: ${falhas}`);
