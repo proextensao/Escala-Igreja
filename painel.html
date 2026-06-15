@@ -195,6 +195,42 @@ tbody td { background:white; color:#1e293b; }
 .amarelo td { background:#fef08a !important; color: black !important; }
 .vermelho td { background:#fca5a5 !important; color: black !important; }
 
+/* Célula de voluntário editável via popup */
+td.cel-voluntario { cursor: pointer; position: relative; }
+td.cel-voluntario.editavel:hover { background:#eff6ff !important; outline: 2px dashed #2563eb; }
+td.cel-voluntario.editavel::after {
+    content: "\f10c"; font-family: "Phosphor"; font-size: 12px;
+    color: #2563eb; margin-left: 6px; opacity: 0.6;
+}
+
+.popup-voluntarios {
+    position: absolute; z-index: 2000; background: white; border: 1px solid #cbd5e1;
+    border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    padding: 10px; width: 240px; max-height: 320px; overflow-y: auto;
+    text-align: left; color: #1e293b; font-size: 13px;
+}
+.popup-voluntarios h4 { margin: 0 0 8px 0; font-size: 13px; color: #2563eb; }
+.popup-voluntarios label {
+    display: flex; align-items: center; gap: 6px; padding: 5px 4px;
+    border-radius: 4px; cursor: pointer; font-weight: normal; margin: 0;
+}
+.popup-voluntarios label:hover { background: #f1f5f9; }
+.popup-voluntarios input[type="checkbox"] { width: auto; margin: 0; }
+.popup-voluntarios .outro-box {
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;
+}
+.popup-voluntarios .outro-box input[type="text"] {
+    width: 100%; padding: 6px; font-size: 12px; margin-top: 4px;
+    border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;
+}
+.popup-voluntarios .botoes-popup { display:flex; gap:6px; margin-top:10px; }
+.popup-voluntarios .botoes-popup button {
+    flex: 1; padding: 6px; border: none; border-radius: 6px;
+    font-size: 12px; font-weight: bold; cursor: pointer;
+}
+.popup-voluntarios .btn-aplicar { background:#22c55e; color:white; }
+.popup-voluntarios .btn-fechar { background:#94a3b8; color:white; }
+
 .historico-item {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px; border-bottom: 1px solid #eee; font-size: 13px;
@@ -512,7 +548,8 @@ window.setEdicao = function(habilitado) {
             tr.cells[0].setAttribute('contenteditable', habilitado);
             tr.cells[2].setAttribute('contenteditable', habilitado);
             tr.cells[3].setAttribute('contenteditable', habilitado);
-            tr.cells[4].setAttribute('contenteditable', habilitado);
+            if(habilitado) tr.cells[4].classList.add('editavel');
+            else tr.cells[4].classList.remove('editavel');
             if(tr.cells[5]) tr.cells[5].style.display = habilitado ? '' : 'none';
         }
     });
@@ -524,6 +561,85 @@ window.alternarCor = function(elemento, classe) {
     const tr = elemento.closest('tr');
     tr.className = tr.className === classe ? '' : classe;
 };
+
+// ── POPUP DE SELEÇÃO DE VOLUNTÁRIOS NA CÉLULA ─────────────────────────────
+let popupVoluntariosAtual = null;
+
+function fecharPopupVoluntarios() {
+    if(popupVoluntariosAtual) { popupVoluntariosAtual.remove(); popupVoluntariosAtual = null; }
+    document.removeEventListener('mousedown', handleClickForaPopup, true);
+}
+
+function handleClickForaPopup(e) {
+    if(popupVoluntariosAtual && !popupVoluntariosAtual.contains(e.target)) {
+        fecharPopupVoluntarios();
+    }
+}
+
+// Delegação de clique na tabela: abre popup ao clicar na célula de voluntário (em modo edição)
+corpoTabela.addEventListener('click', function(e) {
+    const td = e.target.closest('td.cel-voluntario.editavel');
+    if(!td) return;
+    abrirPopupVoluntarios(td);
+});
+
+function abrirPopupVoluntarios(td) {
+    fecharPopupVoluntarios();
+
+    // Nomes atualmente na célula (separados por vírgula)
+    const nomesAtuais = (td.dataset.nomes || td.innerText || "")
+        .split(',').map(s => s.trim()).filter(s => s !== "" && s !== "A definir");
+
+    // Monta lista de nomes cadastrados (do ministério atual)
+    const nomesCadastrados = listaGlobal.map(v => v.nome);
+    // Garante que nomes já presentes na célula (mesmo que não cadastrados) apareçam marcados
+    const todosNomes = [...new Set([...nomesCadastrados, ...nomesAtuais])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+
+    const popup = document.createElement('div');
+    popup.className = 'popup-voluntarios';
+
+    let html = `<h4><i class="ph ph-users"></i> Selecionar voluntário(s)</h4>`;
+    todosNomes.forEach((nome, idx) => {
+        const checked = nomesAtuais.includes(nome) ? 'checked' : '';
+        const extra = !nomesCadastrados.includes(nome) ? ' style="color:#f97316;"' : '';
+        html += `<label${extra}><input type="checkbox" value="${nome.replace(/"/g,'&quot;')}" ${checked}> ${nome}${!nomesCadastrados.includes(nome) ? ' (não cadastrado)' : ''}</label>`;
+    });
+
+    html += `
+        <div class="outro-box">
+            <label style="font-weight:bold;">+ Adicionar outro nome:</label>
+            <input type="text" class="input-outro-nome" placeholder="Digite um nome (opcional)">
+        </div>
+        <div class="botoes-popup">
+            <button class="btn-aplicar" type="button">Aplicar</button>
+            <button class="btn-fechar" type="button">Fechar</button>
+        </div>`;
+
+    popup.innerHTML = html;
+    document.body.appendChild(popup);
+
+    // Posiciona o popup próximo à célula
+    const rect = td.getBoundingClientRect();
+    popup.style.top = `${window.scrollY + rect.bottom + 4}px`;
+    let left = window.scrollX + rect.left;
+    if(left + 240 > window.innerWidth - 10) left = window.innerWidth - 250;
+    popup.style.left = `${Math.max(10, left)}px`;
+
+    popup.querySelector('.btn-aplicar').onclick = () => {
+        const marcados = Array.from(popup.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
+        const outroNome = popup.querySelector('.input-outro-nome').value.trim();
+        if(outroNome) marcados.push(outroNome);
+
+        const novosNomes = marcados.length > 0 ? marcados.join(', ') : 'A definir';
+        td.dataset.nomes = novosNomes;
+        td.innerText = novosNomes;
+        fecharPopupVoluntarios();
+    };
+    popup.querySelector('.btn-fechar').onclick = fecharPopupVoluntarios;
+
+    popupVoluntariosAtual = popup;
+    setTimeout(() => document.addEventListener('mousedown', handleClickForaPopup, true), 0);
+}
 
 // ── ORDENAÇÃO CORRIGIDA (Adicionado zeros à esquerda) ─────────────────────
 function ordenarTabela() {
@@ -553,7 +669,7 @@ function criarLinha(data, evento, hora, nome) {
         <td>${dias[data.getDay()]}</td>
         <td contenteditable="true">${evento}</td>
         <td contenteditable="true">${hora}</td>
-        <td contenteditable="true">${nome}</td>
+        <td class="cel-voluntario" data-nomes="${nome}">${nome}</td>
         <td class="acoes">
             <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
             <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
@@ -793,14 +909,16 @@ btnEnviarLembretes.onclick = async () => {
     // Agrupa eventos por voluntário
     const porVoluntario = {};
     linhas.forEach(tr => {
-        const nome = tr.cells[4]?.innerText?.trim();
-        if(!nome || nome === "A definir") return;
-        if(!porVoluntario[nome]) porVoluntario[nome] = [];
-        porVoluntario[nome].push({
-            data:  tr.cells[0]?.innerText?.trim(),
-            dia:   tr.cells[1]?.innerText?.trim(),
-            evento:tr.cells[2]?.innerText?.trim(),
-            hora:  tr.cells[3]?.innerText?.trim()
+        const textoCelula = tr.cells[4]?.dataset?.nomes || tr.cells[4]?.innerText || "";
+        const nomes = textoCelula.split(',').map(n => n.trim()).filter(n => n !== "" && n !== "A definir");
+        nomes.forEach(nome => {
+            if(!porVoluntario[nome]) porVoluntario[nome] = [];
+            porVoluntario[nome].push({
+                data:  tr.cells[0]?.innerText?.trim(),
+                dia:   tr.cells[1]?.innerText?.trim(),
+                evento:tr.cells[2]?.innerText?.trim(),
+                hora:  tr.cells[3]?.innerText?.trim()
+            });
         });
     });
 
@@ -940,7 +1058,7 @@ window.reconstruirEBaixar = async(id) => {
         const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
         tr.innerHTML = `
             <td contenteditable="true">${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.evento}</td>
-            <td contenteditable="true">${l.hora}</td><td contenteditable="true">${l.voluntario}</td>
+            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario" data-nomes="${l.voluntario}">${l.voluntario}</td>
             <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
         corpoTabela.appendChild(tr);
     });
