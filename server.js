@@ -70,7 +70,7 @@ async function dispararLembretesDeAmanha() {
   try {
     console.log("Iniciando verificação de lembretes automáticos...");
 
-    // ✅ CORREÇÃO BUG #1: Calcula "amanhã" no fuso horário de Brasília corretamente
+    // Calcula "amanhã" no fuso horário de Brasília corretamente
     const agora = new Date();
     const amanha = new Date(agora.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
     amanha.setDate(amanha.getDate() + 1);
@@ -92,7 +92,7 @@ async function dispararLembretesDeAmanha() {
     }
 
     // Busca os e-mails dos voluntários
-  const volSnap = await db.collection("voluntarios").get();
+    const volSnap = await db.collection("voluntarios").get();
     const emailMap = {};
     volSnap.forEach(d => {
       const v = d.data();
@@ -152,14 +152,11 @@ async function dispararLembretesDeAmanha() {
   }
 }
 
-// Endpoint para disparar o lembrete
-app.get("/disparar-lembretes-diarios", async (req, res) => {
-  // Chamamos a função, mas NÃO esperamos ela terminar para responder ao cron-job
-  // Assim a resposta é imediata e o cron-job não dá erro
-  dispararLembretesDeAmanha(); 
-  
-  // Resposta curta que o cron-job entende sem reclamar
-  res.status(200).send("OK");
+// ✅ CORREÇÃO #1: res.end() antes de executar a função, evita "output too large"
+app.get("/disparar-lembretes-diarios", (req, res) => {
+  res.set("Content-Type", "text/plain");
+  res.end("OK");
+  dispararLembretesDeAmanha();
 });
 
 
@@ -169,7 +166,6 @@ app.get("/", (req, res) => res.send("Servidor de escala Nação Santa — ok"));
 // ============================================================================
 // OBJETIVO 4: MENSAGEM SEMANAL AUTOMÁTICA (TODA SEGUNDA DE MANHÃ)
 // ============================================================================
-
 
 // Banco de mensagens positivas / versículos (rotação automática por semana)
 const MENSAGENS_SEMANAIS = [
@@ -215,9 +211,9 @@ const MENSAGENS_SEMANAIS = [
   }
 ];
 
-// Calcula o número da semana do ano para escolher a mensagem em rotação
+// ✅ CORREÇÃO #2: Usa fuso horário de Brasília para calcular a semana corretamente
 function obterMensagemDaSemana() {
-  const agora = new Date();
+  const agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
   const inicioAno = new Date(agora.getFullYear(), 0, 1);
   const diasPassados = Math.floor((agora - inicioAno) / 86400000);
   const numeroSemana = Math.floor(diasPassados / 7);
@@ -234,7 +230,9 @@ function montarHtmlMensagemSemanal(nomeVoluntario, mensagemBiblica) {
   const primeiroNome = (nomeVoluntario || "").split(" ")[0];
 
   const nomesMeses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  const agora = new Date();
+
+  // ✅ CORREÇÃO #3: Usa fuso horário de Brasília para exibir mês/ano correto no e-mail
+  const agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
   const mesAtual = nomesMeses[agora.getMonth()];
   const anoAtual = agora.getFullYear();
 
@@ -300,10 +298,11 @@ async function dispararMensagemSemanal() {
   }
 }
 
-// Endpoint para o cron job chamar toda segunda de manhã
-app.get("/disparar-mensagem-semanal", async (req, res) => {
+// ✅ CORREÇÃO #4: res.end() antes de executar a função, evita "output too large"
+app.get("/disparar-mensagem-semanal", (req, res) => {
+  res.set("Content-Type", "text/plain");
+  res.end("OK");
   dispararMensagemSemanal();
-  res.status(200).send("OK");
 });
 
 
