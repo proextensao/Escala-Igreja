@@ -1293,7 +1293,10 @@ document.getElementById('btnSalvar').onclick = async () => {
 
       const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "api-key": "COLOQUE_A_MESMA_SENHA_DO_RENDER_AQUI"
+        },
         body: JSON.stringify({
           para: emailVal,
           nomePara: nome,
