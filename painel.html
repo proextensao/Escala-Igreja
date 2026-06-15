@@ -1066,7 +1066,7 @@ window.reconstruirEBaixar = async(id) => {
             <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
         corpoTabela.appendChild(tr);
     });
-    setEdicao(false); btnSalvar.style.display = 'none'; btnEditar.style.display = 'block';
+    setEdicao(true); btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
     document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`; window.print();
     document.title = "Gerenciador de Escala - Nação Santa";
 };
