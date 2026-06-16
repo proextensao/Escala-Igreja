@@ -196,7 +196,8 @@ tbody td { background:white; color:#1e293b; }
 .vermelho td { background:#fca5a5 !important; color: black !important; }
 
 /* Célula de voluntário editável via popup */
-td.cel-voluntario { cursor: pointer; position: relative; user-select: none; -webkit-user-select: none; }
+td.cel-voluntario { cursor: pointer; position: relative; user-select: none; -webkit-user-select: none; caret-color: transparent; }
+td.cel-voluntario:focus { outline: none; }
 td.cel-voluntario.editavel:hover { background:#eff6ff !important; outline: 2px dashed #2563eb; }
 td.cel-voluntario.editavel::after {
     content: "\f10c"; font-family: "Phosphor"; font-size: 12px;
@@ -549,7 +550,7 @@ window.setEdicao = function(habilitado) {
             tr.cells[0].setAttribute('contenteditable', habilitado);
             tr.cells[2].setAttribute('contenteditable', habilitado);
             tr.cells[3].setAttribute('contenteditable', habilitado);
-            tr.cells[4].setAttribute('contenteditable', 'false'); // voluntário NUNCA é editável como texto
+            tr.cells[4].removeAttribute('contenteditable');
             if(habilitado) tr.cells[4].classList.add('editavel');
             else tr.cells[4].classList.remove('editavel');
             if(tr.cells[5]) tr.cells[5].style.display = habilitado ? '' : 'none';
@@ -587,6 +588,11 @@ corpoTabela.addEventListener('beforeinput', function(e) {
 }, true);
 corpoTabela.addEventListener('paste', function(e) {
     if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
+}, true);
+// Quando a célula de voluntário recebe foco (ex: tab), tira o foco imediatamente
+corpoTabela.addEventListener('focus', function(e) {
+    const td = e.target.closest('td.cel-voluntario');
+    if(td) { e.target.blur(); }
 }, true);
 corpoTabela.addEventListener('click', function(e) {
     const td = e.target.closest('td.cel-voluntario.editavel');
@@ -680,7 +686,7 @@ function criarLinha(data, evento, hora, nome) {
         <td>${dias[data.getDay()]}</td>
         <td contenteditable="true">${evento}</td>
         <td contenteditable="true">${hora}</td>
-        <td class="cel-voluntario" contenteditable="false" data-nomes="${nome}">${nome}</td>
+        <td class="cel-voluntario" data-nomes="${nome}">${nome}</td>
         <td class="acoes">
             <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
             <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
@@ -1074,7 +1080,7 @@ window.reconstruirEBaixar = async(id) => {
         const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
         tr.innerHTML = `
             <td contenteditable="true">${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.evento}</td>
-            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" contenteditable="false" data-nomes="${l.voluntario}">${l.voluntario}</td>
+            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" data-nomes="${l.voluntario}">${l.voluntario}</td>
             <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
         corpoTabela.appendChild(tr);
     });
