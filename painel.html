@@ -879,9 +879,9 @@ btnSalvar.onclick = async () => {
         ministerio: ministerioSelecionado, mesReferencia: mesReferencia,
         nomeExibicao: nomeExibicao, dataCriacao: new Date().toISOString(),
         linhas: linhas.map(tr => ({
-            data: tr.cells[0].innerText, dia: tr.cells[1].innerText,
-            evento: tr.cells[2].innerText, hora: tr.cells[3].innerText,
-            voluntario: tr.cells[4].innerText, cor: tr.className
+            data: tr.cells[0].innerText.trim(), dia: tr.cells[1].innerText.trim(),
+            evento: tr.cells[2].innerText.trim(), hora: tr.cells[3].innerText.trim(),
+            voluntario: (tr.cells[4].dataset.nomes || tr.cells[4].innerText || "").trim(), cor: tr.className
         }))
     };
 
@@ -1062,7 +1062,7 @@ window.reconstruirEBaixar = async(id) => {
         const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
         tr.innerHTML = `
             <td contenteditable="true">${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.evento}</td>
-            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario" data-nomes="${l.voluntario}">${l.voluntario}</td>
+            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" data-nomes="${l.voluntario}">${l.voluntario}</td>
             <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
         corpoTabela.appendChild(tr);
     });
