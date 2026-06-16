@@ -358,10 +358,14 @@ td.cel-voluntario.editavel::after {
             </select>
 
             <label style="color:#475569; font-size:12px; font-weight:bold;">Dias de Atuação do Ministério:</label>
-            <div style="display:flex; gap:10px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                <label style="font-size:12px;"><input type="checkbox" id="checkDom" checked> Dom</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkTer" checked> Ter</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkSab" checked> Sáb</label>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
+                <label style="font-size:12px;"><input type="checkbox" id="checkDom"> Dom</label>
+                <label style="font-size:12px;"><input type="checkbox" id="checkSeg"> Seg</label>
+                <label style="font-size:12px;"><input type="checkbox" id="checkTer"> Ter</label>
+                <label style="font-size:12px;"><input type="checkbox" id="checkQua"> Qua</label>
+                <label style="font-size:12px;"><input type="checkbox" id="checkQui"> Qui</label>
+                <label style="font-size:12px;"><input type="checkbox" id="checkSex"> Sex</label>
+                <label style="font-size:12px;"><input type="checkbox" id="checkSab"> Sáb</label>
             </div>
 
             <button class="btn green" id="btnGerar"><i class="ph ph-calendar-plus"></i> Gerar escala</button>
@@ -431,7 +435,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const corpoTabela = document.getElementById("corpoTabela");
-console.log("✅ ARQUIVO NOVO CARREGADO - versão com popup");
 
 let listaGlobal = [];
 let ministerioSelecionado = "";
@@ -807,7 +810,15 @@ btnGerar.onclick = async () => {
     const limiteMes = parseInt(document.getElementById("limiteMensal").value);
     if(!mesVal) return alert("Selecione o mês");
 
-    const diasPermitidos = { 0: document.getElementById("checkDom").checked, 2: document.getElementById("checkTer").checked, 6: document.getElementById("checkSab").checked };
+    const diasPermitidos = {
+        0: document.getElementById("checkDom").checked,
+        1: document.getElementById("checkSeg").checked,
+        2: document.getElementById("checkTer").checked,
+        3: document.getElementById("checkQua").checked,
+        4: document.getElementById("checkQui").checked,
+        5: document.getElementById("checkSex").checked,
+        6: document.getElementById("checkSab").checked
+    };
 
     const snapHist = await getDocs(query(collection(db, "historico_escalas"), where("mesReferencia", "==", mesVal)));
     let ocupados = {};
@@ -826,7 +837,15 @@ btnGerar.onclick = async () => {
     const [ano, mes] = mesVal.split('-').map(Number);
     corpoTabela.innerHTML = "";
     let data = new Date(ano, mes - 1, 1);
-    const eventosPadrao = { 0: { n: "Culto Domingo", h: "16:40" }, 2: { n: "Culto Terça", h: "19:00" }, 6: { n: "Culto Sábado", h: "17:00" } };
+    const eventosPadrao = {
+        0: { n: "Culto Domingo",   h: "16:40" },
+        1: { n: "Culto Segunda",   h: "19:00" },
+        2: { n: "Culto Terça",     h: "19:00" },
+        3: { n: "Culto Quarta",    h: "19:00" },
+        4: { n: "Culto Quinta",    h: "19:00" },
+        5: { n: "Culto Sexta",     h: "19:00" },
+        6: { n: "Culto Sábado",    h: "17:00" }
+    };
     let contagemMes = {}; let ultimaData = {};
 
     while(data.getMonth() === mes - 1) {
