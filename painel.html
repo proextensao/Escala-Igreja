@@ -771,6 +771,7 @@ window.adicionarEventoEspecial = function() {
         const sel = document.getElementById(`selectEventoVaga_${i}`);
         criarLinha(dt, nome, hora, sel.value);
     }
+    setEdicao(true);
 
     document.getElementById('nomeEvento').value = ''; document.getElementById('dataEvento').value = '';
     document.getElementById('vagasEvento').value = '1';
@@ -778,8 +779,6 @@ window.adicionarEventoEspecial = function() {
 };
 
 btnGerar.onclick = async () => {
-    setEdicao(true);
-    btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
 
     const mesVal = mesEscala.value;
     const numVagas = parseInt(document.getElementById("vagasPorDia").value);
@@ -861,6 +860,8 @@ btnGerar.onclick = async () => {
         }
         data.setDate(data.getDate() + 1);
     }
+    setEdicao(true);
+    btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
 };
 
 btnSalvar.onclick = async () => {
