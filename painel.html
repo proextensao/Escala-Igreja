@@ -548,6 +548,7 @@ window.setEdicao = function(habilitado) {
             tr.cells[0].setAttribute('contenteditable', habilitado);
             tr.cells[2].setAttribute('contenteditable', habilitado);
             tr.cells[3].setAttribute('contenteditable', habilitado);
+            tr.cells[4].setAttribute('contenteditable', 'false'); // voluntário NUNCA é editável como texto
             if(habilitado) tr.cells[4].classList.add('editavel');
             else tr.cells[4].classList.remove('editavel');
             if(tr.cells[5]) tr.cells[5].style.display = habilitado ? '' : 'none';
@@ -669,7 +670,7 @@ function criarLinha(data, evento, hora, nome) {
         <td>${dias[data.getDay()]}</td>
         <td contenteditable="true">${evento}</td>
         <td contenteditable="true">${hora}</td>
-        <td class="cel-voluntario" data-nomes="${nome}">${nome}</td>
+        <td class="cel-voluntario" contenteditable="false" data-nomes="${nome}">${nome}</td>
         <td class="acoes">
             <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
             <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
@@ -1062,7 +1063,7 @@ window.reconstruirEBaixar = async(id) => {
         const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
         tr.innerHTML = `
             <td contenteditable="true">${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.evento}</td>
-            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" data-nomes="${l.voluntario}">${l.voluntario}</td>
+            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" contenteditable="false" data-nomes="${l.voluntario}">${l.voluntario}</td>
             <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
         corpoTabela.appendChild(tr);
     });
