@@ -547,10 +547,29 @@ window.salvarNovaSenha = async function() {
 window.setEdicao = function(habilitado) {
     Array.from(corpoTabela.querySelectorAll('tr')).forEach(tr => {
         if(tr.cells.length >= 5) {
-            tr.cells[0].setAttribute('contenteditable', habilitado);
-            tr.cells[2].setAttribute('contenteditable', habilitado);
-            tr.cells[3].setAttribute('contenteditable', habilitado);
-            tr.cells[4].removeAttribute('contenteditable');
+            // Células de texto: alterna entre <span> (leitura) e <input> (edição)
+            [0, 2, 3].forEach(i => {
+                const td = tr.cells[i];
+                if(habilitado) {
+                    const span = td.querySelector('span.txt-editavel');
+                    if(span) {
+                        const inp = document.createElement('input');
+                        inp.type = 'text';
+                        inp.value = span.textContent;
+                        inp.style.cssText = 'width:100%;border:none;background:transparent;text-align:center;font-size:inherit;font-family:inherit;color:inherit;padding:0;outline:1px solid #bfdbfe;border-radius:3px;';
+                        td.replaceChildren(inp);
+                    }
+                } else {
+                    const inp = td.querySelector('input');
+                    if(inp) {
+                        const span = document.createElement('span');
+                        span.className = 'txt-editavel';
+                        span.textContent = inp.value;
+                        td.replaceChildren(span);
+                    }
+                }
+            });
+            // Célula do voluntário: só alterna classe editavel, nunca editável por texto
             if(habilitado) tr.cells[4].classList.add('editavel');
             else tr.cells[4].classList.remove('editavel');
             if(tr.cells[5]) tr.cells[5].style.display = habilitado ? '' : 'none';
@@ -579,21 +598,7 @@ function handleClickForaPopup(e) {
     }
 }
 
-// Bloqueia TODA digitação direta na célula de voluntário
-corpoTabela.addEventListener('keydown', function(e) {
-    if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
-}, true);
-corpoTabela.addEventListener('beforeinput', function(e) {
-    if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
-}, true);
-corpoTabela.addEventListener('paste', function(e) {
-    if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
-}, true);
-// Quando a célula de voluntário recebe foco (ex: tab), tira o foco imediatamente
-corpoTabela.addEventListener('focus', function(e) {
-    const td = e.target.closest('td.cel-voluntario');
-    if(td) { e.target.blur(); }
-}, true);
+// Célula de voluntário: bloqueio via estrutura HTML (sem contenteditable)
 corpoTabela.addEventListener('click', function(e) {
     const td = e.target.closest('td.cel-voluntario.editavel');
     if(!td) return;
@@ -681,19 +686,20 @@ function ordenarTabela() {
 function criarLinha(data, evento, hora, nome) {
     const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-        <td contenteditable="true">${data.toLocaleDateString('pt-BR')}</td>
-        <td>${dias[data.getDay()]}</td>
-        <td contenteditable="true">${evento}</td>
-        <td contenteditable="true">${hora}</td>
-        <td class="cel-voluntario" data-nomes="${nome}">${nome}</td>
-        <td class="acoes">
-            <i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i>
-            <i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i>
-            <i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i>
-        </td>`;
+    const nomeSeguro = (nome || "").replace(/"/g, "&quot;");
+    tr.innerHTML =
+        "<td><span class=\"txt-editavel\">" + data.toLocaleDateString("pt-BR") + "</span></td>" +
+        "<td>" + dias[data.getDay()] + "</td>" +
+        "<td><span class=\"txt-editavel\">" + evento + "</span></td>" +
+        "<td><span class=\"txt-editavel\">" + hora + "</span></td>" +
+        "<td class=\"cel-voluntario\" data-nomes=\"" + nomeSeguro + "\">" + nomeSeguro + "</td>" +
+        "<td class=\"acoes\" style=\"display:none;\">" +
+        "<i class=\"ph ph-circle acao-amarelo\" onclick=\"alternarCor(this,'amarelo')\" title=\"Destacar Amarelo\"></i>" +
+        "<i class=\"ph ph-circle acao-vermelho\" onclick=\"alternarCor(this,'vermelho')\" title=\"Destacar Vermelho\"></i>" +
+        "<i class=\"ph ph-trash acao-lixeira\" onclick=\"this.closest('tr').remove()\" title=\"Remover Linha\"></i>" +
+        "</td>";
     corpoTabela.appendChild(tr);
-    ordenarTabela();  // ← Chama a ordenação SEMPRE que uma nova linha (evento especial ou normal) é gerada
+    ordenarTabela();
 }
 
 function textoDisp(v) {
@@ -879,6 +885,15 @@ btnGerar.onclick = async () => {
     btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
 };
 
+
+// Lê o valor de uma célula (input em modo edição, span em modo leitura)
+function lerCelula(td) {
+    const inp = td.querySelector('input');
+    if(inp) return inp.value.trim();
+    const span = td.querySelector('span.txt-editavel');
+    if(span) return span.textContent.trim();
+    return td.innerText.trim();
+}
 btnSalvar.onclick = async () => {
     const mesReferencia = mesEscala.value;
     const linhas = Array.from(corpoTabela.querySelectorAll("tr"));
@@ -897,8 +912,8 @@ btnSalvar.onclick = async () => {
         ministerio: ministerioSelecionado, mesReferencia: mesReferencia,
         nomeExibicao: nomeExibicao, dataCriacao: new Date().toISOString(),
         linhas: linhas.map(tr => ({
-            data: tr.cells[0].innerText.trim(), dia: tr.cells[1].innerText.trim(),
-            evento: tr.cells[2].innerText.trim(), hora: tr.cells[3].innerText.trim(),
+            data: lerCelula(tr.cells[0]), dia: tr.cells[1].innerText.trim(),
+            evento: lerCelula(tr.cells[2]), hora: lerCelula(tr.cells[3]),
             voluntario: (tr.cells[4].dataset.nomes || tr.cells[4].innerText || "").trim(), cor: tr.className
         }))
     };
@@ -1078,10 +1093,18 @@ window.reconstruirEBaixar = async(id) => {
     const dados = snap.data(); mesEscala.value = dados.mesReferencia; corpoTabela.innerHTML = "";
     dados.linhas.forEach(l => {
         const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
-        tr.innerHTML = `
-            <td contenteditable="true">${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.evento}</td>
-            <td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" data-nomes="${l.voluntario}">${l.voluntario}</td>
-            <td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
+        const nomeSeguro = (l.voluntario || "").replace(/"/g, "&quot;");
+        tr.innerHTML =
+            "<td><span class=\"txt-editavel\">" + l.data + "</span></td>" +
+            "<td>" + l.dia + "</td>" +
+            "<td><span class=\"txt-editavel\">" + l.evento + "</span></td>" +
+            "<td><span class=\"txt-editavel\">" + l.hora + "</span></td>" +
+            "<td class=\"cel-voluntario\" data-nomes=\"" + nomeSeguro + "\">" + nomeSeguro + "</td>" +
+            "<td class=\"acoes\" style=\"display:none;\">" +
+            "<i class=\"ph ph-circle acao-amarelo\" onclick=\"alternarCor(this,'amarelo')\" title=\"Destacar Amarelo\"></i>" +
+            "<i class=\"ph ph-circle acao-vermelho\" onclick=\"alternarCor(this,'vermelho')\" title=\"Destacar Vermelho\"></i>" +
+            "<i class=\"ph ph-trash acao-lixeira\" onclick=\"this.closest('tr').remove()\" title=\"Remover Linha\"></i>" +
+            "</td>";
         corpoTabela.appendChild(tr);
     });
     setEdicao(true); btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
