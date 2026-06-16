@@ -196,7 +196,7 @@ tbody td { background:white; color:#1e293b; }
 .vermelho td { background:#fca5a5 !important; color: black !important; }
 
 /* Célula de voluntário editável via popup */
-td.cel-voluntario { cursor: pointer; position: relative; }
+td.cel-voluntario { cursor: pointer; position: relative; user-select: none; -webkit-user-select: none; }
 td.cel-voluntario.editavel:hover { background:#eff6ff !important; outline: 2px dashed #2563eb; }
 td.cel-voluntario.editavel::after {
     content: "\f10c"; font-family: "Phosphor"; font-size: 12px;
@@ -578,8 +578,16 @@ function handleClickForaPopup(e) {
     }
 }
 
-// Delegação de clique na tabela: abre popup ao clicar na célula de voluntário (em modo edição)
-corpoTabela.addEventListener('click', function(e) {
+// Bloqueia TODA digitação direta na célula de voluntário
+corpoTabela.addEventListener('keydown', function(e) {
+    if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
+}, true);
+corpoTabela.addEventListener('beforeinput', function(e) {
+    if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
+}, true);
+corpoTabela.addEventListener('paste', function(e) {
+    if(e.target.closest('td.cel-voluntario')) { e.preventDefault(); e.stopPropagation(); }
+}, true);
     const td = e.target.closest('td.cel-voluntario.editavel');
     if(!td) return;
     abrirPopupVoluntarios(td);
