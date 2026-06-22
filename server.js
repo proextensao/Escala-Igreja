@@ -167,8 +167,7 @@ async function dispararLembretesDeAmanha() {
 
 // ✅ CORREÇÃO #1: res.end() antes de executar a função, evita "output too large"
 app.get("/disparar-lembretes-diarios", (req, res) => {
-  res.set("Content-Type", "text/plain");
-  res.end("OK");
+  res.status(200).send("OK");
   dispararLembretesDeAmanha();
 });
 
