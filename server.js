@@ -167,13 +167,14 @@ async function dispararLembretesDeAmanha() {
 
 // ✅ CORREÇÃO #1: res.end() antes de executar a função, evita "output too large"
 app.get("/disparar-lembretes-diarios", (req, res) => {
-  res.status(200).send("OK");
+  res.sendStatus(200);
   dispararLembretesDeAmanha();
 });
 
 
-// ── Health check ──
-app.get("/", (req, res) => res.send("Servidor de escala Nação Santa — ok"));
+// ── Health check / Keep-Alive ──
+app.get("/", (req, res) => res.sendStatus(200));
+app.get("/ping", (req, res) => res.sendStatus(200));
 
 // ============================================================================
 // OBJETIVO 4: MENSAGEM SEMANAL AUTOMÁTICA (TODA SEGUNDA DE MANHÃ)
@@ -312,8 +313,7 @@ async function dispararMensagemSemanal() {
 
 // ✅ CORREÇÃO #4: res.end() antes de executar a função, evita "output too large"
 app.get("/disparar-mensagem-semanal", (req, res) => {
-  res.set("Content-Type", "text/plain");
-  res.end("OK");
+  res.sendStatus(200);
   dispararMensagemSemanal();
 });
 
