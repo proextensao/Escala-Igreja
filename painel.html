@@ -437,6 +437,7 @@ const db = getFirestore(app);
 const corpoTabela = document.getElementById("corpoTabela");
 
 let listaGlobal = [];
+let listaGlobalTodos = []; // Todos os cadastrados, sem filtro de disponibilidade
 let ministerioSelecionado = "";
 let ministerioPendente = "";
 let botaoPendente = null;
@@ -598,10 +599,45 @@ function abrirPopupVoluntarios(td) {
     const nomesAtuais = (td.dataset.nomes || td.innerText || "")
         .split(',').map(s => s.trim()).filter(s => s !== "" && s !== "A definir");
 
-    // Monta lista de nomes cadastrados (do ministério atual)
-    const nomesCadastrados = listaGlobal.map(v => v.nome);
+    // Descobre a data da linha para indicar restrições
+    const tr = td.closest('tr');
+    let dataISO = "";
+    let diaSemana = -1;
+    if(tr) {
+        const dataTxt = tr.cells[0]?.innerText?.trim(); // dd/mm/aaaa
+        if(dataTxt) {
+            const p = dataTxt.split('/');
+            if(p.length === 3) {
+                dataISO = `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+                diaSemana = new Date(dataISO + 'T00:00:00').getDay();
+            }
+        }
+    }
+
+    // Usa listaGlobalTodos para mostrar TODOS os cadastrados, sem filtro de disponibilidade
+    const nomesCadastrados = listaGlobalTodos.map(v => v.nome);
     // Garante que nomes já presentes na célula (mesmo que não cadastrados) apareçam marcados
     const todosNomes = [...new Set([...nomesCadastrados, ...nomesAtuais])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+
+    // Mapa de restrições por nome
+    const restricoesMap = {};
+    listaGlobalTodos.forEach(v => {
+        let restricao = null;
+        if(v.disponibilidade === "nenhum") {
+            restricao = "Indisponível este mês";
+        } else if(dataISO && v.datasIndisponiveis?.includes(dataISO)) {
+            restricao = "Folga nesta data";
+        } else if(diaSemana !== -1) {
+            const d2 = String(v.disponibilidade || "");
+            if(d2 === "0" && diaSemana !== 0) restricao = "Só aos Domingos";
+            else if(d2 === "2" && diaSemana !== 2) restricao = "Só às Terças";
+            else if(d2 === "6" && diaSemana !== 6) restricao = "Só aos Sábados";
+            else if(d2 === "nao_domingo" && diaSemana === 0) restricao = "Indisp. aos Domingos";
+            else if(d2 === "nao_terca" && diaSemana === 2) restricao = "Indisp. às Terças";
+            else if(d2 === "nao_sabado" && diaSemana === 6) restricao = "Indisp. aos Sábados";
+        }
+        if(restricao) restricoesMap[v.nome] = restricao;
+    });
 
     const popup = document.createElement('div');
     popup.className = 'popup-voluntarios';
@@ -609,8 +645,18 @@ function abrirPopupVoluntarios(td) {
     let html = `<h4><i class="ph ph-users"></i> Selecionar voluntário(s)</h4>`;
     todosNomes.forEach((nome, idx) => {
         const checked = nomesAtuais.includes(nome) ? 'checked' : '';
-        const extra = !nomesCadastrados.includes(nome) ? ' style="color:#f97316;"' : '';
-        html += `<label${extra}><input type="checkbox" value="${nome.replace(/"/g,'&quot;')}" ${checked}> ${nome}${!nomesCadastrados.includes(nome) ? ' (não cadastrado)' : ''}</label>`;
+        const naoCadastrado = !nomesCadastrados.includes(nome);
+        const restricao = restricoesMap[nome];
+        let labelStyle = '';
+        let badge = '';
+        if(naoCadastrado) {
+            labelStyle = ' style="color:#f97316;"';
+            badge = ` <span style="font-size:10px; background:#fff7ed; color:#f97316; border:1px solid #fed7aa; border-radius:3px; padding:1px 4px;">não cadastrado</span>`;
+        } else if(restricao) {
+            labelStyle = ' style="color:#94a3b8;"';
+            badge = ` <span style="font-size:10px; background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; border-radius:3px; padding:1px 4px;" title="Restrição de disponibilidade">⚠️ ${restricao}</span>`;
+        }
+        html += `<label${labelStyle}><input type="checkbox" value="${nome.replace(/"/g,'&quot;')}" ${checked}> ${nome}${badge}</label>`;
     });
 
     html += `
@@ -707,11 +753,13 @@ async function carregarVoluntarios() {
     if(!ministerioSelecionado) return;
     const snap = await getDocs(collection(db, "voluntarios"));
     listaGlobal = [];
+    listaGlobalTodos = [];
     listaVoluntariosUI.innerHTML = "";
     const mesSelecionadoPainel = document.getElementById('mesEscala').value;
     snap.forEach(d => {
         const v = d.data(); v.id = d.id;
         if(v.ministerios?.includes(ministerioSelecionado)) {
+            listaGlobalTodos.push(v); // Sempre adiciona a lista completa
             listaGlobal.push(v);
             let txtStatus = v.mesReferencia !== mesSelecionadoPainel
                 ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>" : textoDisp(v);
@@ -750,7 +798,7 @@ window.atualizarSelectsVoluntarios = function() {
         const sel = document.createElement('select');
         sel.id = `selectEventoVaga_${i}`;
         sel.innerHTML = "<option value=''>Selecione...</option>";
-        listaGlobal.forEach(v => { sel.innerHTML += `<option value="${v.nome}">${v.nome}</option>`; });
+        listaGlobalTodos.forEach(v => { sel.innerHTML += `<option value="${v.nome}">${v.nome}</option>`; });
         if (valoresAtuais[i]) sel.value = valoresAtuais[i];
         container.appendChild(label); container.appendChild(sel);
     }
