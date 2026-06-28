@@ -989,6 +989,8 @@ tbody td { background:white; color:#1e293b; }
 
           <button class="btn blue" onclick="abrirModalResgate()" style="margin-top: 15px;"><i class="ph ph-user-plus"></i> Resgatar do Banco</button>
 
+          <button class="btn" onclick="reenviarConfirmacoes()" style="background:#7c3aed; color:white; margin-top:8px;"><i class="ph ph-paper-plane-tilt"></i> Reenviar Confirmação por E-mail</button>
+
         </div>
 
 
@@ -1202,7 +1204,12 @@ document.getElementById('btnSalvar').onclick = async () => {
   snap.forEach(d => { if (d.data().whatsapp === zap) { docExistente = d; ministeriosAntigos = d.data().ministerios || []; } });
 
   const ministeriosFinais = [...new Set([...ministeriosAntigos, ...ministeriosSelecionados])];
-  const dadosFinal = { nome, whatsapp: zap, email: emailVal, ministerios: ministeriosFinais, disponibilidade: disp, datasIndisponiveis: datasSelecionadas, mesReferencia: mesReferenciaBanco };
+
+  // Preserva o e-mail já salvo se o voluntário não digitou nada no campo
+  const emailSalvoAntes = docExistente ? (docExistente.data().email || "") : "";
+  const emailParaUsar = emailVal || emailSalvoAntes;
+
+  const dadosFinal = { nome, whatsapp: zap, email: emailParaUsar, ministerios: ministeriosFinais, disponibilidade: disp, datasIndisponiveis: datasSelecionadas, mesReferencia: mesReferenciaBanco };
 
   // 1. Salva no Firebase primeiro
   let mensagemFinal = "";
@@ -1220,8 +1227,8 @@ document.getElementById('btnSalvar').onclick = async () => {
   btnSalvar.innerText = "Enviando confirmação aguarde...";
   btnSalvar.disabled = true;
 
-  // 3. BREVO: e-mail de boas-vindas
-  if (emailVal) {
+  // 3. BREVO: e-mail de confirmação (tanto novo cadastro quanto atualização)
+  if (emailParaUsar) {
     try {
       const mapaDisp = {
         "todos": "✅ Disponível todos os dias",
@@ -1298,7 +1305,7 @@ document.getElementById('btnSalvar').onclick = async () => {
             "api-key": "EscalaNacaoSanta123"
         },
         body: JSON.stringify({
-          para: emailVal,
+          para: emailParaUsar,
           nomePara: nome,
           assunto: `✅ Cadastro confirmado — ${mesExtenso} | Nação Santa`,
           html: htmlEmail
@@ -2277,6 +2284,119 @@ window.salvarEmail = async function() {
   fecharModal('modalEditarEmail');
   carregarVoluntarios();
   alert("✅ E-mail salvo com sucesso!");
+};
+
+// ── REENVIAR CONFIRMAÇÃO PARA VOLUNTÁRIOS JÁ CADASTRADOS ─────────────────
+window.reenviarConfirmacoes = async function() {
+  if(!ministerioSelecionado) return alert("Selecione um ministério primeiro.");
+  if(!listaGlobal || listaGlobal.length === 0) return alert("Nenhum voluntário carregado.");
+
+  const comEmail = listaGlobal.filter(v => v.email);
+  const semEmail = listaGlobal.filter(v => !v.email);
+
+  if(comEmail.length === 0) return alert("Nenhum voluntário desta equipe tem e-mail cadastrado.");
+
+  const confirmMsg = `Reenviar e-mail de confirmação para ${comEmail.length} voluntário(s)?${semEmail.length > 0 ? `
+
+⚠️ ${semEmail.length} sem e-mail cadastrado (serão ignorados).` : ""}`;
+  if(!confirm(confirmMsg)) return;
+
+  const mesReferencia = document.getElementById('mesEscala').value;
+  const mesExtenso = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][parseInt(mesReferencia.split('-')[1]) - 1];
+  const anoRef = mesReferencia.split('-')[0];
+
+  const mapaDisp = {
+    "todos": "✅ Disponível todos os dias",
+    "nenhum": "❌ Indisponível este mês",
+    "0": "📅 Somente aos domingos",
+    "2": "📅 Somente às terças",
+    "6": "📅 Somente aos sábados",
+    "nao_domingo": "🚫 Indisponível aos domingos",
+    "nao_terca": "🚫 Indisponível às terças",
+    "nao_sabado": "🚫 Indisponível aos sábados"
+  };
+
+  let enviados = 0, falhas = 0;
+  const toast = document.createElement('div');
+  toast.style.cssText = "position:fixed;bottom:20px;right:20px;background:#7c3aed;color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:bold;z-index:9999;box-shadow:0 4px 15px rgba(124,58,237,0.4);";
+  toast.innerText = `Enviando 0/${comEmail.length}...`;
+  document.body.appendChild(toast);
+
+  for(const v of comEmail) {
+    const textoDisponibilidade = mapaDisp[v.disponibilidade] || v.disponibilidade || "Não informado";
+
+    let datasArr = Array.isArray(v.datasIndisponiveis) ? v.datasIndisponiveis : String(v.datasIndisponiveis || "").split(',');
+    let chipsHtml = datasArr.filter(x => x.trim() !== '').length > 0
+      ? datasArr.filter(x => x.trim() !== '').map(dt => {
+          const p = String(dt).trim().split('-');
+          return `<span style="display:inline-block; background:#fee2e2; color:#ef4444; padding:4px 10px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${p[2] || dt}/${p[1] || ''}</span>`;
+        }).join('')
+      : `<span style="color:#94a3b8; font-size:13px;">Nenhuma data específica informada.</span>`;
+
+    const ministeriosHtml = (v.ministerios || []).map(m =>
+      `<span style="display:inline-block; background:#dbeafe; color:#1d4ed8; padding:4px 12px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${m}</span>`
+    ).join('');
+
+    const htmlEmail = `
+    <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
+      <div style="background:#1e293b; padding:24px; border-radius:10px; text-align:center; margin-bottom:24px;">
+        <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png"
+             alt="Nação Santa" style="height:50px; object-fit:contain; margin-bottom:12px;">
+        <h2 style="color:white; margin:0; font-size:20px;">✅ Confirmação de Disponibilidade</h2>
+        <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${mesExtenso} ${anoRef} — Nação Santa</p>
+      </div>
+      <p style="color:#1e293b; font-size:16px; margin-bottom:4px;">Olá, <b>${v.nome.split(' ')[0]}</b>! 👋</p>
+      <p style="color:#475569; font-size:14px; margin-bottom:20px;">
+        Sua disponibilidade para <b>${mesExtenso}</b> foi registrada com sucesso. Confira o resumo abaixo:
+      </p>
+      <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+        <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">👤 Nome</p>
+        <p style="font-size:15px; color:#1e293b; margin:0; font-weight:bold;">${v.nome}</p>
+      </div>
+      <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+        <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 10px 0;">⛪ Ministério(s)</p>
+        <div>${ministeriosHtml}</div>
+      </div>
+      <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+        <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">📆 Disponibilidade em ${mesExtenso}</p>
+        <p style="font-size:14px; color:#1e293b; margin:0;">${textoDisponibilidade}</p>
+      </div>
+      <div style="background:white; border-radius:10px; padding:18px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+        <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 10px 0;">🗓️ Datas que NÃO pode comparecer</p>
+        <div>${chipsHtml}</div>
+      </div>
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center; margin-bottom:20px;">
+        <p style="color:#15803d; font-size:14px; margin:0;">
+          🙏 Obrigado por servir! Em breve você receberá sua escala do mês por e-mail.
+        </p>
+      </div>
+      <p style="color:#94a3b8; font-size:11px; text-align:center; margin:0;">
+        Enviado automaticamente pelo sistema de escala — Nação Santa
+      </p>
+    </div>`;
+
+    try {
+      const resp = await fetch("https://escala-igreja.onrender.com/enviar-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "api-key": "EscalaNacaoSanta123" },
+        body: JSON.stringify({
+          para: v.email, nomePara: v.nome,
+          assunto: `✅ Confirmação de disponibilidade — ${mesExtenso} | Nação Santa`,
+          html: htmlEmail
+        })
+      });
+      if(resp.ok) enviados++; else falhas++;
+    } catch(e) { falhas++; }
+
+    toast.innerText = `Enviando ${enviados + falhas}/${comEmail.length}...`;
+  }
+
+  document.body.removeChild(toast);
+  alert(`✅ Pronto!
+
+📨 Enviados: ${enviados}${falhas > 0 ? `
+❌ Falhas: ${falhas}` : ''}${semEmail.length > 0 ? `
+⚠️ Sem e-mail: ${semEmail.map(v=>v.nome).join(', ')}` : ''}`);
 };
 
 // Fechar modal ao clicar fora
