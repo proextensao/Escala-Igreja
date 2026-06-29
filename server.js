@@ -318,5 +318,123 @@ app.get("/disparar-mensagem-semanal", (req, res) => {
 });
 
 
+
+// ============================================================================
+// OBJETIVO 5: LEMBRETE AUTOMÁTICO DE DISPONIBILIDADE (ÚLTIMO DIA DO MÊS)
+// ============================================================================
+
+async function dispararLembreteDisponibilidade() {
+  try {
+    console.log("Iniciando verificação de lembrete de disponibilidade...");
+
+    const agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+
+    // Verifica se hoje é o último dia do mês
+    const ultimoDiaMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).getDate();
+    if (agora.getDate() !== ultimoDiaMes) {
+      console.log(`Hoje é dia ${agora.getDate()}, último dia é ${ultimoDiaMes}. Nada a enviar.`);
+      return;
+    }
+
+    // Calcula o mês seguinte (referência que os voluntários devem preencher)
+    const mesSeguinte = new Date(agora.getFullYear(), agora.getMonth() + 1, 1);
+    const anoRef = mesSeguinte.getFullYear();
+    const mesRef = String(mesSeguinte.getMonth() + 1).padStart(2, "0");
+    const mesReferencia = `${anoRef}-${mesRef}`;
+
+    const nomesMeses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+                        "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    const nomeMesSeguinte = nomesMeses[mesSeguinte.getMonth()];
+
+    console.log(`Último dia do mês! Verificando quem não preencheu disponibilidade para: ${mesReferencia}`);
+
+    const volSnap = await db.collection("voluntarios").get();
+
+    let enviados = 0, falhas = 0, semEmail = 0;
+
+    for (const docVol of volSnap.docs) {
+      const v = docVol.data();
+      if (!v.nome) continue;
+
+      if (!v.email) {
+        semEmail++;
+        console.log(`⚠️ Sem e-mail: ${v.nome}`);
+        continue;
+      }
+
+      // Já preencheu o mês seguinte — pula
+      if (v.mesReferencia === mesReferencia) {
+        console.log(`✅ Já preencheu ${mesReferencia}: ${v.nome}`);
+        continue;
+      }
+
+      const primeiroNome = v.nome.trim().split(" ")[0];
+
+      const html = `
+        <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
+          <div style="background:#1e293b; padding:24px; border-radius:10px; text-align:center; margin-bottom:24px;">
+            <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png"
+                 alt="Nação Santa" style="height:50px; object-fit:contain; margin-bottom:12px;">
+            <h2 style="color:white; margin:0; font-size:20px;">⏰ Lembrete de Disponibilidade</h2>
+            <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${nomeMesSeguinte} ${anoRef} — Nação Santa</p>
+          </div>
+          <p style="color:#1e293b; font-size:16px; margin-bottom:4px;">Olá, <b>${primeiroNome}</b>! 👋</p>
+          <p style="color:#475569; font-size:14px; line-height:1.6; margin-bottom:20px;">
+            Ainda não identificamos seu cadastro de disponibilidade para <b>${nomeMesSeguinte}</b>.
+            Para que possamos montar a escala do próximo mês, precisamos saber seus dias disponíveis!
+          </p>
+          <div style="background:#fef9c3; border:1px solid #fde68a; border-radius:10px; padding:16px; margin-bottom:20px;">
+            <p style="color:#92400e; font-size:14px; margin:0; text-align:center;">
+              ⚠️ <b>Prazo:</b> Preencha sua disponibilidade ainda hoje para garantir seu lugar na escala de ${nomeMesSeguinte}!
+            </p>
+          </div>
+          <div style="text-align:center; margin-bottom:24px;">
+            <a href="https://escala-projecao.web.app"
+               style="display:inline-block; background:#2563eb; color:white; padding:14px 32px;
+                      border-radius:8px; font-size:15px; font-weight:bold; text-decoration:none;">
+              📋 Preencher minha disponibilidade
+            </a>
+          </div>
+          <p style="color:#475569; font-size:13px; line-height:1.6; margin-bottom:20px;">
+            O preenchimento é rápido! Informe seus dias disponíveis, datas que não poderá comparecer
+            e seus ministérios de atuação.
+          </p>
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center; margin-bottom:20px;">
+            <p style="color:#15803d; font-size:14px; margin:0;">
+              🙏 Obrigado por fazer parte da equipe! Seu serviço é muito importante para nós.
+            </p>
+          </div>
+          <p style="color:#94a3b8; font-size:11px; text-align:center; margin:0;">
+            Enviado automaticamente pelo sistema de escala — Nação Santa
+          </p>
+        </div>`;
+
+      try {
+        await enviarEmail(
+          v.email.trim(),
+          v.nome.trim(),
+          `⏰ Lembre-se: Preencha sua disponibilidade de ${nomeMesSeguinte} | Nação Santa`,
+          html
+        );
+        enviados++;
+        console.log(`✅ Lembrete de disponibilidade enviado para ${v.nome} (${v.email})`);
+      } catch (errEmail) {
+        falhas++;
+        console.error(`❌ Falha ao enviar para ${v.nome}:`, errEmail.message);
+      }
+    }
+
+    console.log(`Lembrete de disponibilidade concluído. Enviados: ${enviados} | Falhas: ${falhas} | Sem e-mail: ${semEmail}`);
+  } catch (error) {
+    console.error("Erro no lembrete de disponibilidade:", error);
+  }
+}
+
+// Cron-job chama esta rota todo dia — a função decide sozinha se é o último dia do mês
+app.get("/disparar-lembrete-disponibilidade", (req, res) => {
+  res.sendStatus(200);
+  dispararLembreteDisponibilidade();
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
