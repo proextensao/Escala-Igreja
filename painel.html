@@ -602,11 +602,8 @@ function abrirPopupVoluntarios(td) {
         html += `<label${labelStyle}><input type="checkbox" value="${nomeEscapado}" ${checked}> ${nome}${badge}</label>`;
     });
 
+    // A CAIXA DE TEXTO "outro-box" FOI REMOVIDA DAQUI PARA IMPEDIR EDIÇÃO MANUAL
     html += `
-        <div class="outro-box">
-            <label style="font-weight:bold; width:auto; margin-bottom:2px;">+ Adicionar outro nome:</label>
-            <input type="text" class="input-outro-nome" placeholder="Digite um nome (opcional)" style="width:100%; margin-bottom:0;">
-        </div>
         <div class="botoes-popup">
             <button class="btn-aplicar" type="button">Aplicar</button>
             <button class="btn-fechar" type="button">Fechar</button>
@@ -627,9 +624,9 @@ function abrirPopupVoluntarios(td) {
     popup.style.left = `${Math.max(10, left)}px`;
 
     popup.querySelector('.btn-aplicar').onclick = () => {
+        // Agora o sistema captura apenas os checkboxes que foram marcados
         const marcados = Array.from(popup.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
-        const outroNome = popup.querySelector('.input-outro-nome').value.trim();
-        if(outroNome) marcados.push(outroNome);
+        
         const novosNomes = marcados.length > 0 ? marcados.join(', ') : 'A definir';
         td.dataset.nomes = novosNomes;
         let span = td.querySelector('.vol-texto');
