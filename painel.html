@@ -7,92 +7,35 @@
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
 /* ===== CORREÇÕES MOBILE ===== */
-
-/* Viewport obrigatório — adicione também no <head> se não existir */
-/* <meta name="viewport" content="width=device-width, initial-scale=1.0"> */
-
-/* Título não sobrepõe botões no topo */
 h1 {
     padding-top: 55px !important;
     font-size: clamp(16px, 4.5vw, 32px) !important;
     line-height: 1.3 !important;
 }
-
-/* Badge do mês não estoura */
 .mes-pequeno {
     max-width: calc(100% - 40px);
     word-break: keep-all;
 }
-
-/* Botões de ministério: 2 por linha no celular */
 @media (max-width: 600px) {
-    body {
-        padding: 15px !important;
-    }
-
-    h1 {
-        padding-top: 70px !important;
-        font-size: 20px !important;
-    }
-
-    .subtitulo {
-        font-size: 14px !important;
-        padding: 0 10px;
-    }
-
-    .tabs-container {
-        gap: 8px !important;
-        padding: 0 5px !important;
-        margin-bottom: 20px !important;
-    }
-
-    /* 2 botões por linha */
-    .tab-btn {
-        width: calc(50% - 4px) !important;
-        padding: 10px 8px !important;
-        font-size: 13px !important;
-        justify-content: center !important;
-    }
-
-    /* Botão "Transmissão" fica centralizado sozinho */
-    .tab-btn:last-child:nth-child(odd) {
-        width: 60% !important;
-        margin: 0 auto;
-    }
-
-    /* Grid do painel: 1 coluna no celular */
-    .main-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    /* Tabela da escala com scroll horizontal */
-    #secaoPrint {
-        overflow-x: auto !important;
-        display: block !important;
-    }
-
-    table {
-        min-width: 480px !important;
-    }
-
-    /* Modal não estoura a tela */
-    .modal-box {
-        width: 90vw !important;
-        max-width: 340px !important;
-        padding: 20px !important;
-    }
+    body { padding: 15px !important; }
+    h1 { padding-top: 70px !important; font-size: 20px !important; }
+    .subtitulo { font-size: 14px !important; padding: 0 10px; }
+    .tabs-container { gap: 8px !important; padding: 0 5px !important; margin-bottom: 20px !important; }
+    .tab-btn { width: calc(50% - 4px) !important; padding: 10px 8px !important; font-size: 13px !important; justify-content: center !important; }
+    .tab-btn:last-child:nth-child(odd) { width: 60% !important; margin: 0 auto; }
+    .main-grid { grid-template-columns: 1fr !important; }
+    #secaoPrint { overflow-x: auto !important; display: block !important; }
+    table { min-width: 480px !important; }
+    .modal-box { width: 90vw !important; max-width: 340px !important; padding: 20px !important; }
 }
 h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
-
 .mes-pequeno {
     position: absolute; top: 20px; right: 20px; font-size: 11px;
     color: #1e293b; background: #f8fafc; padding: 5px 10px;
     border-radius: 4px; font-weight: bold;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase;
 }
-
 .subtitulo { color: #94a3b8; text-align: center; margin-top: 0; margin-bottom: 10px; font-weight: 400; font-size: 18px; }
-
 .btn-mestre {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     margin: 0 auto 25px auto; background: #334155; color: #cbd5e1;
@@ -101,7 +44,6 @@ h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
 }
 .btn-mestre i { font-size: 16px; }
 .btn-mestre:hover { background: #475569; color: white; }
-
 .tabs-container {
     display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
     margin-bottom: 30px; max-width: 1200px; margin-left: auto; margin-right: auto;
@@ -121,7 +63,6 @@ h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
     border-color: #16a34a !important; transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
-
 .modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.8); z-index: 1000;
@@ -140,11 +81,9 @@ h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
 .erro-msg { color: #ef4444; font-size: 14px; font-weight: bold; display: none; margin-bottom: 15px; }
 .btn-cancelar { background: #94a3b8; color: white; margin-top: 5px; }
 .btn-cancelar:hover { background: #64748b; }
-
 #painelPrincipal { display: none; }
 .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1200px; margin:auto; }
 .card { background:white; padding:25px; border-radius:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-
 .header-config { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .header-config h3 { margin: 0; }
 .btn-trocar-senha {
@@ -154,7 +93,6 @@ h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
 }
 .btn-trocar-senha i { font-size: 14px; }
 .btn-trocar-senha:hover { opacity: 0.8; }
-
 input, select {
     width:100%; padding:10px; margin-bottom:10px;
     border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;
@@ -168,7 +106,6 @@ input, select {
 .btn:hover { opacity: 0.9; }
 .green{background:#22c55e;color:white;} .blue{background:#2563eb;color:white;}
 .gray{background:#475569;color:white;} .orange{background:#f97316;color:white;}
-
 .voluntarios-container { height:150px; overflow:auto; border:1px solid #ddd; padding:5px; border-radius: 6px; }
 .voluntario-item {
     padding:8px; background:#f1f5f9; margin-bottom:5px;
@@ -177,21 +114,18 @@ input, select {
 }
 .excluir { cursor:pointer; color: #ef4444; font-size: 16px; transition: 0.2s; }
 .excluir:hover { color: #dc2626; transform: scale(1.1); }
-
 table {
     width:100%; margin-top:20px; background:#2563eb; color:white;
     border-collapse: collapse; border-radius: 8px; overflow: hidden;
 }
 td,th { padding:12px 10px; text-align:center; border: 1px solid #bfdbfe; }
 tbody td { background:white; color:#1e293b; }
-
 .acoes i { cursor:pointer; margin:0 5px; font-size: 18px; transition: 0.2s; }
 .acoes i:hover { transform: scale(1.1); }
 .acao-amarelo { color: #eab308; }
 .acao-vermelho { color: #ef4444; }
 .acao-lixeira { color: #64748b; }
 .acao-lixeira:hover { color: #ef4444; }
-
 .amarelo td { background:#fef08a !important; color: black !important; }
 .vermelho td { background:#fca5a5 !important; color: black !important; }
 
@@ -206,7 +140,7 @@ td.cel-voluntario.editavel::after {
 }
 
 .popup-voluntarios {
-    position: absolute; z-index: 2000; background: white; border: 1px solid #cbd5e1;
+    position: fixed; z-index: 2000; background: white; border: 1px solid #cbd5e1;
     border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.25);
     padding: 10px; width: 240px; max-height: 320px; overflow-y: auto;
     text-align: left; color: #1e293b; font-size: 13px;
@@ -215,20 +149,23 @@ td.cel-voluntario.editavel::after {
 .popup-voluntarios label {
     display: flex; align-items: center; gap: 6px; padding: 5px 4px;
     border-radius: 4px; cursor: pointer; font-weight: normal; margin: 0;
+    width: auto;
 }
 .popup-voluntarios label:hover { background: #f1f5f9; }
-.popup-voluntarios input[type="checkbox"] { width: auto; margin: 0; }
+.popup-voluntarios input[type="checkbox"] { width: auto; margin: 0; flex-shrink: 0; }
 .popup-voluntarios .outro-box {
     margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;
 }
 .popup-voluntarios .outro-box input[type="text"] {
     width: 100%; padding: 6px; font-size: 12px; margin-top: 4px;
     border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;
+    margin-bottom: 0;
 }
 .popup-voluntarios .botoes-popup { display:flex; gap:6px; margin-top:10px; }
 .popup-voluntarios .botoes-popup button {
     flex: 1; padding: 6px; border: none; border-radius: 6px;
     font-size: 12px; font-weight: bold; cursor: pointer;
+    width: auto; margin-bottom: 0;
 }
 .popup-voluntarios .btn-aplicar { background:#22c55e; color:white; }
 .popup-voluntarios .btn-fechar { background:#94a3b8; color:white; }
@@ -243,15 +180,15 @@ td.cel-voluntario.editavel::after {
     display: flex; align-items: center; justify-content: center;
     background: #e2e8f0; border: none; padding: 6px; border-radius: 4px;
     cursor: pointer; transition: 0.2s; font-size: 16px; color: #475569;
+    width: auto; margin-bottom: 0;
 }
 .btn-baixar:hover { background: #cbd5e1; }
 .btn-baixar.excluir-hist { color: #ef4444; }
-
-/* Selects dinâmicos do evento especial */
 .selects-voluntarios-container { margin-bottom: 10px; }
 .selects-voluntarios-container label {
     color:#475569; font-size:12px; font-weight:bold;
     display:block; margin-bottom:4px; margin-top:8px;
+    width: auto;
 }
 .selects-voluntarios-container select { margin-bottom: 0; }
 
@@ -317,7 +254,6 @@ td.cel-voluntario.editavel::after {
     </div>
 </div>
 
-<!-- Modal Lembretes -->
 <div class="modal-overlay" id="modalLembretes">
     <div class="modal-box" style="width:380px; max-width:95vw;">
         <h3 style="color:#7c3aed;"><i class="ph ph-envelope-simple"></i> Enviar Lembretes</h3>
@@ -360,13 +296,13 @@ td.cel-voluntario.editavel::after {
 
             <label style="color:#475569; font-size:12px; font-weight:bold;">Dias de Atuação do Ministério:</label>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                <label style="font-size:12px;"><input type="checkbox" id="checkDom"> Dom</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkSeg"> Seg</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkTer"> Ter</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkQua"> Qua</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkQui"> Qui</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkSex"> Sex</label>
-                <label style="font-size:12px;"><input type="checkbox" id="checkSab"> Sáb</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkDom" style="width:auto; margin-bottom:0;"> Dom</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkSeg" style="width:auto; margin-bottom:0;"> Seg</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkTer" style="width:auto; margin-bottom:0;"> Ter</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkQua" style="width:auto; margin-bottom:0;"> Qua</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkQui" style="width:auto; margin-bottom:0;"> Qui</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkSex" style="width:auto; margin-bottom:0;"> Sex</label>
+                <label style="font-size:12px; width:auto; margin-bottom:0;"><input type="checkbox" id="checkSab" style="width:auto; margin-bottom:0;"> Sáb</label>
             </div>
 
             <button class="btn green" id="btnGerar"><i class="ph ph-calendar-plus"></i> Gerar escala</button>
@@ -435,10 +371,19 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const corpoTabela = document.getElementById("corpoTabela");
+
+// ── DECLARAÇÕES CORRETAS DE ELEMENTOS ─────────────────────────────────────
+const corpoTabela       = document.getElementById("corpoTabela");
+const listaVoluntariosUI = document.getElementById("listaVoluntariosUI");
+const listaHistorico    = document.getElementById("listaHistorico");
+const btnGerar          = document.getElementById("btnGerar");
+const btnSalvar         = document.getElementById("btnSalvar");
+const btnEditar         = document.getElementById("btnEditar");
+const btnEnviarLembretes = document.getElementById("btnEnviarLembretes");
+const mesEscala         = document.getElementById("mesEscala");
 
 let listaGlobal = [];
-let listaGlobalTodos = []; // Todos os cadastrados, sem filtro de disponibilidade
+let listaGlobalTodos = [];
 let ministerioSelecionado = "";
 let ministerioPendente = "";
 let botaoPendente = null;
@@ -451,8 +396,8 @@ const ultimoDiaDoMesP = new Date(hojeP.getFullYear(), hojeP.getMonth() + 1, 0).g
 let mesP = hojeP.getMonth(); let anoP = hojeP.getFullYear();
 if (hojeP.getDate() >= (ultimoDiaDoMesP - 9)) { mesP++; if(mesP > 11){ mesP = 0; anoP++; } }
 document.getElementById("mesDinamicoPainel").innerText = meses[mesP];
-document.getElementById('mesEscala').value = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
-document.getElementById('mesEscala').addEventListener('change', () => { if(ministerioSelecionado) carregarVoluntarios(); });
+mesEscala.value = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
+mesEscala.addEventListener('change', () => { if(ministerioSelecionado) carregarVoluntarios(); });
 
 window.abrirModalSenha = function(nomeMinisterio, elementoBtn) {
     if (acessoMestreLiberado || ministeriosDestravados[nomeMinisterio]) {
@@ -541,6 +486,7 @@ window.abrirModalTrocarSenha = function() {
     document.getElementById("modalTrocarSenha").style.display = "flex";
     setTimeout(() => document.getElementById("inputNovaSenha").focus(), 100);
 };
+
 window.salvarNovaSenha = async function() {
     const novaSenha = document.getElementById("inputNovaSenha").value.trim();
     if(!novaSenha) { document.getElementById("erroTrocarSenha").style.display = "block"; return; }
@@ -556,7 +502,6 @@ window.setEdicao = function(habilitado) {
             tr.cells[0].setAttribute('contenteditable', habilitado ? 'true' : 'false');
             tr.cells[2].setAttribute('contenteditable', habilitado ? 'true' : 'false');
             tr.cells[3].setAttribute('contenteditable', habilitado ? 'true' : 'false');
-            // Voluntário: NUNCA contenteditable, apenas popup
             tr.cells[4].removeAttribute('contenteditable');
             if(habilitado) tr.cells[4].classList.add('editavel');
             else tr.cells[4].classList.remove('editavel');
@@ -586,7 +531,6 @@ function handleClickForaPopup(e) {
     }
 }
 
-// Célula de voluntário: bloqueio via estrutura HTML (sem contenteditable)
 corpoTabela.addEventListener('click', function(e) {
     const td = e.target.closest('td.cel-voluntario.editavel');
     if(!td) return;
@@ -596,16 +540,14 @@ corpoTabela.addEventListener('click', function(e) {
 function abrirPopupVoluntarios(td) {
     fecharPopupVoluntarios();
 
-    // Nomes atualmente na célula (separados por vírgula)
     const nomesAtuais = (td.dataset.nomes || td.querySelector('.vol-texto')?.textContent || td.innerText || "")
         .split(',').map(s => s.trim()).filter(s => s !== "" && s !== "A definir");
 
-    // Descobre a data da linha para indicar restrições
     const tr = td.closest('tr');
     let dataISO = "";
     let diaSemana = -1;
     if(tr) {
-        const dataTxt = tr.cells[0]?.innerText?.trim(); // dd/mm/aaaa
+        const dataTxt = tr.cells[0]?.innerText?.trim();
         if(dataTxt) {
             const p = dataTxt.split('/');
             if(p.length === 3) {
@@ -615,12 +557,11 @@ function abrirPopupVoluntarios(td) {
         }
     }
 
-    // Usa listaGlobalTodos para mostrar TODOS os cadastrados, sem filtro de disponibilidade
+    // Usa listaGlobalTodos — TODOS os cadastrados, sem filtro de disponibilidade
     const nomesCadastrados = listaGlobalTodos.map(v => v.nome);
-    // Garante que nomes já presentes na célula (mesmo que não cadastrados) apareçam marcados
     const todosNomes = [...new Set([...nomesCadastrados, ...nomesAtuais])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 
-    // Mapa de restrições por nome
+    // Mapa de restrições (apenas informativo, não bloqueia seleção)
     const restricoesMap = {};
     listaGlobalTodos.forEach(v => {
         let restricao = null;
@@ -644,7 +585,7 @@ function abrirPopupVoluntarios(td) {
     popup.className = 'popup-voluntarios';
 
     let html = `<h4><i class="ph ph-users"></i> Selecionar voluntário(s)</h4>`;
-    todosNomes.forEach((nome, idx) => {
+    todosNomes.forEach(nome => {
         const checked = nomesAtuais.includes(nome) ? 'checked' : '';
         const naoCadastrado = !nomesCadastrados.includes(nome);
         const restricao = restricoesMap[nome];
@@ -657,13 +598,14 @@ function abrirPopupVoluntarios(td) {
             labelStyle = ' style="color:#94a3b8;"';
             badge = ` <span style="font-size:10px; background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; border-radius:3px; padding:1px 4px;" title="Restrição de disponibilidade">⚠️ ${restricao}</span>`;
         }
-        html += `<label${labelStyle}><input type="checkbox" value="${nome.replace(/"/g,'&quot;')}" ${checked}> ${nome}${badge}</label>`;
+        const nomeEscapado = nome.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        html += `<label${labelStyle}><input type="checkbox" value="${nomeEscapado}" ${checked}> ${nome}${badge}</label>`;
     });
 
     html += `
         <div class="outro-box">
-            <label style="font-weight:bold;">+ Adicionar outro nome:</label>
-            <input type="text" class="input-outro-nome" placeholder="Digite um nome (opcional)">
+            <label style="font-weight:bold; width:auto; margin-bottom:2px;">+ Adicionar outro nome:</label>
+            <input type="text" class="input-outro-nome" placeholder="Digite um nome (opcional)" style="width:100%; margin-bottom:0;">
         </div>
         <div class="botoes-popup">
             <button class="btn-aplicar" type="button">Aplicar</button>
@@ -673,22 +615,25 @@ function abrirPopupVoluntarios(td) {
     popup.innerHTML = html;
     document.body.appendChild(popup);
 
-    // Posiciona o popup próximo à célula
+    // Posiciona usando position:fixed (não depende de scroll)
     const rect = td.getBoundingClientRect();
-    popup.style.top = `${window.scrollY + rect.bottom + 4}px`;
-    let left = window.scrollX + rect.left;
-    if(left + 240 > window.innerWidth - 10) left = window.innerWidth - 250;
+    let top = rect.bottom + 4;
+    let left = rect.left;
+    // Evita sair da tela pela direita
+    if(left + 250 > window.innerWidth - 10) left = window.innerWidth - 260;
+    // Evita sair da tela por baixo
+    if(top + 320 > window.innerHeight) top = rect.top - 320;
+    popup.style.top = `${Math.max(10, top)}px`;
     popup.style.left = `${Math.max(10, left)}px`;
 
     popup.querySelector('.btn-aplicar').onclick = () => {
         const marcados = Array.from(popup.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
         const outroNome = popup.querySelector('.input-outro-nome').value.trim();
         if(outroNome) marcados.push(outroNome);
-
         const novosNomes = marcados.length > 0 ? marcados.join(', ') : 'A definir';
         td.dataset.nomes = novosNomes;
         let span = td.querySelector('.vol-texto');
-        if(!span) { span = document.createElement('span'); span.className = 'vol-texto'; td.innerHTML = ''; td.appendChild(span); }
+        if(!span) { td.innerHTML = ''; span = document.createElement('span'); span.className = 'vol-texto'; td.appendChild(span); }
         span.textContent = novosNomes;
         fecharPopupVoluntarios();
     };
@@ -698,21 +643,19 @@ function abrirPopupVoluntarios(td) {
     setTimeout(() => document.addEventListener('mousedown', handleClickForaPopup, true), 0);
 }
 
-// ── ORDENAÇÃO CORRIGIDA (Adicionado zeros à esquerda) ─────────────────────
+// ── ORDENAÇÃO ─────────────────────────────────────────────────────────────
 function ordenarTabela() {
     const tbody = document.getElementById("corpoTabela");
     const rows = Array.from(tbody.querySelectorAll("tr"));
     rows.sort((a, b) => {
         const parseDate = (str) => {
             let p = str.split('/');
-            // Garante que a data sempre seja AAA-MM-DD para o JavaScript ordenar alfabeticamente corretamente.
-            if(p.length === 3) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`; 
+            if(p.length === 3) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
             return str;
         };
         const dA = parseDate(a.cells[0].innerText.trim());
         const dB = parseDate(b.cells[0].innerText.trim());
         if (dA !== dB) return dA.localeCompare(dB);
-        // Desempate pela hora
         return a.cells[3].innerText.trim().localeCompare(b.cells[3].innerText.trim());
     });
     rows.forEach(row => tbody.appendChild(row));
@@ -758,11 +701,11 @@ async function carregarVoluntarios() {
     listaGlobal = [];
     listaGlobalTodos = [];
     listaVoluntariosUI.innerHTML = "";
-    const mesSelecionadoPainel = document.getElementById('mesEscala').value;
+    const mesSelecionadoPainel = mesEscala.value;
     snap.forEach(d => {
         const v = d.data(); v.id = d.id;
         if(v.ministerios?.includes(ministerioSelecionado)) {
-            listaGlobalTodos.push(v); // Sempre adiciona a lista completa
+            listaGlobalTodos.push(v);
             listaGlobal.push(v);
             let txtStatus = v.mesReferencia !== mesSelecionadoPainel
                 ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>" : textoDisp(v);
@@ -773,7 +716,7 @@ async function carregarVoluntarios() {
                 </div>`;
         }
     });
-    atualizarSelectsVoluntarios(); // Atualiza a lista dropdown com os voluntários carregados
+    atualizarSelectsVoluntarios();
 }
 
 window.excluirVol = async(id) => {
@@ -798,6 +741,7 @@ window.atualizarSelectsVoluntarios = function() {
     for (let i = 0; i < vagas; i++) {
         const label = document.createElement('label');
         label.innerText = `Voluntário ${i + 1}:`;
+        label.style.cssText = 'color:#475569; font-size:12px; font-weight:bold; display:block; margin-bottom:4px; margin-top:8px; width:auto;';
         const sel = document.createElement('select');
         sel.id = `selectEventoVaga_${i}`;
         sel.innerHTML = "<option value=''>Selecione...</option>";
@@ -812,32 +756,26 @@ window.adicionarEventoEspecial = function() {
     const hora = document.getElementById('horaEvento').value;
     const dataStr = document.getElementById('dataEvento').value;
     const vagas = parseInt(document.getElementById('vagasEvento').value) || 1;
-
     if (!nome) return alert("Digite o nome do evento.");
     if (!dataStr) return alert("Selecione a data do evento.");
-
     for (let i = 0; i < vagas; i++) {
         const sel = document.getElementById(`selectEventoVaga_${i}`);
         if (!sel || !sel.value) return alert(`Selecione o Voluntário ${i + 1}.`);
     }
-
-    // Divide a data pelo hífen para não correr o risco de erro de Fuso Horário no Browser
     const [ano, mes, dia] = dataStr.split('-');
     const dt = new Date(ano, mes - 1, dia, 12, 0, 0);
-
     for (let i = 0; i < vagas; i++) {
         const sel = document.getElementById(`selectEventoVaga_${i}`);
         criarLinha(dt, nome, hora, sel.value);
     }
     setEdicao(true);
-
-    document.getElementById('nomeEvento').value = ''; document.getElementById('dataEvento').value = '';
+    document.getElementById('nomeEvento').value = '';
+    document.getElementById('dataEvento').value = '';
     document.getElementById('vagasEvento').value = '1';
     atualizarSelectsVoluntarios();
 };
 
 btnGerar.onclick = async () => {
-
     const mesVal = mesEscala.value;
     const numVagas = parseInt(document.getElementById("vagasPorDia").value);
     const limiteMes = parseInt(document.getElementById("limiteMensal").value);
@@ -888,7 +826,6 @@ btnGerar.onclick = async () => {
         if(eventosPadrao[diaSemana] && diasPermitidos[diaSemana]) {
             let nomesEscaladosNoDia = [];
             for(let i = 0; i < numVagas; i++) {
-
                 const filtroBase = (v, ignorar7Dias = false) => {
                     if(v.disponibilidade === "nenhum") return false;
                     if(v.datasIndisponiveis?.includes(dataISO)) return false;
@@ -915,13 +852,8 @@ btnGerar.onclick = async () => {
                     }
                     return true;
                 };
-
-                // Tenta primeiro com regra dos 7 dias; se não achar ninguém, flexibiliza
                 let candidatos = listaGlobal.filter(v => filtroBase(v, false));
-                if(candidatos.length === 0) {
-                    candidatos = listaGlobal.filter(v => filtroBase(v, true));
-                }
-
+                if(candidatos.length === 0) candidatos = listaGlobal.filter(v => filtroBase(v, true));
                 for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
                 candidatos.sort((a, b) => (contagemMes[a.nome] || 0) - (contagemMes[b.nome] || 0));
                 let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
@@ -937,7 +869,6 @@ btnGerar.onclick = async () => {
     setEdicao(true);
     btnSalvar.style.display = 'block'; btnEditar.style.display = 'none';
 };
-
 
 btnSalvar.onclick = async () => {
     const mesReferencia = mesEscala.value;
@@ -966,25 +897,22 @@ btnSalvar.onclick = async () => {
     await addDoc(collection(db, "historico_escalas"), dadosEscala);
     alert(`Escala salva: ${nomeExibicao}`);
     carregarHistorico();
-
     setEdicao(false); btnSalvar.style.display = 'none'; btnEditar.style.display = 'block';
-    document.getElementById('btnEnviarLembretes').style.display = 'block';
+    btnEnviarLembretes.style.display = 'block';
     document.title = `Escala ${mesReferencia} - ${ministerioSelecionado}`; window.print();
     document.title = "Gerenciador de Escala - Nação Santa";
 };
 
-btnEditar.onclick = () => { setEdicao(true); btnSalvar.style.display = 'block'; btnEditar.style.display = 'none'; btnEnviarLembretes.style.display = 'none'; };
+btnEditar.onclick = () => {
+    setEdicao(true); btnSalvar.style.display = 'block';
+    btnEditar.style.display = 'none'; btnEnviarLembretes.style.display = 'none';
+};
 
-// ── BREVO - LEMBRETES POR E-MAIL ─────────────────────────────────────────────
-    
-const btnEnviarLembretes = document.getElementById('btnEnviarLembretes');
-
-// Coleta dados da tabela e abre preview
+// ── BREVO - LEMBRETES POR E-MAIL ──────────────────────────────────────────
 btnEnviarLembretes.onclick = async () => {
     const linhas = Array.from(corpoTabela.querySelectorAll("tr"));
     if(linhas.length === 0) return alert("Nenhuma escala gerada.");
 
-    // Agrupa eventos por voluntário
     const porVoluntario = {};
     linhas.forEach(tr => {
         const textoCelula = tr.cells[4]?.dataset?.nomes || tr.cells[4]?.innerText || "";
@@ -1000,12 +928,10 @@ btnEnviarLembretes.onclick = async () => {
         });
     });
 
-    // Busca e-mails no Firebase
     const snap = await getDocs(collection(db, "voluntarios"));
     const emailMap = {};
     snap.forEach(d => { const v = d.data(); if(v.email) emailMap[v.nome] = v.email; });
 
-    // Monta preview
     const preview = document.getElementById('previewLembretes');
     preview.innerHTML = "";
     let semEmail = [];
@@ -1028,8 +954,6 @@ btnEnviarLembretes.onclick = async () => {
     if(preview.innerHTML === "") {
         preview.innerHTML = '<p style="color:#94a3b8; text-align:center;">Nenhum voluntário com e-mail cadastrado.</p>';
     }
-
-    // Salva para usar no envio
     window._dadosLembrete = { porVoluntario, emailMap };
     document.getElementById('modalLembretes').style.display = 'flex';
 };
@@ -1038,7 +962,7 @@ window.confirmarEnvioLembretes = async function() {
     const { porVoluntario, emailMap } = window._dadosLembrete || {};
     if(!porVoluntario) return;
 
-    const mesReferencia = document.getElementById('mesEscala').value;
+    const mesReferencia = mesEscala.value;
     const [anoRef, mesRef] = mesReferencia.split('-');
     const nomeMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][parseInt(mesRef)-1];
 
@@ -1052,12 +976,10 @@ window.confirmarEnvioLembretes = async function() {
     for(const nome of Object.keys(porVoluntario)) {
         const email = emailMap[nome];
         if(!email) continue;
-
         const eventos = porVoluntario[nome];
         const linhasHtml = eventos.map(e =>
             `<tr><td style="padding:8px 12px; border-bottom:1px solid #e2e8f0;">${e.data} (${e.dia})</td><td style="padding:8px 12px; border-bottom:1px solid #e2e8f0;">${e.evento}</td><td style="padding:8px 12px; border-bottom:1px solid #e2e8f0;">${e.hora}</td></tr>`
         ).join('');
-
         const htmlEmail = `
         <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
             <div style="background:#1e293b; padding:20px; border-radius:8px; text-align:center; margin-bottom:24px;">
@@ -1081,24 +1003,19 @@ window.confirmarEnvioLembretes = async function() {
                 <span style="color:#94a3b8;">Enviado automaticamente pelo sistema de escala — Nação Santa</span>
             </p>
         </div>`;
-
         try {
             const res = await fetch("https://escala-igreja.onrender.com/enviar-email", {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "api-key": "EscalaNacaoSanta123"
-                },
+                headers: { "Content-Type": "application/json", "api-key": "EscalaNacaoSanta123" },
                 body: JSON.stringify({
-                    para: email,
-                    nomePara: nome,
+                    para: email, nomePara: nome,
                     assunto: `📋 Sua escala de ${nomeMes} — ${ministerioSelecionado} | Nação Santa`,
                     html: htmlEmail
                 })
             });
             if(res.ok) enviados++; else falhas++;
         } catch(e) { falhas++; }
-    } // <-- ADICIONE ESTA CHAVE PARA FECHAR O FOR AQUI
+    }
 
     document.body.removeChild(toast);
     alert(`✅ Lembretes enviados!\n\n📨 Enviados: ${enviados}\n❌ Falhas: ${falhas}`);
@@ -1129,7 +1046,9 @@ async function carregarHistorico() {
 }
 
 window.excluirHistorico = async(id) => {
-    if(confirm("Deseja excluir esta escala do histórico permanentemente?")) { await deleteDoc(doc(db, "historico_escalas", id)); carregarHistorico(); }
+    if(confirm("Deseja excluir esta escala do histórico permanentemente?")) {
+        await deleteDoc(doc(db, "historico_escalas", id)); carregarHistorico();
+    }
 };
 
 window.reconstruirEBaixar = async(id) => {
@@ -1186,7 +1105,8 @@ window.confirmarResgate = async function() {
             const vol = snap.data(); let arr = vol.ministerios || [];
             if(!arr.includes(ministerioSelecionado)) {
                 arr.push(ministerioSelecionado); await updateDoc(docRef, { ministerios: arr });
-                alert(`${vol.nome} foi adicionado à equipe de ${ministerioSelecionado}!`); fecharModal('modalResgate'); carregarVoluntarios();
+                alert(`${vol.nome} foi adicionado à equipe de ${ministerioSelecionado}!`);
+                fecharModal('modalResgate'); carregarVoluntarios();
             }
         }
     } catch(e) { alert("Erro ao tentar resgatar o voluntário do banco."); }
