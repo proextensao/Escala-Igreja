@@ -1,446 +1,225 @@
 <!DOCTYPE html>
-
 <html lang="pt-br">
-
 <head>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <meta charset="UTF-8">
-
 <title>Nação Santa - Sistema de Escala</title>
-
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
 <style>
-
 /* ===== RESET & BASE ===== */
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-
-
 body {
-
   font-family: 'Segoe UI', sans-serif;
-
   background: #0f172a;
-
   min-height: 100vh;
-
   overflow-x: hidden;
-
 }
-
-
 
 /* ===== SCREENS SYSTEM ===== */
-
 .screen {
-
   position: fixed;
-
   top: 0; left: 0;
-
   width: 100%;
-
   height: 100%;
-
   overflow-y: auto;
-
   transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease;
-
   will-change: transform, opacity;
-
 }
-
-
 
 #screen-cadastro {
-
   transform: translateX(0);
-
   opacity: 1;
-
   z-index: 10;
-
 }
-
-
 
 #screen-painel {
-
   transform: translateX(100%);
-
   opacity: 0;
-
   z-index: 5;
-
 }
-
-
 
 /* Painel entra da direita */
-
 body.show-painel #screen-cadastro {
-
   transform: translateX(-40%);
-
   opacity: 0;
-
   pointer-events: none;
-
 }
-
-
 
 body.show-painel #screen-painel {
-
   transform: translateX(0);
-
   opacity: 1;
-
   pointer-events: all;
-
 }
-
-
 
 /* ===== CADASTRO STYLES ===== */
-
 #screen-cadastro { background: #0f172a; display: flex; justify-content: center; padding: 50px 20px; }
-
 .card { 
-
   background: white; 
-
-  padding: 20px; /* Reduzi um pouco para dar mais espaço nas bordas */
-
+  padding: 20px;
   border-radius: 12px; 
-
   box-shadow: 0 4px 20px rgba(0,0,0,0.25); 
-
-  width: 100%; /* Ocupa a largura total disponível */
-
-  max-width: 450px; /* Limita o crescimento em telas grandes */
-
+  width: 100%;
+  max-width: 450px;
   margin: 0 auto;
-
   text-align: center; 
-
   position: relative; 
-
   height: fit-content;
-
-  box-sizing: border-box; /* Essencial para o padding não estourar a largura */
-
+  box-sizing: border-box;
 }
-
 .logo-igreja { display: block; margin: 0 auto 15px auto; width: 150px; height: 150px; object-fit: contain; border-radius: 50%; background-color: #1a73e8; padding: 10px; }
-
 .card h3 { color: #1a73e8; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-
 .mes-pequeno { position: absolute; top: 15px; right: 15px; font-size: 11px; color: #64748b; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-
 .card label { font-size: 14px; font-weight: bold; display: block; margin-top: 15px; text-align: left; }
-
 .card input[type="text"], .card input[type="tel"], .card input[type="date"], .card input[type="email"], .card select, .card button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ddd; font-size: 15px; text-align: left; }
-
 .card button { background: #1a73e8; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-
 .card button:hover { background: #1557b0; }
 
-
-
 .btn-ir-painel { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; margin-top: 12px; border-radius: 6px; border: 2px solid #334155 !important; background: #1e293b !important; color: #94a3b8 !important; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.25s ease; letter-spacing: 0.3px; }
-
 .btn-ir-painel:hover { background: #334155 !important; color: white !important; border-color: #475569 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
 .btn-ir-painel i { font-size: 18px; transition: transform 0.25s ease; }
-
 .btn-ir-painel:hover i { transform: translateX(4px); }
 
-
-
 .divider { display: flex; align-items: center; gap: 10px; margin: 16px 0 4px 0; color: #94a3b8; font-size: 12px; }
-
 .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
 
-
-
 .custom-select-wrapper { position: relative; width: 100%; margin: 8px 0; }
-
 .custom-select-display { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ddd; background: white; cursor: pointer; text-align: left; color: #757575; font-size: 15px; }
-
 .custom-select-display.selected { color: black; }
-
 .custom-select-options { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto; z-index: 100; text-align: left; padding: 5px 0; }
-
 .custom-select-options.show { display: flex; flex-direction: column; }
-
 .custom-select-options label { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; margin: 0; cursor: pointer; font-weight: normal; font-size: 15px; transition: 0.2s; }
-
 .custom-select-options label:hover { background-color: #f8fafc; }
 
-
-
 .date-input-group { display: flex; gap: 10px; align-items: center; }
-
 .date-input-group button { width: auto; background: #475569; padding: 0 20px; }
-
 .chips-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 20px; }
-
 .chip { background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; gap: 8px; font-weight: bold; }
-
 .chip span { cursor: pointer; color: #991b1b; font-size: 14px; }
 
-
-
 /* ===== PAINEL STYLES ===== */
-
 #screen-painel { background: #0f172a; padding: 20px; }
-
 .painel-topo { position: relative; }
-
 .btn-voltar-cadastro { display: inline-flex; align-items: center; gap: 6px; background: #334155; color: #cbd5e1; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; position: absolute; top: 20px; left: 20px; z-index: 10; }
-
 .btn-voltar-cadastro:hover { background: #475569; color: white; }
 
-
-
 #painel-body { font-family:'Segoe UI'; position: relative; }
-
 #painel-body h1 { color:white; text-align:center; margin-bottom: 5px; padding-top: 65px; }
-
 .mes-pequeno-painel { position: absolute; top: 20px; right: 20px; font-size: 11px; color: #1e293b; background: #f8fafc; padding: 5px 10px; border-radius: 4px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase; }
 
-
-
 .subtitulo { color: #94a3b8; text-align: center; margin-top: 0; margin-bottom: 10px; font-weight: 400; font-size: 18px; }
-
 .btn-mestre { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0 auto 25px auto; background: #334155; color: #cbd5e1; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
-
 .btn-mestre:hover { background: #475569; color: white;}
-
 .tabs-container { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-
 .tab-btn { background: #1e293b; color: #cbd5e1; border: 2px solid #334155; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
-
 .tab-btn:hover { background: #334155; color: white; }
-
 .tab-btn.unlocked { background: #2563eb; color: white; border-color: #3b82f6; }
-
 .tab-btn.active { background: #22c55e !important; color: white !important; border-color: #16a34a !important; transform: scale(1.05); box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4); }
 
-
-
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
-
 .modal-box { background: white; padding: 30px; border-radius: 12px; text-align: center; width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-
 .modal-box input, .modal-box select { margin: 15px 0; text-align: center; font-size: 15px; width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;}
-
 .erro-msg { color: #ef4444; font-size: 14px; font-weight: bold; display: none; margin-bottom: 15px; }
-
 .btn-cancelar { background: #94a3b8; color: white; margin-top: 5px; }
-
 #painelPrincipal { display: none; }
-
 .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1200px; margin:auto; }
-
 .card-painel { background:white; padding:25px; border-radius:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-
 .header-config { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-
 .btn-trocar-senha { display: flex; align-items: center; gap: 6px; background: #f97316; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s;}
-
 .card-painel input, .card-painel select { width:100%; padding:10px; margin-bottom:10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-
 .btn { width:100%; padding:12px; border:none; border-radius:8px; margin-bottom:10px; cursor:pointer; font-weight: bold; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px;}
-
 .btn:hover { opacity: 0.9; }
-
 .green{background:#22c55e;color:white;} .blue{background:#2563eb;color:white;} .gray{background:#475569;color:white;} .orange{background:#f97316;color:white;}
-
 .voluntarios-container { height:150px; overflow:auto; border:1px solid #ddd; padding:5px; border-radius: 6px; }
-
 .voluntario-item { padding:8px; background:#f1f5f9; margin-bottom:5px; border-radius:6px; font-size:13px; display:flex; justify-content:space-between; align-items: center; }
-
 .excluir { cursor:pointer; color: #ef4444; font-size: 16px; transition: 0.2s; }
-
 table { width:100%; margin-top:20px; background:#2563eb; color:white; border-collapse: collapse; border-radius: 8px; overflow: hidden;}
-
 td,th { padding:12px 10px; text-align:center; border: 1px solid #bfdbfe; }
-
 tbody td { background:white; color:#1e293b; }
-
 .acoes i { cursor:pointer; margin:0 5px; font-size: 18px; transition: 0.2s; }
-
 .acao-amarelo { color: #eab308; } .acao-vermelho { color: #ef4444; } .acao-lixeira { color: #64748b; }
-
 .amarelo td { background:#fef08a !important; color: black !important; } .vermelho td { background:#fca5a5 !important; color: black !important; }
-
 .historico-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-
 .btn-baixar { background: #e2e8f0; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #475569; transition: 0.2s; font-size: 16px; }
-
 .btn-baixar:hover { background: #cbd5e1; }
-
 .btn-baixar.excluir-hist { color: #ef4444; }
-
 .btn-acoes-hist { display: flex; gap: 10px; }
 
-
-
 /* CSS do Select Dinâmico */
-
 .selects-voluntarios-container { margin-bottom: 10px; }
-
 .selects-voluntarios-container label { color:#475569; font-size:12px; font-weight:bold; display:block; margin-bottom:4px; margin-top:8px; }
-
 .selects-voluntarios-container select { margin-bottom: 0; width:100%; padding:10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
-
-
 /* ===== JÁ POSSUI CADASTRO ===== */
-
 .btn-ja-cadastrado {
-
   display: flex; align-items: center; justify-content: center; gap: 8px;
-
   width: 100%; padding: 13px; margin-top: 8px;
-
   border-radius: 6px; border: 2px solid #0d9488 !important;
-
   background: #f0fdfa !important; color: #0f766e !important;
-
   font-weight: bold; font-size: 14px; cursor: pointer;
-
   transition: all 0.25s ease; letter-spacing: 0.3px;
-
 }
-
 .btn-ja-cadastrado:hover { background: #ccfbf1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.15); }
-
 .btn-ja-cadastrado i { font-size: 18px; }
 
-
-
 .modal-ja-cadastrado { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 2000; justify-content: center; align-items: center; }
-
 .modal-ja-cadastrado.show { display: flex; }
 
-
-
 .modal-jc-box {
-
   background: white; border-radius: 16px; width: 420px; max-width: 95vw;
-
   box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden;
-
   animation: slideUp 0.3s ease;
-
 }
-
 @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-
-
 .modal-jc-header {
-
   background: linear-gradient(135deg, #0f766e, #0d9488);
-
   color: white; padding: 20px 25px; display: flex; align-items: center; gap: 12px;
-
 }
-
 .modal-jc-header i { font-size: 26px; }
-
 .modal-jc-header h3 { font-size: 17px; margin: 0; }
-
 .modal-jc-header p { font-size: 12px; opacity: 0.85; margin: 2px 0 0 0; }
 
-
-
 .modal-jc-body { padding: 25px; }
-
 .modal-jc-step { display: none; }
-
 .modal-jc-step.active { display: block; }
-
-
 
 .step-label { font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
 
-
-
 .ministerio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px; }
-
 .ministerio-btn {
-
   padding: 12px 8px; border: 2px solid #e2e8f0; border-radius: 8px;
-
   background: white; cursor: pointer; font-size: 13px; font-weight: bold; color: #475569;
-
   transition: all 0.2s ease; text-align: center;
-
 }
-
 .ministerio-btn:hover { border-color: #0d9488; color: #0f766e; background: #f0fdfa; }
-
 .ministerio-btn.selected { border-color: #0d9488; background: #0d9488; color: white; }
 
-
-
 .nome-lista { max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 5px; }
-
 .nome-item {
-
   padding: 12px 16px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f1f5f9;
-
   transition: all 0.15s ease; display: flex; align-items: center; gap: 10px; color: #1e293b;
-
 }
-
 .nome-item:last-child { border-bottom: none; }
-
 .nome-item:hover { background: #f0fdfa; color: #0f766e; }
-
 .nome-item.selected { background: #0d9488; color: white; font-weight: bold; }
-
 .nome-item i { font-size: 16px; }
-
-
 
 .jc-loading { text-align: center; padding: 20px; color: #94a3b8; font-size: 14px; }
 
-
-
 .modal-jc-footer { padding: 0 25px 25px; display: flex; gap: 10px; }
-
 .btn-jc-voltar { flex: 1; padding: 11px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-size: 14px; font-weight: bold; color: #64748b; transition: 0.2s; }
-
 .btn-jc-voltar:hover { background: #f8fafc; }
-
 .btn-jc-confirmar { flex: 2; padding: 11px; border: none; border-radius: 8px; background: #0d9488; color: white; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-
 .btn-jc-confirmar:hover { background: #0f766e; }
-
 .btn-jc-confirmar:disabled { background: #94a3b8; cursor: not-allowed; }
 
-
-
 .step-divider { display: flex; align-items: center; gap: 8px; margin: 16px 0; color: #94a3b8; font-size: 11px; }
-
 .step-divider::before, .step-divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
-
-
 
 /* ===== CORREÇÕES MOBILE ===== */
 @media (max-width: 600px) {
-
     #screen-painel { padding: 12px !important; }
-
     #painel-body h1 {
         padding-top: 70px !important;
         font-size: 20px !important;
@@ -448,33 +227,28 @@ tbody td { background:white; color:#1e293b; }
         padding-left: 10px !important;
         padding-right: 10px !important;
     }
-
     .mes-pequeno-painel {
         font-size: 10px !important;
         padding: 4px 8px !important;
         right: 10px !important;
         top: 10px !important;
     }
-
     .btn-voltar-cadastro {
         top: 10px !important;
         left: 10px !important;
         font-size: 12px !important;
         padding: 6px 12px !important;
     }
-
     .subtitulo {
         font-size: 14px !important;
         padding: 0 10px !important;
     }
-
     .tabs-container {
         gap: 8px !important;
         padding: 0 5px !important;
         margin-bottom: 20px !important;
         justify-content: center !important;
     }
-
     .tab-btn {
         width: calc(50% - 4px) !important;
         padding: 10px 6px !important;
@@ -482,694 +256,356 @@ tbody td { background:white; color:#1e293b; }
         justify-content: center !important;
         gap: 6px !important;
     }
-
     .main-grid {
         grid-template-columns: 1fr !important;
     }
-
     #secaoPrint {
         overflow-x: auto !important;
         display: block !important;
         -webkit-overflow-scrolling: touch !important;
     }
-
     table { min-width: 480px !important; }
-
     .modal-box {
         width: 92vw !important;
         max-width: 340px !important;
         padding: 20px !important;
     }
-
     .card-painel { padding: 15px !important; }
 }
 
 @media print {
-
     #screen-cadastro { display: none !important; }
-
     .btn-voltar-cadastro, .tabs-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal > .main-grid { display: none !important; }
-
     #secaoPrint, #secaoPrint * { visibility: visible; }
-
     #secaoPrint { position: absolute; top: 0; left: 0; width: 100%; }
-
     .acoes, th:last-child, td:last-child { display: none !important; }
-
     table { width: 100%; border: 1px solid black; }
-
     tr.amarelo td { background: #fef08a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-
     tr.vermelho td { background: #fca5a5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-
 }
-
 </style>
-
 </head>
-
 <body>
 
-
-
 <div id="screen-cadastro" class="screen">
-
   <div class="card">
-
     <div id="mesDinamico" class="mes-pequeno">MÊS</div>
-
     <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png" alt="Logo Nação Santa" class="logo-igreja">
-
     <h3>Cadastro de Disponibilidade<br>Voluntários - Nação Santa</h3>
 
-
-
     <label>Nome:</label>
-
     <input type="text" id="nome" placeholder="Ex: José Maria">
 
-
-
     <label>WhatsApp:</label>
-
     <input type="tel" id="whatsapp" placeholder="(XX) XXXXX-XXXX" maxlength="15">
 
-
-
     <label>E-mail <span style="font-size:11px; color:#94a3b8; font-weight:normal;">(para lembretes automáticos)</span></label>
-
     <input type="email" id="email" placeholder="seu@email.com">
 
-
-
     <label>Qual seu ministério?</label>
-
     <div class="custom-select-wrapper" id="dropdownWrapper">
-
       <div class="custom-select-display" id="dropdownDisplay">Selecionar ministério(s)</div>
-
       <div class="custom-select-options" id="dropdownOptions">
-
         <label>Fotografia <input type="checkbox" value="Fotografia"></label>
-
         <label>Iluminação <input type="checkbox" value="Iluminação"></label>
-
         <label>Projeção <input type="checkbox" value="Projeção"></label>
-
         <label>Produção <input type="checkbox" value="Produção"></label>
-
         <label>Rede Social <input type="checkbox" value="Rede Social"></label>
-
         <label>Som <input type="checkbox" value="Som"></label>
-
         <label>Transmissão <input type="checkbox" value="Transmissão"></label>
-
       </div>
-
     </div>
-
-
 
     <label>Disponibilidade:</label>
-
     <select id="disponibilidade">
-
       <option value="" disabled selected>Selecione uma opção...</option>
-
       <optgroup label="Geral">
-
         <option value="todos">Disponível todos os dias</option>
-
         <option value="nenhum">Indisponível este mês</option>
-
       </optgroup>
-
       <optgroup label="Disponível Somente">
-
         <option value="0">Somente aos domingos</option>
-
         <option value="2">Somente às terças</option>
-
         <option value="6">Somente aos sábados</option>
-
       </optgroup>
-
       <optgroup label="Indisponível Somente">
-
         <option value="nao_domingo">Indisponível aos domingos</option>
-
         <option value="nao_terca">Indisponível às terças</option>
-
         <option value="nao_sabado">Indisponível aos sábados</option>
-
       </optgroup>
-
     </select>
 
-
-
     <label>Datas específicas que NÃO pode comparecer (Opcional):</label>
-
     <div class="date-input-group">
-
       <input type="date" id="inputData">
-
       <button type="button" id="btnAddData">Adicionar</button>
-
     </div>
-
     <div id="listaDatas" class="chips-container"></div>
-
-
 
     <button id="btnSalvar" style="margin-top: 20px;">Enviar Cadastro</button>
 
-
-
     <div class="divider">ou</div>
-
     <button class="btn-ja-cadastrado" onclick="abrirModalJaCadastrado()">
-
       <i class="ph ph-user-check"></i> JÁ POSSUI CADASTRO?
-
     </button>
-
-
 
     <div class="divider">acesso restrito</div>
-
     <button class="btn-ir-painel" onclick="irParaPainel()">
-
       <i class="ph ph-gauge"></i> Acessar Painel de Controle <i class="ph ph-arrow-right"></i>
-
     </button>
-
   </div>
-
 </div>
-
-
-
 
 
 <!-- MODAL JÁ POSSUO CADASTRO -->
-
 <div class="modal-ja-cadastrado" id="modalJaCadastrado">
-
   <div class="modal-jc-box">
-
     <div class="modal-jc-header">
-
       <i class="ph ph-user-check"></i>
-
       <div>
-
         <h3>Já Possuo Cadastro</h3>
-
         <p>Atualize apenas sua disponibilidade deste mês</p>
-
       </div>
-
     </div>
-
     <div class="modal-jc-body">
 
-
-
       <!-- STEP 1: Escolher ministério -->
-
       <div class="modal-jc-step active" id="jcStep1">
-
         <div class="step-label"><i class="ph ph-church"></i> Qual é o seu ministério?</div>
-
         <div class="ministerio-grid" id="jcMinisterioGrid">
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Fotografia', this)">📷 Fotografia</button>
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Iluminação', this)">💡 Iluminação</button>
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Projeção', this)">📽️ Projeção</button>
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Produção', this)">🎬 Produção</button>
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Rede Social', this)">📱 Rede Social</button>
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Som', this)">🎧 Som</button>
-
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Transmissão', this)" style="grid-column: span 2;">📡 Transmissão</button>
-
         </div>
-
       </div>
-
-
 
       <!-- STEP 2: Escolher nome -->
-
       <div class="modal-jc-step" id="jcStep2">
-
         <div class="step-label"><i class="ph ph-user"></i> Qual é o seu nome?</div>
-
         <div class="nome-lista" id="jcNomeLista">
-
           <div class="jc-loading"><i class="ph ph-spinner"></i> Carregando...</div>
-
         </div>
-
       </div>
-
-
 
       <!-- STEP 3: Preencher disponibilidade -->
-
       <div class="modal-jc-step" id="jcStep3">
-
         <div class="step-label"><i class="ph ph-calendar-check"></i> Disponibilidade para <span id="jcMesLabel"></span></div>
-
         <select id="jcDisponibilidade" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:15px; margin-bottom:12px;">
-
           <option value="" disabled selected>Selecione uma opção...</option>
-
           <optgroup label="Geral">
-
             <option value="todos">Disponível todos os dias</option>
-
             <option value="nenhum">Indisponível este mês</option>
-
           </optgroup>
-
           <optgroup label="Disponível Somente">
-
             <option value="0">Somente aos domingos</option>
-
             <option value="2">Somente às terças</option>
-
             <option value="6">Somente aos sábados</option>
-
           </optgroup>
-
           <optgroup label="Indisponível Somente">
-
             <option value="nao_domingo">Indisponível aos domingos</option>
-
             <option value="nao_terca">Indisponível às terças</option>
-
             <option value="nao_sabado">Indisponível aos sábados</option>
-
           </optgroup>
-
         </select>
-
         <div class="step-label"><i class="ph ph-calendar-x"></i> Datas que NÃO pode comparecer (Opcional):</div>
-
         <div style="display:flex; gap:8px; margin-bottom:8px;">
-
           <input type="date" id="jcInputData" style="flex:1; padding:9px; border:1px solid #ddd; border-radius:6px; font-size:14px;">
-
           <button onclick="jcAdicionarData()" style="background:#0d9488; color:white; border:none; padding:9px 14px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
-
         </div>
-
         <div id="jcListaDatas" class="chips-container"></div>
-
       </div>
 
-
-
     </div>
-
     <div class="modal-jc-footer">
-
       <button class="btn-jc-voltar" id="jcBtnVoltar" onclick="jcVoltar()"><i class="ph ph-arrow-left"></i> Voltar</button>
-
       <button class="btn-jc-confirmar" id="jcBtnConfirmar" onclick="jcAvancar()" disabled>
-
         <span id="jcBtnLabel">Selecione um ministério</span> <i class="ph ph-arrow-right"></i>
-
       </button>
-
     </div>
-
   </div>
-
 </div>
 
-
-
 <div id="screen-painel" class="screen">
-
   <div id="painel-body">
 
-
-
     <button class="btn-voltar-cadastro" onclick="voltarParaCadastro()">
-
       <i class="ph ph-arrow-left"></i> Cadastro
-
     </button>
-
-
 
     <div id="mesDinamicoPainel" class="mes-pequeno-painel"></div>
 
-
-
     <h1>GERENCIADOR DE ESCALA - NAÇÃO SANTA</h1>
-
     <h2 id="tituloAviso" class="subtitulo">Selecione o ministério para gerar a escala</h2>
-
     <button class="btn-mestre" onclick="abrirModalSenha('MESTRA', null)"><i class="ph ph-key"></i> Desbloqueio Mestre</button>
 
-
-
     <div class="tabs-container">
-
       <button class="tab-btn" data-min="Fotografia" onclick="abrirModalSenha('Fotografia', this)"><i class="ph ph-lock-key"></i> Fotografia</button>
-
       <button class="tab-btn" data-min="Iluminação" onclick="abrirModalSenha('Iluminação', this)"><i class="ph ph-lock-key"></i> Iluminação</button>
-
       <button class="tab-btn" data-min="Projeção" onclick="abrirModalSenha('Projeção', this)"><i class="ph ph-lock-key"></i> Projeção</button>
-
       <button class="tab-btn" data-min="Produção" onclick="abrirModalSenha('Produção', this)"><i class="ph ph-lock-key"></i> Produção</button>
-
       <button class="tab-btn" data-min="Rede Social" onclick="abrirModalSenha('Rede Social', this)"><i class="ph ph-lock-key"></i> Rede Social</button>
-
       <button class="tab-btn" data-min="Som" onclick="abrirModalSenha('Som', this)"><i class="ph ph-lock-key"></i> Som</button>
-
       <button class="tab-btn" data-min="Transmissão" onclick="abrirModalSenha('Transmissão', this)"><i class="ph ph-lock-key"></i> Transmissão</button>
-
     </div>
-
-
 
     <div class="modal-overlay" id="modalSenha">
-
       <div class="modal-box">
-
         <h3 id="tituloModalSenha">Senha</h3>
-
         <input type="password" id="inputSenha" placeholder="Digite a senha">
-
         <div class="erro-msg" id="erroSenha">Senha incorreta!</div>
-
         <button class="btn blue" onclick="verificarSenha()">Entrar</button>
-
         <button class="btn btn-cancelar" onclick="fecharModal('modalSenha')">Cancelar</button>
-
       </div>
-
     </div>
-
     <div class="modal-overlay" id="modalTrocarSenha">
-
       <div class="modal-box">
-
         <h3>Alterar Senha</h3>
-
         <p id="txtTrocarSenha"></p>
-
         <input type="password" id="inputNovaSenha" placeholder="Nova senha">
-
         <button class="btn green" onclick="salvarNovaSenha()">Salvar</button>
-
         <button class="btn btn-cancelar" onclick="fecharModal('modalTrocarSenha')">Cancelar</button>
-
       </div>
-
     </div>
-
     <div class="modal-overlay" id="modalResgate">
-
       <div class="modal-box">
-
         <h3>Resgatar Voluntário</h3>
-
         <select id="selectVoluntarioResgate"></select>
-
         <button class="btn blue" onclick="confirmarResgate()">Adicionar à Equipe</button>
-
         <button class="btn btn-cancelar" onclick="fecharModal('modalResgate')">Cancelar</button>
-
       </div>
-
     </div>
-
-
 
     <div id="painelPrincipal">
-
       <div class="main-grid">
-
         <div class="card-painel">
-
           <div class="header-config">
-
             <h3>Configuração</h3>
-
             <button class="btn-trocar-senha" onclick="abrirModalTrocarSenha()"><i class="ph ph-password"></i> Alterar Senha</button>
-
           </div>
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Mês da Escala:</label>
-
           <input type="month" id="mesEscala">
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas por Culto:</label>
-
           <select id="vagasPorDia">
-
             <option value="1">1 Pessoa por dia</option><option value="2">2 Pessoas por dia</option><option value="3">3 Pessoas por dia</option><option value="4">4 Pessoas por dia</option>
-
           </select>
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Limite de vezes p/ voluntário no mês:</label>
-
           <select id="limiteMensal">
-
             <option value="1">Máximo 1 vez</option><option value="2">Máximo 2 vezes</option><option value="3" selected>Máximo 3 vezes</option><option value="4">Máximo 4 vezes</option><option value="5">Máximo 5 vezes</option><option value="8">Máximo 8 vezes</option><option value="99">Sem limite (Repetir conforme necessário)</option>
-
           </select>
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Dias de Atuação:</label>
-
           <div style="display: flex; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
-
             <label style="font-size:12px;"><input type="checkbox" id="checkDom" checked> Dom</label>
-
             <label style="font-size:12px;"><input type="checkbox" id="checkTer" checked> Ter</label>
-
             <label style="font-size:12px;"><input type="checkbox" id="checkSab" checked> Sáb</label>
-
           </div>
-
           <button class="btn green" id="btnGerar"><i class="ph ph-calendar-plus"></i> Gerar escala</button>
-
           <button class="btn gray" id="btnSalvar2"><i class="ph ph-floppy-disk"></i> Salvar escala</button>
-
           <button class="btn orange" id="btnEditar" style="display:none;"><i class="ph ph-pencil-simple"></i> Editar escala</button>
-
           <h3 style="margin-top: 15px;">Histórico</h3>
-
           <div id="listaHistorico" class="voluntarios-container"></div>
-
           <h3 style="margin-top: 15px;">Equipe Atual</h3>
-
           <div id="listaVoluntariosUI" class="voluntarios-container"></div>
-
           <button class="btn blue" onclick="abrirModalResgate()" style="margin-top: 15px;"><i class="ph ph-user-plus"></i> Resgatar do Banco</button>
-
 
         </div>
 
-
-
         <div class="card-painel">
-
           <h3>Evento Especial</h3>
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Nome do evento:</label>
-
           <input type="text" id="nomeEvento" placeholder="Ex: Caverna de Adulão">
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Hora:</label>
-
           <input type="time" id="horaEvento" value="19:00">
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Data:</label>
-
           <input type="date" id="dataEvento">
 
-          
-
           <label style="color:#475569; font-size:12px; font-weight:bold;">Vagas para este evento:</label>
-
           <select id="vagasEvento" onchange="atualizarSelectsVoluntarios()">
-
             <option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option><option value="11">11 pessoas</option><option value="12">12 pessoas</option><option value="13">13 pessoas</option><option value="14">14 pessoas</option><option value="15">15 pessoas</option>
-
           </select>
-
-          
 
           <div id="containerSelectsVoluntarios" class="selects-voluntarios-container"></div>
 
-          
-
           <button class="btn blue" style="margin-top:8px;" onclick="adicionarEventoEspecial()"><i class="ph ph-plus"></i> Adicionar à Escala</button>
-
         </div>
-
       </div>
-
     </div>
-
-
 
     <div id="secaoPrint">
-
       <table id="tabelaEscala">
-
         <thead><tr><th>Data</th><th>Dia</th><th>Evento</th><th>Hora</th><th>Voluntário</th><th class="acoes">Ações</th></tr></thead>
-
         <tbody id="corpoTabela"></tbody>
-
       </table>
-
     </div>
 
-
-
   </div>
-
 </div>
 
-
-
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-
-
 const firebaseConfig = { apiKey:"AIzaSyCoo-5SaiCvgyy05Jpbzd179r5F2sdkmHA", authDomain:"escala-projecao.firebaseapp.com", projectId:"escala-projecao" };
-
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
-
-
 /* ===== NAVEGAÇÃO ENTRE TELAS ===== */
-
 window.irParaPainel = function() {
-
   document.body.classList.add('show-painel');
-
   document.getElementById('screen-painel').scrollTop = 0;
-
 };
-
 window.voltarParaCadastro = function() { document.body.classList.remove('show-painel'); };
 
-
-
 /* ===== CADASTRO LOGIC ===== */
-
 const hoje = new Date();
-
 const ultimoDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
-
 let mesAlvo = hoje.getMonth();
-
 let anoAlvo = hoje.getFullYear();
-
 if (hoje.getDate() >= (ultimoDiaDoMes - 9)) {
-
   mesAlvo++;
-
   if (mesAlvo > 11) { mesAlvo = 0; anoAlvo++; }
-
 }
-
 const stringMes = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-
 document.getElementById("mesDinamico").innerText = stringMes[mesAlvo];
-
 const mesReferenciaBanco = `${anoAlvo}-${String(mesAlvo + 1).padStart(2, '0')}`;
 
-
-
 document.getElementById('whatsapp').addEventListener('input', function(e) {
-
   let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-
   e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-
 });
-
-
 
 const dropdownDisplay = document.getElementById('dropdownDisplay');
-
 const dropdownOptions = document.getElementById('dropdownOptions');
-
 const checkboxesMinisterio = dropdownOptions.querySelectorAll('input[type="checkbox"]');
-
 dropdownDisplay.addEventListener('click', () => dropdownOptions.classList.toggle('show'));
-
 document.addEventListener('click', (e) => { if (!document.getElementById('dropdownWrapper').contains(e.target)) dropdownOptions.classList.remove('show'); });
-
 checkboxesMinisterio.forEach(cb => {
-
   cb.addEventListener('change', () => {
-
     const sel = Array.from(checkboxesMinisterio).filter(i => i.checked).map(i => i.value);
-
     if (sel.length === 0) { dropdownDisplay.innerText = "Selecionar ministério(s)"; dropdownDisplay.classList.remove('selected'); }
-
     else if (sel.length === 1) { dropdownDisplay.innerText = sel[0]; dropdownDisplay.classList.add('selected'); }
-
     else { dropdownDisplay.innerText = `${sel.length} ministérios selecionados`; dropdownDisplay.classList.add('selected'); }
-
   });
-
 });
 
-
-
 let datasSelecionadas = [];
-
 document.getElementById('btnAddData').onclick = () => {
-
   const val = document.getElementById('inputData').value;
-
   if (!val) return;
-
   if (!datasSelecionadas.includes(val)) { datasSelecionadas.push(val); datasSelecionadas.sort(); renderizarDatas(); }
-
   document.getElementById('inputData').value = "";
-
 };
-
 window.removerData = function(index) { datasSelecionadas.splice(index, 1); renderizarDatas(); };
-
 function renderizarDatas() {
-
   const container = document.getElementById('listaDatas'); container.innerHTML = "";
-
   datasSelecionadas.forEach((data, index) => {
-
     const [a, m, d] = data.split('-');
-
     container.innerHTML += `<div class="chip">${d}/${m}/${a} <span onclick="removerData(${index})">✖</span></div>`;
-
   });
-
 }
-
-
 
 document.getElementById('btnSalvar').onclick = async () => {
   const nome = document.getElementById('nome').value.trim();
@@ -1325,913 +761,459 @@ document.getElementById('btnSalvar').onclick = async () => {
   // O alerta segura a tela, então fica por último!
   alert(mensagemFinal);
 };
-  /* ===== PAINEL LOGIC ===== */
 
+/* ===== PAINEL LOGIC ===== */
 let listaGlobal = []; let ministerioSelecionado = ""; let ministerioPendente = ""; let botaoPendente = null; let acessoMestreLiberado = false; let ministeriosDestravados = {};
 
-
-
 const mesesP = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-
 const hojeP = new Date();
-
 const ultimoDiaDoMesP = new Date(hojeP.getFullYear(), hojeP.getMonth() + 1, 0).getDate();
-
 let mesP = hojeP.getMonth(); let anoP = hojeP.getFullYear();
-
 if (hojeP.getDate() >= (ultimoDiaDoMesP - 9)) { mesP++; if(mesP>11){mesP=0; anoP++;} }
-
 document.getElementById("mesDinamicoPainel").innerText = mesesP[mesP];
-
 document.getElementById('mesEscala').value = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
-
 document.getElementById('mesEscala').addEventListener('change', () => { if(ministerioSelecionado) carregarVoluntarios(); });
 
-
-
 function atualizarVisualAba(botao, nomeMin) {
-
   if(botao) { botao.innerHTML = `<i class="ph ph-lock-key-open"></i> ${nomeMin}`; botao.classList.add('unlocked'); }
-
 }
-
 function ativarAcessoMestre() {
-
   acessoMestreLiberado = true;
-
   document.querySelectorAll('.tab-btn').forEach(btn => {
-
     const nomeMin = btn.getAttribute('data-min');
-
     ministeriosDestravados[nomeMin] = true;
-
     atualizarVisualAba(btn, nomeMin);
-
   });
-
 }
-
-
 
 window.abrirModalSenha = function(nome, el) {
-
   if (acessoMestreLiberado || ministeriosDestravados[nome]) { liberarAcessoAoPainel(nome, el); return; }
-
   ministerioPendente = nome; botaoPendente = el;
-
   document.getElementById("tituloModalSenha").innerHTML = nome === 'MESTRA' ? 'Acesso Mestre' : nome;
-
   document.getElementById("inputSenha").value = ""; document.getElementById("erroSenha").style.display = "none";
-
   document.getElementById("modalSenha").style.display = "flex";
-
   setTimeout(() => document.getElementById("inputSenha").focus(), 100);
-
 };
-
 window.fecharModal = function(id) { document.getElementById(id).style.display = "none"; };
-
 window.verificarSenha = async function() {
-
   const senha = document.getElementById("inputSenha").value;
-
   const docSnap = await getDoc(doc(db, "configuracoes", "senhas"));
-
   if (docSnap.exists()) {
-
     const s = docSnap.data();
-
     if (senha === s.mestra) {
-
       ativarAcessoMestre(); fecharModal('modalSenha');
-
       if(botaoPendente) liberarAcessoAoPainel(ministerioPendente, botaoPendente);
-
     } else if (senha === s[ministerioPendente]) {
-
       ministeriosDestravados[ministerioPendente] = true;
-
       atualizarVisualAba(botaoPendente, ministerioPendente);
-
       fecharModal('modalSenha');
-
       liberarAcessoAoPainel(ministerioPendente, botaoPendente);
-
     } else { document.getElementById("erroSenha").style.display = "block"; }
-
   }
-
 };
-
-
 
 function liberarAcessoAoPainel(nome, elemento) {
-
   if (nome === 'MESTRA') { document.getElementById("tituloAviso").innerText = "Administração Geral"; return; }
-
   ministerioSelecionado = nome;
-
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
   if(elemento) elemento.classList.add('active');
-
   document.getElementById("tituloAviso").innerText = `Gerenciando: ${nome}`;
-
   document.getElementById("painelPrincipal").style.display = "block";
-
   carregarVoluntarios(); carregarHistorico();
-
 }
-
-
 
 function textoDisp(v){
-
   let d = v.disponibilidade;
-
   let mapa = { "todos":"Disponível todos os dias","nenhum":"Indisponível este mês","0":"Somente Domingos","2":"Somente Terças","6":"Somente Sábados","nao_domingo":"Indisponível aos Domingos","nao_terca":"Indisponível às Terças","nao_sabado":"Indisponível aos Sábados" };
-
   let txt = mapa[d] || d || "Sem restrições";
-
   if(v.datasIndisponiveis && v.datasIndisponiveis.length > 0) {
-
     let arrayDatas = Array.isArray(v.datasIndisponiveis) ? v.datasIndisponiveis : String(v.datasIndisponiveis).split(',');
-
     let formatadas = arrayDatas.filter(x => x.trim() !== '').map(dt => { let partes = String(dt).trim().split('-'); return partes.length === 3 ? `${partes[2]}/${partes[1]}` : dt.trim(); });
-
     if(formatadas.length > 0) txt += " | Folga(s): " + formatadas.join(", ");
-
   }
-
   return txt;
-
 }
 
-
-
 async function carregarVoluntarios(){
-
   const snap = await getDocs(collection(db,"voluntarios"));
-
   listaGlobal=[]; listaVoluntariosUI.innerHTML="";
-
   const mesSelecionadoPainel = document.getElementById('mesEscala').value;
-
   snap.forEach(d=>{
-
     const v=d.data(); v.id=d.id;
-
     if(v.ministerios?.includes(ministerioSelecionado)) {
-
-      // Se tiver disponibilidades por mês, usa a do mês selecionado no painel
       if(v.disponibilidades && v.disponibilidades[mesSelecionadoPainel]) {
         const dispMes = v.disponibilidades[mesSelecionadoPainel];
         v.disponibilidade = dispMes.disponibilidade;
         v.datasIndisponiveis = dispMes.datasIndisponiveis;
         v.mesReferencia = mesSelecionadoPainel;
       }
-
       listaGlobal.push(v);
-
       let txtStatus = v.mesReferencia !== mesSelecionadoPainel
-
         ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>" : textoDisp(v);
-
       listaVoluntariosUI.innerHTML+=`<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div>`;
-
     }
-
   });
-
-  atualizarSelectsVoluntarios(); // Instancia os Selects Dinâmicos corretamente
-
+  atualizarSelectsVoluntarios();
 }
-
-
 
 btnGerar.onclick = async () => {
-
   const mesVal = mesEscala.value;
-
   const numVagas = parseInt(document.getElementById("vagasPorDia").value);
-
   const limiteMês = parseInt(document.getElementById("limiteMensal").value);
-
   if (!mesVal) return alert("Selecione o mês");
-
   const diasPermitidos = { 0: document.getElementById("checkDom").checked, 2: document.getElementById("checkTer").checked, 6: document.getElementById("checkSab").checked };
-
   const snapHist = await getDocs(query(collection(db,"historico_escalas"), where("mesReferencia","==",mesVal)));
-
   let ocupados = {};
-
   snapHist.forEach(d => {
-
     const esc = d.data();
-
     if (esc.ministerio !== ministerioSelecionado) {
-
       esc.linhas.forEach(l => {
-
         let p = l.data.split('/');
-
         let dt = `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
-
         if(!ocupados[l.voluntario]) ocupados[l.voluntario] = [];
-
         ocupados[l.voluntario].push(dt);
-
       });
-
     }
-
   });
-
   const [ano, mes] = mesVal.split('-').map(Number);
-
   corpoTabela.innerHTML = "";
-
   let data = new Date(ano, mes - 1, 1);
-
   const padrao = { 0:{n:"Culto Domingo",h:"16:40"}, 2:{n:"Culto Terça",h:"19:00"}, 6:{n:"Culto Sábado",h:"17:00"} };
-
   let contagem = {}; let ultimaData = {}; 
-
   while (data.getMonth() === mes - 1) {
-
     const diaSem = data.getDay();
-
     const dataISO = `${data.getFullYear()}-${String(data.getMonth()+1).padStart(2,'0')}-${String(data.getDate()).padStart(2,'0')}`;
-
     if (padrao[diaSem] && diasPermitidos[diaSem]) {
-
       let escaladosNoDia = [];
-
       for (let i = 0; i < numVagas; i++) {
-
-        // Função de filtro base (sem regra dos 7 dias)
-
         const filtroBase = (v, ignorar7Dias = false) => {
-
           if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
-
           if (escaladosNoDia.includes(v.nome)) return false;
-
           let d2 = String(v.disponibilidade || "");
-
           if (d2 !== "todos") {
-
             if (d2.startsWith("nao_")) {
-
               if (diaSem === 0 && d2.includes("domingo")) return false;
-
               if (diaSem === 2 && d2.includes("terca")) return false;
-
               if (diaSem === 6 && d2.includes("sabado")) return false;
-
             } else {
-
               if (d2 === "0" && diaSem !== 0) return false;
-
               if (d2 === "2" && diaSem !== 2) return false;
-
               if (d2 === "6" && diaSem !== 6) return false;
-
             }
-
           }
-
           if ((contagem[v.nome] || 0) >= limiteMês) return false;
-
           if (ocupados[v.nome]?.includes(dataISO)) return false;
-
           if (!ignorar7Dias && ultimaData[v.nome]) {
-
             const [ay,am,ad] = dataISO.split('-').map(Number);
-
             const [by,bm,bd] = ultimaData[v.nome].split('-').map(Number);
-
             const msA = Date.UTC(ay,am-1,ad);
-
             const msB = Date.UTC(by,bm-1,bd);
-
             const diffDias = (msA - msB) / 86400000;
-
             if (diffDias < 7) return false;
-
           }
-
           return true;
-
         };
-
         let candidatos = listaGlobal.filter(v => filtroBase(v, false));
-
-        // Se não há candidatos com a regra dos 7 dias, relaxa essa restrição (evita "A definir" quando existe pessoa disponível)
-
         if (candidatos.length === 0) {
-
           candidatos = listaGlobal.filter(v => filtroBase(v, true));
-
         }
-
         for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
-
         candidatos.sort((a,b)=>(contagem[a.nome]||0)-(contagem[b.nome]||0));
-
         let escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
-
         if(escolhido !== "A definir") {
-
           contagem[escolhido] = (contagem[escolhido] || 0) + 1;
-
           ultimaData[escolhido] = dataISO; escaladosNoDia.push(escolhido);
-
         }
-
         criarLinha(new Date(data), padrao[diaSem].n, padrao[diaSem].h, escolhido);
-
       }
-
     }
-
     data.setDate(data.getDate() + 1);
-
   }
-
   btnSalvar2.style.display = 'block';
-
 };
-
-
-
-// ── ORDENAÇÃO CORRIGIDA ──────────────────────────────────────────
 
 function ordenarTabela() {
-
     const tbody = document.getElementById("corpoTabela");
-
     const rows = Array.from(tbody.querySelectorAll("tr"));
-
     rows.sort((a, b) => {
-
         const parseDate = (str) => {
-
             let p = str.split('/');
-
             if(p.length === 3) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
-
             return str;
-
         };
-
         const dA = parseDate(a.cells[0].innerText.trim());
-
         const dB = parseDate(b.cells[0].innerText.trim());
-
         if (dA !== dB) return dA.localeCompare(dB);
-
         return a.cells[3].innerText.trim().localeCompare(b.cells[3].innerText.trim());
-
     });
-
     rows.forEach(row => tbody.appendChild(row));
-
 }
-
-
 
 function criarLinha(d, e, h, n) {
-
   const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-
   const tr = document.createElement("tr");
-
   tr.innerHTML = `<td>${d.toLocaleDateString('pt-BR')}</td><td>${dias[d.getDay()]}</td><td contenteditable="true">${e}</td><td contenteditable="true">${h}</td><td contenteditable="true">${n}</td><td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
-
   corpoTabela.appendChild(tr);
-
-  ordenarTabela(); // Mantém a tabela cronologicamente perfeita em tempo real
-
+  ordenarTabela();
 }
-
 window.alternarCor = (el, c) => { let tr = el.closest('tr'); tr.className = tr.className === c ? '' : c; };
-
 window.excluirVol = async(id) => { if(confirm("Remover da equipe?")){ let r=doc(db,"voluntarios",id); let s=await getDoc(r); let m=s.data().ministerios.filter(x=>x!==ministerioSelecionado); await updateDoc(r,{ministerios:m}); carregarVoluntarios(); }};
 
-
-
 async function carregarHistorico() {
-
   const listaHistorico = document.getElementById('listaHistorico');
-
   listaHistorico.innerHTML = "";
-
   if(!ministerioSelecionado) return;
-
   const snap = await getDocs(collection(db,"historico_escalas"));
-
   let listaTemp = [];
-
   snap.forEach(d => { const item = d.data(); if(item.ministerio === ministerioSelecionado){ item.id = d.id; listaTemp.push(item); } });
-
   listaTemp.sort((a,b) => (b.dataCriacao || "").localeCompare(a.dataCriacao || ""));
-
   if(listaTemp.length === 0) { listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>"; return; }
-
   listaTemp.forEach(item => {
-
     listaHistorico.innerHTML += `
-
       <div class="historico-item">
-
         <span>${item.nomeExibicao || item.mesReferencia}</span>
-
         <div class="btn-acoes-hist">
-
           <button class="btn-baixar" title="Visualizar/Imprimir" onclick="reconstruirEBaixar('${item.id}')"><i class="ph ph-file-pdf"></i></button>
-
           <button class="btn-baixar excluir-hist" title="Excluir" onclick="excluirHistorico('${item.id}')"><i class="ph ph-trash"></i></button>
-
         </div>
-
       </div>`;
-
   });
-
 }
-
-
 
 window.excluirHistorico = async(id) => {
-
   if(confirm("Deseja excluir esta escala do histórico permanentemente?")) { await deleteDoc(doc(db,"historico_escalas",id)); carregarHistorico(); }
-
 };
-
-
 
 window.reconstruirEBaixar = async(id) => {
-
   const snap = await getDoc(doc(db,"historico_escalas",id));
-
   if(!snap.exists()) return;
-
   const dados = snap.data();
-
   corpoTabela.innerHTML = "";
-
   dados.linhas.forEach(l => {
-
     const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
-
     const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-
     const [d,m,a] = l.data.split('/');
-
     const dt = new Date(`${a}-${m}-${d}T12:00:00`);
-
     tr.innerHTML = `<td>${l.data}</td><td>${dias[dt.getDay()]}</td><td contenteditable="true">${l.evento}</td><td contenteditable="true">${l.hora}</td><td contenteditable="true">${l.voluntario}</td><td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
-
     corpoTabela.appendChild(tr);
-
   });
-
   document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`; window.print(); document.title = "Gerenciador de Escala - Nação Santa";
-
 };
-
-
 
 document.getElementById('btnSalvar2').onclick = async () => {
-
   const mesVal = document.getElementById('mesEscala').value;
-
   if(!mesVal) return alert("Selecione o mês!");
-
   const linhas = [];
-
   document.querySelectorAll('#corpoTabela tr').forEach(tr => {
-
     const tds = tr.querySelectorAll('td');
-
     if(tds.length >= 5) linhas.push({ data: tds[0].innerText, dia: tds[1].innerText, evento: tds[2].innerText, hora: tds[3].innerText, voluntario: tds[4].innerText, cor: tr.className });
-
   });
-
   if(linhas.length === 0) return alert("Gere uma escala primeiro!");
-
   const snapVersao = await getDocs(query(collection(db,"historico_escalas"), where("mesReferencia","==",mesVal), where("ministerio","==",ministerioSelecionado)));
-
   const versao = snapVersao.size + 1;
-
   const nomeExibicao = `${mesVal} - ${ministerioSelecionado} (Versão ${versao})`;
-
   await addDoc(collection(db,"historico_escalas"), {
-
     ministerio: ministerioSelecionado, mesReferencia: mesVal,
-
     nomeExibicao, dataCriacao: new Date().toISOString(), linhas
-
   });
-
   alert(`Escala salva: ${nomeExibicao}`); carregarHistorico();
-
 };
-
-
 
 window.abrirModalResgate = async function() {
-
   const snap = await getDocs(collection(db,"voluntarios"));
-
   const select = document.getElementById('selectVoluntarioResgate'); select.innerHTML = "";
-
   snap.forEach(d => {
-
     const v = d.data();
-
     if(!v.ministerios?.includes(ministerioSelecionado)) select.innerHTML += `<option value="${d.id}">${v.nome}</option>`;
-
   });
-
   if(select.innerHTML === "") { alert("Nenhum voluntário disponível para resgate."); return; }
-
   document.getElementById('modalResgate').style.display = 'flex';
-
 };
-
-
 
 window.confirmarResgate = async function() {
-
   const id = document.getElementById('selectVoluntarioResgate').value;
-
   if(!id) return;
-
   const r = doc(db,"voluntarios",id); const s = await getDoc(r);
-
   const ministeriosAtuais = s.data().ministerios || [];
-
   if(!ministeriosAtuais.includes(ministerioSelecionado)) await updateDoc(r, { ministerios: [...ministeriosAtuais, ministerioSelecionado] });
-
   fecharModal('modalResgate'); carregarVoluntarios();
-
 };
-
-
 
 let ministerioTrocandoSenha = "";
-
 window.abrirModalTrocarSenha = function() {
-
   ministerioTrocandoSenha = ministerioSelecionado;
-
   document.getElementById('txtTrocarSenha').innerText = `Ministério: ${ministerioSelecionado}`;
-
   document.getElementById('inputNovaSenha').value = "";
-
   document.getElementById('modalTrocarSenha').style.display = 'flex';
-
 };
-
 window.salvarNovaSenha = async function() {
-
   const nova = document.getElementById('inputNovaSenha').value.trim();
-
   if(!nova) return alert("Digite a nova senha.");
-
   const r = doc(db,"configuracoes","senhas");
-
   await updateDoc(r, { [ministerioTrocandoSenha]: nova });
-
   alert("Senha alterada com sucesso!"); fecharModal('modalTrocarSenha');
-
 };
-
-
 
 // ── DINÂMICA DO EVENTO ESPECIAL (Vagas x Voluntários) ───────────────────
-
 window.atualizarSelectsVoluntarios = function() {
-
     const vagas = parseInt(document.getElementById('vagasEvento').value) || 1;
-
     const container = document.getElementById('containerSelectsVoluntarios');
-
     const valoresAtuais = Array.from(container.querySelectorAll('select')).map(s => s.value);
-
     container.innerHTML = '';
-
     for (let i = 0; i < vagas; i++) {
-
         const label = document.createElement('label');
-
         label.innerText = `Voluntário ${i + 1}:`;
-
         const sel = document.createElement('select');
-
         sel.id = `selectEventoVaga_${i}`;
-
         sel.innerHTML = "<option value=''>Selecione...</option>";
-
         listaGlobal.forEach(v => { sel.innerHTML += `<option value="${v.nome}">${v.nome}</option>`; });
-
         if (valoresAtuais[i]) sel.value = valoresAtuais[i];
-
         container.appendChild(label);
-
         container.appendChild(sel);
-
     }
-
 };
-
-
 
 window.adicionarEventoEspecial = function() {
-
     const n = document.getElementById('nomeEvento').value.trim();
-
     const h = document.getElementById('horaEvento').value;
-
     const dataStr = document.getElementById('dataEvento').value;
-
     const vagas = parseInt(document.getElementById('vagasEvento').value) || 1;
 
-
-
     if (!n) return alert("Digite o nome do evento.");
-
     if (!dataStr) return alert("Selecione a data do evento.");
 
-
-
     for (let i = 0; i < vagas; i++) {
-
         const sel = document.getElementById(`selectEventoVaga_${i}`);
-
         if (!sel || !sel.value) return alert(`Selecione o Voluntário ${i + 1}.`);
-
     }
-
-
 
     const [ano, mes, dia] = dataStr.split('-');
-
-    const dt = new Date(ano, mes - 1, dia, 12, 0, 0); // Trava o relógio no meio-dia para impedir bug de fuso horário
-
-
+    const dt = new Date(ano, mes - 1, dia, 12, 0, 0);
 
     for (let i = 0; i < vagas; i++) {
-
         const sel = document.getElementById(`selectEventoVaga_${i}`);
-
         criarLinha(dt, n, h, sel.value);
-
     }
 
-
-
     document.getElementById('nomeEvento').value = ''; document.getElementById('dataEvento').value = '';
-
     document.getElementById('vagasEvento').value = '1';
-
     atualizarSelectsVoluntarios();
-
 };
-
-
 
 // ── JÁ POSSUO CADASTRO ───────────────────────────────────────
-
 let jcStep = 1;
-
 let jcMinisterioSelecionado = "";
-
 let jcVoluntarioId = "";
-
 let jcVoluntarioNome = "";
-
 let jcDatasIndisponiveis = [];
 
-
-
 const stringMesJC = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-
 document.getElementById('jcMesLabel').innerText = stringMesJC[mesAlvo] + " " + anoAlvo;
 
-
-
 window.abrirModalJaCadastrado = function() {
-
   jcStep = 1; jcMinisterioSelecionado = ""; jcVoluntarioId = ""; jcVoluntarioNome = ""; jcDatasIndisponiveis = [];
-
   document.querySelectorAll('.ministerio-btn').forEach(b => b.classList.remove('selected'));
-
   document.getElementById('jcDisponibilidade').value = "";
-
   document.getElementById('jcListaDatas').innerHTML = "";
-
   document.getElementById('jcInputData').value = "";
-
   mostrarStepJC(1);
-
   document.getElementById('modalJaCadastrado').classList.add('show');
-
 };
-
-
 
 window.fecharModalJC = function() {
-
   document.getElementById('modalJaCadastrado').classList.remove('show');
-
 };
-
-
 
 function mostrarStepJC(n) {
-
   jcStep = n;
-
   document.querySelectorAll('.modal-jc-step').forEach(s => s.classList.remove('active'));
-
   document.getElementById(`jcStep${n}`).classList.add('active');
-
   const btn = document.getElementById('jcBtnConfirmar');
-
   const label = document.getElementById('jcBtnLabel');
-
   const voltar = document.getElementById('jcBtnVoltar');
-
   if(n === 1) { btn.disabled = true; label.innerText = "Selecione um ministério"; voltar.innerHTML = '<i class="ph ph-x"></i> Fechar'; voltar.onclick = fecharModalJC; }
-
   if(n === 2) { btn.disabled = true; label.innerText = "Selecione seu nome"; voltar.innerHTML = '<i class="ph ph-arrow-left"></i> Voltar'; voltar.onclick = jcVoltar; }
-
   if(n === 3) { btn.disabled = false; label.innerText = "Salvar disponibilidade"; voltar.innerHTML = '<i class="ph ph-arrow-left"></i> Voltar'; voltar.onclick = jcVoltar; }
-
 }
-
-
 
 window.selecionarMinisterioJC = function(nome, el) {
-
   jcMinisterioSelecionado = nome;
-
   document.querySelectorAll('.ministerio-btn').forEach(b => b.classList.remove('selected'));
-
   el.classList.add('selected');
-
   const btn = document.getElementById('jcBtnConfirmar');
-
   document.getElementById('jcBtnLabel').innerText = "Ver voluntários";
-
   btn.disabled = false;
-
 };
-
-
 
 window.jcAvancar = async function() {
-
   if(jcStep === 1) {
-
     if(!jcMinisterioSelecionado) return;
-
     mostrarStepJC(2);
-
     await jcCarregarNomes();
-
   } else if(jcStep === 2) {
-
     if(!jcVoluntarioId) return;
-
     mostrarStepJC(3);
-
   } else if(jcStep === 3) {
-
     await jcSalvar();
-
   }
-
 };
-
-
 
 window.jcVoltar = function() {
-
   if(jcStep === 2) { mostrarStepJC(1); }
-
   else if(jcStep === 3) { mostrarStepJC(2); }
-
 };
-
-
 
 async function jcCarregarNomes() {
-
   const lista = document.getElementById('jcNomeLista');
-
   lista.innerHTML = '<div class="jc-loading">Carregando membros...</div>';
-
   const snap = await getDocs(collection(db, "voluntarios"));
-
   const membros = [];
-
   snap.forEach(d => {
-
     const v = d.data(); v.id = d.id;
-
     if(v.ministerios?.includes(jcMinisterioSelecionado)) membros.push(v);
-
   });
-
   membros.sort((a,b) => a.nome.localeCompare(b.nome));
-
   if(membros.length === 0) { lista.innerHTML = '<div class="jc-loading">Nenhum membro encontrado neste ministério.</div>'; return; }
-
   lista.innerHTML = "";
-
   membros.forEach(v => {
-
     const div = document.createElement('div');
-
     div.className = 'nome-item';
-
     div.innerHTML = `<i class="ph ph-user-circle"></i> ${v.nome}`;
-
     div.onclick = () => {
-
       document.querySelectorAll('.nome-item').forEach(x => x.classList.remove('selected'));
-
       div.classList.add('selected');
-
       jcVoluntarioId = v.id; jcVoluntarioNome = v.nome;
-
       document.getElementById('jcBtnConfirmar').disabled = false;
-
       document.getElementById('jcBtnLabel').innerText = `Continuar com ${v.nome.split(' ')[0]}`;
-
     };
-
     lista.appendChild(div);
-
   });
-
 }
-
-
 
 window.jcAdicionarData = function() {
-
   const val = document.getElementById('jcInputData').value;
-
   if(!val || jcDatasIndisponiveis.includes(val)) return;
-
   jcDatasIndisponiveis.push(val); jcDatasIndisponiveis.sort();
-
   jcRenderizarDatas();
-
   document.getElementById('jcInputData').value = "";
-
 };
-
 window.jcRemoverData = function(index) { jcDatasIndisponiveis.splice(index, 1); jcRenderizarDatas(); };
-
 function jcRenderizarDatas() {
-
   const container = document.getElementById('jcListaDatas'); container.innerHTML = "";
-
   jcDatasIndisponiveis.forEach((data, index) => {
-
     const [a, m, d] = data.split('-');
-
     container.innerHTML += `<div class="chip">${d}/${m}/${a} <span onclick="jcRemoverData(${index})">✖</span></div>`;
-
   });
-
 }
 
-
-
 async function jcSalvar() {
-
   const disp = document.getElementById('jcDisponibilidade').value;
-
   if(!disp) return alert("Selecione sua disponibilidade.");
-
   const inputPend = document.getElementById('jcInputData').value;
-
   if(inputPend && !jcDatasIndisponiveis.includes(inputPend)) jcDatasIndisponiveis.push(inputPend);
-
   const r = doc(db, "voluntarios", jcVoluntarioId);
-
   const s = await getDoc(r);
-
   const dadosAtuais = s.data();
-
-  // Preserva disponibilidades de outros meses sem sobrescrever
   const disponibilidades = dadosAtuais.disponibilidades || {};
   disponibilidades[mesReferenciaBanco] = {
     disponibilidade: disp,
@@ -2246,27 +1228,14 @@ async function jcSalvar() {
   });
 
   fecharModalJC();
-
   alert(`✅ Disponibilidade de ${jcVoluntarioNome} atualizada com sucesso para ${stringMesJC[mesAlvo]}!`);
-
 }
 
-
-
-
-
-};
-
 // Fechar modal ao clicar fora
-
 document.getElementById('modalJaCadastrado').addEventListener('click', function(e) {
-
   if(e.target === this) fecharModalJC();
-
 });
-
 </script>
 
 </body>
-
 </html>
