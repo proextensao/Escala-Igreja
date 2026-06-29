@@ -196,8 +196,8 @@ tbody td { background:white; color:#1e293b; }
 .vermelho td { background:#fca5a5 !important; color: black !important; }
 
 /* Célula de voluntário editável via popup */
-td.cel-voluntario { cursor: pointer; position: relative; user-select: none; -webkit-user-select: none; caret-color: transparent; pointer-events: auto; }
-td.cel-voluntario[contenteditable] { -webkit-user-modify: read-only; }
+td.cel-voluntario { cursor: pointer; position: relative; user-select: none; -webkit-user-select: none; caret-color: transparent; }
+td.cel-voluntario * { user-select: none; -webkit-user-select: none; pointer-events: none; }
 td.cel-voluntario:focus { outline: none; }
 td.cel-voluntario.editavel:hover { background:#eff6ff !important; outline: 2px dashed #2563eb; }
 td.cel-voluntario.editavel::after {
@@ -556,8 +556,8 @@ window.setEdicao = function(habilitado) {
             tr.cells[0].setAttribute('contenteditable', habilitado ? 'true' : 'false');
             tr.cells[2].setAttribute('contenteditable', habilitado ? 'true' : 'false');
             tr.cells[3].setAttribute('contenteditable', habilitado ? 'true' : 'false');
-            // Voluntário: NUNCA contenteditable, sempre bloqueado
-            tr.cells[4].setAttribute('contenteditable', 'false');
+            // Voluntário: NUNCA contenteditable, apenas popup
+            tr.cells[4].removeAttribute('contenteditable');
             if(habilitado) tr.cells[4].classList.add('editavel');
             else tr.cells[4].classList.remove('editavel');
             if(tr.cells[5]) tr.cells[5].style.display = habilitado ? '' : 'none';
@@ -586,28 +586,18 @@ function handleClickForaPopup(e) {
     }
 }
 
-// Célula de voluntário: sempre abre popup ao clicar
+// Célula de voluntário: bloqueio via estrutura HTML (sem contenteditable)
 corpoTabela.addEventListener('click', function(e) {
-    const td = e.target.closest('td.cel-voluntario');
+    const td = e.target.closest('td.cel-voluntario.editavel');
     if(!td) return;
-    // Só abre popup se a escala estiver em modo de edição
-    if(!td.classList.contains('editavel')) return;
-    e.preventDefault();
-    e.stopPropagation();
     abrirPopupVoluntarios(td);
-});
-
-// Bloqueia edição direta via teclado na célula de voluntário
-corpoTabela.addEventListener('keydown', function(e) {
-    const td = e.target.closest('td.cel-voluntario');
-    if(td) e.preventDefault();
 });
 
 function abrirPopupVoluntarios(td) {
     fecharPopupVoluntarios();
 
     // Nomes atualmente na célula (separados por vírgula)
-    const nomesAtuais = (td.dataset.nomes || td.innerText || "")
+    const nomesAtuais = (td.dataset.nomes || td.querySelector('.vol-texto')?.textContent || td.innerText || "")
         .split(',').map(s => s.trim()).filter(s => s !== "" && s !== "A definir");
 
     // Descobre a data da linha para indicar restrições
@@ -697,7 +687,9 @@ function abrirPopupVoluntarios(td) {
 
         const novosNomes = marcados.length > 0 ? marcados.join(', ') : 'A definir';
         td.dataset.nomes = novosNomes;
-        td.innerText = novosNomes;
+        let span = td.querySelector('.vol-texto');
+        if(!span) { span = document.createElement('span'); span.className = 'vol-texto'; td.innerHTML = ''; td.appendChild(span); }
+        span.textContent = novosNomes;
         fecharPopupVoluntarios();
     };
     popup.querySelector('.btn-fechar').onclick = fecharPopupVoluntarios;
@@ -735,7 +727,7 @@ function criarLinha(data, evento, hora, nome) {
         "<td>" + dias[data.getDay()] + "</td>" +
         "<td contenteditable=\"true\">" + evento + "</td>" +
         "<td contenteditable=\"true\">" + hora + "</td>" +
-        "<td class=\"cel-voluntario\" contenteditable=\"false\" data-nomes=\"" + nomeSeguro + "\">" + nomeSeguro + "</td>" +
+        "<td class=\"cel-voluntario\" data-nomes=\"" + nomeSeguro + "\"><span class=\"vol-texto\">" + nomeSeguro + "</span></td>" +
         "<td class=\"acoes\" style=\"display:none;\">" +
         "<i class=\"ph ph-circle acao-amarelo\" onclick=\"alternarCor(this,'amarelo')\" title=\"Destacar Amarelo\"></i>" +
         "<i class=\"ph ph-circle acao-vermelho\" onclick=\"alternarCor(this,'vermelho')\" title=\"Destacar Vermelho\"></i>" +
@@ -1152,7 +1144,7 @@ window.reconstruirEBaixar = async(id) => {
             "<td>" + l.dia + "</td>" +
             "<td contenteditable=\"true\">" + l.evento + "</td>" +
             "<td contenteditable=\"true\">" + l.hora + "</td>" +
-            "<td class=\"cel-voluntario\" contenteditable=\"false\" data-nomes=\"" + nomeSeguro + "\">" + nomeSeguro + "</td>" +
+            "<td class=\"cel-voluntario\" data-nomes=\"" + nomeSeguro + "\"><span class=\"vol-texto\">" + nomeSeguro + "</span></td>" +
             "<td class=\"acoes\" style=\"display:none;\">" +
             "<i class=\"ph ph-circle acao-amarelo\" onclick=\"alternarCor(this,'amarelo')\" title=\"Destacar Amarelo\"></i>" +
             "<i class=\"ph ph-circle acao-vermelho\" onclick=\"alternarCor(this,'vermelho')\" title=\"Destacar Vermelho\"></i>" +
