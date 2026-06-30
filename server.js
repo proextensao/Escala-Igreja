@@ -134,8 +134,13 @@ async function dispararLembretesDeAmanha() {
             const primeiroNome = nomeVoluntario.split(" ")[0];
             const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
             const html = `
+              const html = `
               <div style="font-family:sans-serif; max-width:500px; margin:0 auto; background:#f8fafc; padding:20px; border-radius:10px;">
-                <h2 style="color:#1e293b;">Olá, ${primeiroNome}! 👋</h2>
+                <div style="background:#1e293b; padding:20px; border-radius:8px; text-align:center; margin-bottom:20px;">
+                  <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png" alt="Nação Santa" style="height:45px; object-fit:contain; margin-bottom:10px;">
+                  <h2 style="color:white; margin:0; font-size:18px;">⏰ Lembrete de Escala</h2>
+                </div>
+                <h2 style="color:#1e293b; font-size:18px;">Olá, ${primeiroNome}! 👋</h2>
                 <p style="color:#475569; font-size:15px;">Este é um lembrete automático de que você está escalado(a) para servir <b>amanhã</b>.</p>
                 <div style="background:white; padding:15px; border-radius:8px; border-left:4px solid #2563eb; margin:20px 0;">
                   <p style="margin:5px 0;"><b>Ministério:</b> ${escala.ministerio}</p>
@@ -258,7 +263,7 @@ function montarHtmlMensagemSemanal(nomeVoluntario, mensagemBiblica) {
   return `
     <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
       <div style="background:#1e293b; padding:24px; border-radius:8px; text-align:center; margin-bottom:24px;">
-        <h1 style="margin:0 0 12px 0; font-size:28px;"><b style="color:white;">Nação</b><span style="color:#94a3b8;">Santa</span></h1>
+        <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png" alt="Nação Santa" style="height:50px; object-fit:contain; margin-bottom:12px;">
         <h2 style="color:white; margin:0; font-size:20px;">🌅 Início de Semana</h2>
         <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${mesAtual} ${anoAtual} — Nação Santa</p>
       </div>
