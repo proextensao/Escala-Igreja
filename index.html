@@ -417,6 +417,8 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
     tr.vermelho td { background: #fca5a5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -1584,6 +1586,62 @@ window.excluirHistorico = async(id) => {
   if(confirm("Deseja excluir esta escala do histórico permanentemente?")) { await deleteDoc(doc(db,"historico_escalas",id)); carregarHistorico(); }
 };
 
+/* ===================================================================== */
+/* ===== GERAÇÃO REAL DE PDF (PAISAGEM) — substitui o window.print() ===== */
+/* Não depende mais da caixa de diálogo de impressão do navegador/celular, */
+/* então a orientação paisagem e a remoção da coluna "Ações" sempre funcionam. */
+/* ===================================================================== */
+function gerarPdfDaTabela(tabelaEl, titulo, nomeArquivo) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  // Cabeçalho: pega todos os <th>, ignorando a coluna "Ações"
+  const thsTodos = Array.from(tabelaEl.querySelectorAll('thead th'));
+  const indicesValidos = [];
+  const cabecalho = thsTodos
+    .filter((th, i) => {
+      const ok = !th.classList.contains('acoes');
+      if (ok) indicesValidos.push(i);
+      return ok;
+    })
+    .map(th => th.innerText.trim());
+
+  // Corpo: pega todas as linhas, ignorando as células da coluna "Ações"
+  const linhasEl = Array.from(tabelaEl.querySelectorAll('tbody tr'));
+  const corpo = linhasEl.map(tr => {
+    const tds = Array.from(tr.children);
+    return indicesValidos.map(i => (tds[i]?.innerText || '').trim());
+  });
+
+  // Preserva o destaque amarelo/vermelho das linhas
+  const corPorLinha = linhasEl.map(tr => {
+    if (tr.classList.contains('amarelo')) return [254, 240, 138];
+    if (tr.classList.contains('vermelho')) return [252, 165, 165];
+    return null;
+  });
+
+  doc.setFontSize(13);
+  doc.text(titulo, 14, 10);
+
+  doc.autoTable({
+    head: [cabecalho],
+    body: corpo,
+    startY: 16,
+    styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle' },
+    headStyles: { fillColor: [30, 41, 59], halign: 'center' },
+    bodyStyles: { halign: 'center' },
+    margin: { top: 16, left: 8, right: 8 },
+    didParseCell: (data) => {
+      if (data.section === 'body') {
+        const cor = corPorLinha[data.row.index];
+        if (cor) data.cell.styles.fillColor = cor;
+      }
+    }
+  });
+
+  doc.save(nomeArquivo);
+}
+
 window.reconstruirEBaixar = async(id) => {
   const snap = await getDoc(doc(db,"historico_escalas",id));
   if(!snap.exists()) return;
@@ -1598,7 +1656,7 @@ window.reconstruirEBaixar = async(id) => {
     tr.innerHTML = `<td>${l.data}</td><td>${dias[dt.getDay()]}</td><td contenteditable="true">${l.evento}</td><td contenteditable="true">${l.hora}</td><td class="cel-voluntario editavel" data-nomes="${nomeSeguro}"><span class="vol-texto">${l.voluntario}</span></td><td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
     corpoTabela.appendChild(tr);
   });
-  document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`; window.print(); document.title = "Gerenciador de Escala - Nação Santa";
+  gerarPdfDaTabela(document.getElementById('tabelaEscala'), `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`, `Escala_${ministerioSelecionado}_${dados.mesReferencia}.pdf`.replace(/\s+/g,'_'));
 };
 
 document.getElementById('btnSalvar2').onclick = async () => {
@@ -1731,6 +1789,7 @@ function montarCabecalhoLouvor() {
 document.getElementById('qtdVocaisLouvor').addEventListener('change', () => {
   const corpo = document.getElementById('corpoTabelaLouvor');
   if (corpo.children.length > 0) {
+    
     const ok = confirm("Alterar a quantidade de vocais muda as colunas da tabela. A escala atual em tela será limpa (gere novamente). Deseja continuar?");
     if (!ok) {
       document.getElementById('qtdVocaisLouvor').value = qtdVocaisAtualLouvor;
@@ -1994,10 +2053,8 @@ window.reconstruirEBaixarLouvor = async(id) => {
     tr.innerHTML = tds;
     corpo.appendChild(tr);
   });
-  document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`; window.print(); document.title = "Gerenciador de Escala - Nação Santa";
+  gerarPdfDaTabela(document.getElementById('tabelaEscalaLouvor'), `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`, `Escala_${ministerioSelecionado}_${dados.mesReferencia}.pdf`.replace(/\s+/g,'_'));
 };
-
-/* ── EVENTO ESPECIAL DO LOUVOR ── */
 window.atualizarSelectsVoluntariosLouvor = function() {
   // mantido por simetria; o painel de louvor usa seleção por clique nas células (popup)
 };
