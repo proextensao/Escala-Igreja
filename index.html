@@ -195,6 +195,43 @@ td.cel-voluntario.editavel::after {
 .btn-ja-cadastrado:hover { background: #ccfbf1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.15); }
 .btn-ja-cadastrado i { font-size: 18px; }
 
+/* ===== BOTÃO DESTAQUE LOUVOR ===== */
+.btn-louvor-destaque {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px; margin-top: 10px;
+  border-radius: 6px; border: none;
+  background: linear-gradient(135deg, #7c3aed, #c026d3);
+  color: white !important; font-weight: bold; font-size: 14px; cursor: pointer;
+  transition: all 0.25s ease; letter-spacing: 0.3px;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.35);
+}
+.btn-louvor-destaque:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,0.5); }
+.btn-louvor-destaque i { font-size: 18px; }
+
+/* ===== TELA CADASTRO LOUVOR (3ª tela) ===== */
+#screen-cadastro-louvor {
+  background: #0f172a; display: flex; justify-content: center; padding: 50px 20px;
+  transform: translateX(100%); opacity: 0; z-index: 5;
+}
+body.show-louvor #screen-cadastro { transform: translateX(-40%); opacity: 0; pointer-events: none; }
+body.show-louvor #screen-cadastro-louvor { transform: translateX(0); opacity: 1; pointer-events: all; z-index: 10; }
+.card-louvor-header { background: linear-gradient(135deg, #7c3aed, #c026d3); color: white; padding: 16px; border-radius: 10px; margin-bottom: 18px; }
+.card-louvor-header h3 { color: white; border: none; padding: 0; margin: 0 0 4px 0; }
+.card-louvor-header p { font-size: 12px; opacity: 0.9; margin: 0; }
+.btn-voltar-cadastro-louvor { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px; border: 1px solid #ddd; background: white; color: #475569; font-weight: bold; font-size: 13px; cursor: pointer; }
+.equipe-grid, .funcao-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.equipe-card, .funcao-card { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #475569; transition: 0.2s; }
+.equipe-card:has(input:checked), .funcao-card:has(input:checked) { border-color: #7c3aed; background: #faf5ff; color: #6d28d9; }
+.equipe-card input, .funcao-card input { width: auto; margin: 0; }
+.equipe-card small, .funcao-card small { display: block; font-weight: normal; color: #94a3b8; font-size: 10px; }
+
+/* ===== ABAS LOUVOR NO PAINEL ===== */
+.tabs-louvor-container { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.tab-btn-louvor { background: linear-gradient(135deg, #7c3aed, #c026d3); color: white; border: 2px solid #a855f7; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(124,58,237,0.3); }
+.tab-btn-louvor:hover { filter: brightness(1.1); }
+.tab-btn-louvor.active { outline: 3px solid #22c55e; transform: scale(1.05); }
+.aviso-dias-fixos { text-align: center; color: #7c3aed; background: #faf5ff; border: 1px solid #e9d5ff; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 12px; }
+
 .modal-ja-cadastrado { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 2000; justify-content: center; align-items: center; }
 .modal-ja-cadastrado.show { display: flex; }
 
@@ -250,6 +287,38 @@ td.cel-voluntario.editavel::after {
 .step-divider { display: flex; align-items: center; gap: 8px; margin: 16px 0; color: #94a3b8; font-size: 11px; }
 .step-divider::before, .step-divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
 
+/* ===== PAINEL EXCLUSIVO DO LOUVOR ===== */
+.painel-louvor-wrap { max-width: 1200px; margin: 0 auto; }
+.config-louvor-card {
+  background: linear-gradient(135deg, #faf5ff, #fdf4ff);
+  border: 1px solid #e9d5ff; padding: 22px; border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.06); margin-bottom: 20px;
+}
+.config-louvor-card h3 { color: #6d28d9; margin-bottom: 14px; }
+.config-louvor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.config-louvor-grid label { color:#6d28d9; font-size:12px; font-weight:bold; display:block; margin-bottom:4px; }
+.config-louvor-grid input, .config-louvor-grid select { width:100%; padding:10px; border: 1px solid #e9d5ff; border-radius: 6px; box-sizing: border-box; }
+.botoes-louvor-acao { display:flex; gap:10px; margin-top:16px; flex-wrap: wrap; }
+.botoes-louvor-acao .btn { width: auto; flex: 1; min-width: 160px; margin-bottom: 0; }
+
+.evento-louvor-card {
+  background: white; border: 1px solid #e9d5ff; padding: 20px; border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.06); margin-bottom: 20px;
+}
+.evento-louvor-card h3 { color: #6d28d9; margin-bottom: 14px; }
+.evento-louvor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: end; }
+.evento-louvor-grid label { color:#475569; font-size:12px; font-weight:bold; display:block; margin-bottom:4px; }
+.evento-louvor-grid input { width:100%; padding:10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+.evento-louvor-grid button { width: 100%; }
+
+.tabela-louvor-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; }
+table.tabela-louvor { min-width: 920px; background: linear-gradient(135deg, #7c3aed, #c026d3); }
+table.tabela-louvor th { font-size: 12px; white-space: nowrap; }
+table.tabela-louvor td.cel-funcao { font-size: 13px; }
+
+.louvor-historico-grid { display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:1200px; margin: 0 auto 20px auto; }
+.card-painel-louvor { background:white; padding:20px; border-radius:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
 /* ===== CORREÇÕES MOBILE ===== */
 @media (max-width: 600px) {
     #screen-painel { padding: 12px !important; }
@@ -292,7 +361,10 @@ td.cel-voluntario.editavel::after {
     .main-grid {
         grid-template-columns: 1fr !important;
     }
-    #secaoPrint {
+    .config-louvor-grid { grid-template-columns: 1fr 1fr !important; }
+    .evento-louvor-grid { grid-template-columns: 1fr 1fr !important; }
+    .louvor-historico-grid { grid-template-columns: 1fr !important; }
+    #secaoPrint, .tabela-louvor-wrap {
         overflow-x: auto !important;
         display: block !important;
         -webkit-overflow-scrolling: touch !important;
@@ -308,9 +380,9 @@ td.cel-voluntario.editavel::after {
 
 @media print {
     #screen-cadastro { display: none !important; }
-    .btn-voltar-cadastro, .tabs-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal > .main-grid { display: none !important; }
-    #secaoPrint, #secaoPrint * { visibility: visible; }
-    #secaoPrint { position: absolute; top: 0; left: 0; width: 100%; }
+    .btn-voltar-cadastro, .tabs-container, .tabs-louvor-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal, .config-louvor-card, .evento-louvor-card, .louvor-historico-grid { display: none !important; }
+    #secaoPrint, #secaoPrint *, .tabela-louvor-wrap, .tabela-louvor-wrap * { visibility: visible; }
+    #secaoPrint, .tabela-louvor-wrap { position: absolute; top: 0; left: 0; width: 100%; }
     .acoes, th:last-child, td:last-child { display: none !important; }
     table { width: 100%; border: 1px solid black; }
     tr.amarelo td { background: #fef08a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -325,6 +397,16 @@ td.cel-voluntario.editavel::after {
     <div id="mesDinamico" class="mes-pequeno">MÊS</div>
     <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png" alt="Logo Nação Santa" class="logo-igreja">
     <h3>Cadastro de Disponibilidade<br>Voluntários - Nação Santa</h3>
+
+    <button class="btn-ja-cadastrado" onclick="abrirModalJaCadastrado()">
+      <i class="ph ph-user-check"></i> JÁ POSSUI CADASTRO?
+    </button>
+
+    <button class="btn-louvor-destaque" onclick="irParaLouvorCadastro()">
+      <i class="ph ph-microphone-stage"></i> SOU DO MINISTÉRIO DE LOUVOR
+    </button>
+
+    <div class="divider">ou preencha um novo cadastro abaixo</div>
 
     <label>Nome:</label>
     <input type="text" id="nome" placeholder="Ex: José Maria">
@@ -377,15 +459,74 @@ td.cel-voluntario.editavel::after {
 
     <button id="btnSalvar" style="margin-top: 20px;">Enviar Cadastro</button>
 
-    <div class="divider">ou</div>
-    <button class="btn-ja-cadastrado" onclick="abrirModalJaCadastrado()">
-      <i class="ph ph-user-check"></i> JÁ POSSUI CADASTRO?
-    </button>
-
     <div class="divider">acesso restrito</div>
     <button class="btn-ir-painel" onclick="irParaPainel()">
       <i class="ph ph-gauge"></i> Acessar Painel de Controle <i class="ph ph-arrow-right"></i>
     </button>
+  </div>
+</div>
+
+<div id="screen-cadastro-louvor" class="screen">
+  <div class="card">
+    <button class="btn-voltar-cadastro-louvor" onclick="voltarDoLouvor()"><i class="ph ph-arrow-left"></i> Voltar ao cadastro geral</button>
+    <div class="card-louvor-header">
+      <h3><i class="ph ph-microphone-stage"></i> Ministério de Louvor</h3>
+      <p>Cadastro exclusivo dos músicos, vocais e ministros — não acumula com outros ministérios.</p>
+    </div>
+
+    <label>Nome:</label>
+    <input type="text" id="louvorNome" placeholder="Ex: José Maria">
+
+    <label>WhatsApp:</label>
+    <input type="tel" id="louvorWhatsapp" placeholder="(XX) XXXXX-XXXX" maxlength="15">
+
+    <label>E-mail <span style="font-size:11px; color:#94a3b8; font-weight:normal;">(para lembretes automáticos)</span></label>
+    <input type="email" id="louvorEmail" placeholder="seu@email.com">
+
+    <label>Em qual(is) equipe(s) você toca?</label>
+    <div class="equipe-grid">
+      <label class="equipe-card"><input type="checkbox" value="Louvor Principal"> Louvor Principal<br><small>Terça e Domingo + eventos</small></label>
+      <label class="equipe-card"><input type="checkbox" value="Louvor Sábado"> Louvor Sábado<br><small>Sábado + eventos</small></label>
+    </div>
+
+    <label>Qual(is) sua(s) função(ões)?</label>
+    <div class="funcao-grid">
+      <label class="funcao-card"><input type="checkbox" value="Bateria"> 🥁 Bateria</label>
+      <label class="funcao-card"><input type="checkbox" value="Baixo"> 🎸 Baixo</label>
+      <label class="funcao-card"><input type="checkbox" value="Guitarra"> 🎸 Guitarra</label>
+      <label class="funcao-card"><input type="checkbox" value="Violão"> 🎸 Violão</label>
+      <label class="funcao-card"><input type="checkbox" value="Teclado"> 🎹 Teclado</label>
+      <label class="funcao-card"><input type="checkbox" value="Ministro"> 🎙️ Ministro</label>
+      <label class="funcao-card"><input type="checkbox" value="Vocal"> 🎤 Vocal</label>
+    </div>
+
+    <label>Disponibilidade:</label>
+    <select id="louvorDisponibilidade">
+      <option value="" disabled selected>Selecione uma opção...</option>
+      <optgroup label="Geral">
+        <option value="todos">Disponível todos os dias</option>
+        <option value="nenhum">Indisponível este mês</option>
+      </optgroup>
+      <optgroup label="Disponível Somente">
+        <option value="0">Somente aos domingos</option>
+        <option value="2">Somente às terças</option>
+        <option value="6">Somente aos sábados</option>
+      </optgroup>
+      <optgroup label="Indisponível Somente">
+        <option value="nao_domingo">Indisponível aos domingos</option>
+        <option value="nao_terca">Indisponível às terças</option>
+        <option value="nao_sabado">Indisponível aos sábados</option>
+      </optgroup>
+    </select>
+
+    <label>Datas específicas que NÃO pode comparecer (Opcional):</label>
+    <div class="date-input-group">
+      <input type="date" id="louvorInputData">
+      <button type="button" id="louvorBtnAddData">Adicionar</button>
+    </div>
+    <div id="louvorListaDatas" class="chips-container"></div>
+
+    <button id="louvorBtnSalvar" style="margin-top: 20px; background:#7c3aed;">Enviar Cadastro</button>
   </div>
 </div>
 
@@ -410,7 +551,9 @@ td.cel-voluntario.editavel::after {
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Produção', this)">🎬 Produção</button>
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Rede Social', this)">📱 Rede Social</button>
           <button class="ministerio-btn" onclick="selecionarMinisterioJC('Som', this)">🎧 Som</button>
-          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Transmissão', this)" style="grid-column: span 2;">📡 Transmissão</button>
+          <button class="ministerio-btn" onclick="selecionarMinisterioJC('Transmissão', this)">📡 Transmissão</button>
+          <button class="ministerio-btn" style="border-color:#7c3aed; color:#6d28d9; grid-column: span 2;" onclick="selecionarMinisterioJC('Louvor Principal', this)">🎤 Louvor Principal</button>
+          <button class="ministerio-btn" style="border-color:#7c3aed; color:#6d28d9; grid-column: span 2;" onclick="selecionarMinisterioJC('Louvor Sábado', this)">🎤 Louvor Sábado</button>
         </div>
       </div>
 
@@ -470,6 +613,11 @@ td.cel-voluntario.editavel::after {
     <h1>GERENCIADOR DE ESCALA - NAÇÃO SANTA</h1>
     <h2 id="tituloAviso" class="subtitulo">Selecione o ministério para gerar a escala</h2>
     <button class="btn-mestre" onclick="abrirModalSenha('MESTRA', null)"><i class="ph ph-key"></i> Desbloqueio Mestre</button>
+
+    <div class="tabs-louvor-container">
+      <button class="tab-btn-louvor" data-min="Louvor Principal" onclick="abrirModalSenha('Louvor Principal', this)"><i class="ph ph-lock-key"></i> 🎤 Louvor Principal</button>
+      <button class="tab-btn-louvor" data-min="Louvor Sábado" onclick="abrirModalSenha('Louvor Sábado', this)"><i class="ph ph-lock-key"></i> 🎤 Louvor Sábado</button>
+    </div>
 
     <div class="tabs-container">
       <button class="tab-btn" data-min="Fotografia" onclick="abrirModalSenha('Fotografia', this)"><i class="ph ph-lock-key"></i> Fotografia</button>
@@ -563,6 +711,90 @@ td.cel-voluntario.editavel::after {
       </div>
     </div>
 
+    <!-- ===== PAINEL EXCLUSIVO DO LOUVOR ===== -->
+    <div id="painelLouvor" class="painel-louvor-wrap" style="display:none;">
+      <div class="config-louvor-card">
+        <div class="header-config">
+          <h3><i class="ph ph-microphone-stage"></i> Configuração — <span id="painelLouvorTitulo"></span></h3>
+          <button class="btn-trocar-senha" onclick="abrirModalTrocarSenha()"><i class="ph ph-password"></i> Alterar Senha</button>
+        </div>
+        <div id="avisoDiasFixosLouvor" class="aviso-dias-fixos"></div>
+        <div class="config-louvor-grid">
+          <div>
+            <label>Mês da Escala:</label>
+            <input type="month" id="mesEscalaLouvor">
+          </div>
+          <div id="grupoHoraChegadaUnica">
+            <label>Horário de chegada padrão:</label>
+            <input type="time" id="horaChegadaLouvor" value="18:00">
+          </div>
+          <div id="grupoHoraChegadaDomingo" style="display:none;">
+            <label>Chegada — Domingo:</label>
+            <input type="time" id="horaChegadaDomingoLouvor" value="16:00">
+          </div>
+          <div>
+            <label>Quantidade de Vocais:</label>
+            <select id="qtdVocaisLouvor">
+              <option value="1">1 Vocal</option><option value="2">2 Vocais</option><option value="3" selected>3 Vocais</option><option value="4">4 Vocais</option><option value="5">5 Vocais</option>
+            </select>
+          </div>
+          <div>
+            <label>Limite de vezes p/ voluntário no mês:</label>
+            <select id="limiteMensalLouvor">
+              <option value="1">Máximo 1 vez</option><option value="2">Máximo 2 vezes</option><option value="3">Máximo 3 vezes</option><option value="4" selected>Máximo 4 vezes</option><option value="5">Máximo 5 vezes</option><option value="99">Sem limite</option>
+            </select>
+          </div>
+          <div id="grupoHoraChegadaTerca" style="display:none;">
+            <label>Chegada — Terça:</label>
+            <input type="time" id="horaChegadaTercaLouvor" value="18:30">
+          </div>
+        </div>
+        <div class="botoes-louvor-acao">
+          <button class="btn green" id="btnGerarLouvor"><i class="ph ph-calendar-plus"></i> Gerar escala</button>
+          <button class="btn gray" id="btnSalvarLouvor"><i class="ph ph-floppy-disk"></i> Salvar escala</button>
+          <button class="btn blue" onclick="abrirModalResgate()"><i class="ph ph-user-plus"></i> Resgatar do Banco</button>
+        </div>
+      </div>
+
+      <div class="evento-louvor-card">
+        <h3><i class="ph ph-star"></i> Evento Especial</h3>
+        <div class="evento-louvor-grid">
+          <div>
+            <label>Nome do evento:</label>
+            <input type="text" id="nomeEventoLouvor" placeholder="Ex: Vigília">
+          </div>
+          <div>
+            <label>Data:</label>
+            <input type="date" id="dataEventoLouvor">
+          </div>
+          <div>
+            <label>Hora de chegada:</label>
+            <input type="time" id="horaEventoLouvor" value="19:00">
+          </div>
+        </div>
+        <button class="btn blue" style="margin-top:12px; width:auto; min-width:220px;" onclick="adicionarEventoEspecialLouvor()"><i class="ph ph-plus"></i> Adicionar Evento à Escala</button>
+        <p style="font-size:12px; color:#94a3b8; margin-top:8px;">A linha será adicionada como "A definir" em cada função — clique nas células da tabela para escolher os voluntários.</p>
+      </div>
+
+      <div class="louvor-historico-grid">
+        <div class="card-painel-louvor">
+          <h3 style="margin-bottom:10px;">Histórico</h3>
+          <div id="listaHistoricoLouvor" class="voluntarios-container"></div>
+        </div>
+        <div class="card-painel-louvor">
+          <h3 style="margin-bottom:10px;">Equipe Atual</h3>
+          <div id="listaVoluntariosUILouvor" class="voluntarios-container"></div>
+        </div>
+      </div>
+
+      <div class="tabela-louvor-wrap">
+        <table class="tabela-louvor" id="tabelaEscalaLouvor">
+          <thead><tr id="cabecalhoLouvor"></tr></thead>
+          <tbody id="corpoTabelaLouvor"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div id="secaoPrint">
       <table id="tabelaEscala">
         <thead><tr><th>Data</th><th>Dia</th><th>Evento</th><th>Hora</th><th>Voluntário</th><th class="acoes">Ações</th></tr></thead>
@@ -581,12 +813,20 @@ const firebaseConfig = { apiKey:"AIzaSyCoo-5SaiCvgyy05Jpbzd179r5F2sdkmHA", authD
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const MINISTERIOS_LOUVOR = ['Louvor Principal', 'Louvor Sábado'];
+function ehLouvor(nome) { return MINISTERIOS_LOUVOR.includes(nome); }
+
 /* ===== NAVEGAÇÃO ENTRE TELAS ===== */
 window.irParaPainel = function() {
   document.body.classList.add('show-painel');
   document.getElementById('screen-painel').scrollTop = 0;
 };
 window.voltarParaCadastro = function() { document.body.classList.remove('show-painel'); };
+window.irParaLouvorCadastro = function() {
+  document.body.classList.add('show-louvor');
+  document.getElementById('screen-cadastro-louvor').scrollTop = 0;
+};
+window.voltarDoLouvor = function() { document.body.classList.remove('show-louvor'); };
 
 /* ===== CADASTRO LOGIC ===== */
 const hoje = new Date();
@@ -656,7 +896,9 @@ document.getElementById('btnSalvar').onclick = async () => {
   let docExistente = null; let ministeriosAntigos = [];
   snap.forEach(d => { if (d.data().whatsapp === zap) { docExistente = d; ministeriosAntigos = d.data().ministerios || []; } });
 
-  const ministeriosFinais = [...new Set([...ministeriosAntigos, ...ministeriosSelecionados])];
+  // Garante exclusividade: ministérios de Louvor não se acumulam com os demais
+  const ministeriosAntigosSemLouvor = ministeriosAntigos.filter(m => m !== 'Louvor Principal' && m !== 'Louvor Sábado');
+  const ministeriosFinais = [...new Set([...ministeriosAntigosSemLouvor, ...ministeriosSelecionados])];
 
   const emailSalvoAntes = docExistente ? (docExistente.data().email || "") : "";
   const emailParaUsar = emailVal || emailSalvoAntes;
@@ -782,7 +1024,81 @@ document.getElementById('btnSalvar').onclick = async () => {
   alert(mensagemFinal);
 };
 
-/* ===== PAINEL LOGIC ===== */
+/* ===== CADASTRO LOUVOR LOGIC ===== */
+document.getElementById('louvorWhatsapp').addEventListener('input', function(e) {
+  let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+  e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+});
+
+let datasLouvorSelecionadas = [];
+document.getElementById('louvorBtnAddData').onclick = () => {
+  const val = document.getElementById('louvorInputData').value;
+  if (!val) return;
+  if (!datasLouvorSelecionadas.includes(val)) { datasLouvorSelecionadas.push(val); datasLouvorSelecionadas.sort(); renderizarDatasLouvor(); }
+  document.getElementById('louvorInputData').value = "";
+};
+window.removerDataLouvor = function(index) { datasLouvorSelecionadas.splice(index, 1); renderizarDatasLouvor(); };
+function renderizarDatasLouvor() {
+  const container = document.getElementById('louvorListaDatas'); container.innerHTML = "";
+  datasLouvorSelecionadas.forEach((data, index) => {
+    const [a, m, d] = data.split('-');
+    container.innerHTML += `<div class="chip">${d}/${m}/${a} <span onclick="removerDataLouvor(${index})">✖</span></div>`;
+  });
+}
+
+document.getElementById('louvorBtnSalvar').onclick = async () => {
+  const nome = document.getElementById('louvorNome').value.trim();
+  const zap = document.getElementById('louvorWhatsapp').value;
+  const emailVal = document.getElementById('louvorEmail').value.trim();
+  const disp = document.getElementById('louvorDisponibilidade').value;
+  const equipesSelecionadas = Array.from(document.querySelectorAll('.equipe-card input:checked')).map(cb => cb.value);
+  const funcoesSelecionadas = Array.from(document.querySelectorAll('.funcao-card input:checked')).map(cb => cb.value);
+
+  if (!nome) return alert("Por favor, digite seu nome.");
+  if (zap.length < 14) return alert("Preencha seu WhatsApp com o DDD.");
+  if (equipesSelecionadas.length === 0) return alert("Selecione pelo menos uma equipe (Louvor Principal e/ou Louvor Sábado).");
+  if (funcoesSelecionadas.length === 0) return alert("Selecione pelo menos uma função.");
+  if (!disp) return alert("Selecione sua disponibilidade.");
+
+  const inputPend = document.getElementById('louvorInputData').value;
+  if (inputPend && !datasLouvorSelecionadas.includes(inputPend)) datasLouvorSelecionadas.push(inputPend);
+
+  const snap = await getDocs(collection(db, "voluntarios"));
+  let docExistente = null; let ministeriosAntigos = []; let funcoesAntigas = [];
+  snap.forEach(d => { if (d.data().whatsapp === zap) { docExistente = d; ministeriosAntigos = d.data().ministerios || []; funcoesAntigas = d.data().funcoes || []; } });
+
+  // Garante exclusividade: remove qualquer ministério que NÃO seja de Louvor já existente, e mantém só os de louvor + os novos
+  const ministeriosLouvorAntigos = ministeriosAntigos.filter(m => m === 'Louvor Principal' || m === 'Louvor Sábado');
+  const ministeriosFinais = [...new Set([...ministeriosLouvorAntigos, ...equipesSelecionadas])];
+  const funcoesFinais = [...new Set([...funcoesAntigas, ...funcoesSelecionadas])];
+
+  const emailSalvoAntes = docExistente ? (docExistente.data().email || "") : "";
+  const emailParaUsar = emailVal || emailSalvoAntes;
+
+  const dadosFinal = { nome, whatsapp: zap, email: emailParaUsar, ministerios: ministeriosFinais, funcoes: funcoesFinais, disponibilidade: disp, datasIndisponiveis: datasLouvorSelecionadas, mesReferencia: mesReferenciaBanco };
+
+  let mensagemFinal = "";
+  if (docExistente) {
+    await updateDoc(doc(db, "voluntarios", docExistente.id), dadosFinal);
+    mensagemFinal = "Cadastro ATUALIZADO com sucesso!";
+  } else {
+    await addDoc(collection(db, "voluntarios"), dadosFinal);
+    mensagemFinal = "Cadastro ENVIADO com sucesso!";
+  }
+
+  document.getElementById('louvorNome').value = "";
+  document.getElementById('louvorWhatsapp').value = "";
+  document.getElementById('louvorEmail').value = "";
+  document.getElementById('louvorDisponibilidade').value = "";
+  document.getElementById('louvorInputData').value = "";
+  document.querySelectorAll('.equipe-card input, .funcao-card input').forEach(cb => cb.checked = false);
+  datasLouvorSelecionadas = [];
+  renderizarDatasLouvor();
+
+  alert(mensagemFinal);
+};
+
+/* ===== PAINEL LOGIC (MINISTÉRIOS PADRÃO) ===== */
 let listaGlobal = []; let ministerioSelecionado = ""; let ministerioPendente = ""; let botaoPendente = null; let acessoMestreLiberado = false; let ministeriosDestravados = {};
 
 const mesesP = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
@@ -791,15 +1107,18 @@ const ultimoDiaDoMesP = new Date(hojeP.getFullYear(), hojeP.getMonth() + 1, 0).g
 let mesP = hojeP.getMonth(); let anoP = hojeP.getFullYear();
 if (hojeP.getDate() >= (ultimoDiaDoMesP - 9)) { mesP++; if(mesP>11){mesP=0; anoP++;} }
 document.getElementById("mesDinamicoPainel").innerText = mesesP[mesP];
-document.getElementById('mesEscala').value = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
-document.getElementById('mesEscala').addEventListener('change', () => { if(ministerioSelecionado) carregarVoluntarios(); });
+const mesEscalaPadraoStr = `${anoP}-${String(mesP + 1).padStart(2, '0')}`;
+document.getElementById('mesEscala').value = mesEscalaPadraoStr;
+document.getElementById('mesEscalaLouvor').value = mesEscalaPadraoStr;
+document.getElementById('mesEscala').addEventListener('change', () => { if(ministerioSelecionado && !ehLouvor(ministerioSelecionado)) carregarVoluntarios(); });
+document.getElementById('mesEscalaLouvor').addEventListener('change', () => { if(ministerioSelecionado && ehLouvor(ministerioSelecionado)) carregarVoluntariosLouvor(); });
 
 function atualizarVisualAba(botao, nomeMin) {
-  if(botao) { botao.innerHTML = `<i class="ph ph-lock-key-open"></i> ${nomeMin}`; botao.classList.add('unlocked'); }
+  if(botao) { botao.innerHTML = (ehLouvor(nomeMin) ? `<i class="ph ph-lock-key-open"></i> 🎤 ${nomeMin}` : `<i class="ph ph-lock-key-open"></i> ${nomeMin}`); botao.classList.add('unlocked'); }
 }
 function activarAcessoMestre() {
   acessoMestreLiberado = true;
-  document.querySelectorAll('.tab-btn').forEach(btn => {
+  document.querySelectorAll('.tab-btn, .tab-btn-louvor').forEach(btn => {
     const nomeMin = btn.getAttribute('data-min');
     ministeriosDestravados[nomeMin] = true;
     atualizarVisualAba(btn, nomeMin);
@@ -835,11 +1154,39 @@ window.verificarSenha = async function() {
 function liberarAcessoAoPainel(nome, elemento) {
   if (nome === 'MESTRA') { document.getElementById("tituloAviso").innerText = "Administração Geral"; return; }
   ministerioSelecionado = nome;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn, .tab-btn-louvor').forEach(b => b.classList.remove('active'));
   if(elemento) elemento.classList.add('active');
   document.getElementById("tituloAviso").innerText = `Gerenciando: ${nome}`;
-  document.getElementById("painelPrincipal").style.display = "block";
-  carregarVoluntarios(); carregarHistorico();
+
+  if (ehLouvor(nome)) {
+    document.getElementById("painelPrincipal").style.display = "none";
+    document.getElementById("secaoPrint").style.display = "none";
+    document.getElementById("painelLouvor").style.display = "block";
+    document.getElementById("painelLouvorTitulo").innerText = nome;
+
+    const grupoUnica = document.getElementById('grupoHoraChegadaUnica');
+    const grupoDomingo = document.getElementById('grupoHoraChegadaDomingo');
+    const grupoTerca = document.getElementById('grupoHoraChegadaTerca');
+    if (nome === 'Louvor Principal') {
+      document.getElementById("avisoDiasFixosLouvor").innerText = "Dias fixos de atuação: Domingo e Terça (+ eventos especiais) — horários de chegada diferentes por dia";
+      grupoUnica.style.display = 'none';
+      grupoDomingo.style.display = 'block';
+      grupoTerca.style.display = 'block';
+    } else {
+      document.getElementById("avisoDiasFixosLouvor").innerText = "Dia fixo de atuação: Sábado (+ eventos especiais)";
+      grupoUnica.style.display = 'block';
+      grupoDomingo.style.display = 'none';
+      grupoTerca.style.display = 'none';
+    }
+
+    montarCabecalhoLouvor();
+    carregarVoluntariosLouvor(); carregarHistoricoLouvor();
+  } else {
+    document.getElementById("painelLouvor").style.display = "none";
+    document.getElementById("painelPrincipal").style.display = "block";
+    document.getElementById("secaoPrint").style.display = "block";
+    carregarVoluntarios(); carregarHistorico();
+  }
 }
 
 function textoDisp(v){
@@ -887,7 +1234,7 @@ btnGerar.onclick = async () => {
   snapHist.forEach(d => {
     const esc = d.data();
     if (esc.ministerio !== ministerioSelecionado) {
-      esc.linhas.forEach(l => {
+      (esc.linhas || []).forEach(l => {
         let p = l.data.split('/');
         let dt = `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
         if(!ocupados[l.voluntario]) ocupados[l.voluntario] = [];
@@ -978,9 +1325,9 @@ function criarLinha(d, e, h, n) {
   ordenarTabela();
 }
 window.alternarCor = (el, c) => { let tr = el.closest('tr'); tr.className = tr.className === c ? '' : c; };
-window.excluirVol = async(id) => { if(confirm("Remover da equipe?")){ let r=doc(db,"voluntarios",id); let s=await getDoc(r); let m=s.data().ministerios.filter(x=>x!==ministerioSelecionado); await updateDoc(r,{ministerios:m}); carregarVoluntarios(); }};
+window.excluirVol = async(id) => { if(confirm("Remover da equipe?")){ let r=doc(db,"voluntarios",id); let s=await getDoc(r); let m=s.data().ministerios.filter(x=>x!==ministerioSelecionado); await updateDoc(r,{ministerios:m}); if(ehLouvor(ministerioSelecionado)){ carregarVoluntariosLouvor(); } else { carregarVoluntarios(); } }};
 
-// ── LÓGICA DO POPUP INTERNO DO INDEX ───────────────────────────────────────
+// ── LÓGICA DO POPUP INTERNO DO INDEX (genérico, usado por ambas as tabelas) ─
 let popupVoluntariosAtual = null;
 
 function fecharPopupVoluntarios() {
@@ -997,11 +1344,21 @@ function handleClickForaPopup(e) {
 corpoTabela.addEventListener('click', function(e) {
     const td = e.target.closest('td.cel-voluntario.editavel');
     if(!td) return;
-    abrirPopupVoluntarios(td);
+    abrirPopupVoluntarios(td, listaGlobal, null);
 });
 
-function abrirPopupVoluntarios(td) {
+document.getElementById('corpoTabelaLouvor').addEventListener('click', function(e) {
+    const td = e.target.closest('td.cel-voluntario.editavel');
+    if(!td) return;
+    const funcaoFiltro = td.dataset.funcao || null;
+    abrirPopupVoluntarios(td, listaGlobalLouvor, funcaoFiltro);
+});
+
+// candidatosCustom: array de voluntários a usar como base (em vez de listaGlobal)
+// funcaoFiltro: se definido, só mostra quem tem essa função em v.funcoes
+function abrirPopupVoluntarios(td, candidatosCustom, funcaoFiltro) {
     fecharPopupVoluntarios();
+    const baseLista = candidatosCustom || listaGlobal;
 
     const nomesAtuais = (td.dataset.nomes || td.querySelector('.vol-texto')?.textContent || td.innerText || "")
         .split(',').map(s => s.trim()).filter(s => s !== "" && s !== "A definir");
@@ -1020,11 +1377,16 @@ function abrirPopupVoluntarios(td) {
         }
     }
 
-    const nomesCadastrados = listaGlobal.map(v => v.nome);
+    let baseFiltradaPorFuncao = baseLista;
+    if (funcaoFiltro) {
+        baseFiltradaPorFuncao = baseLista.filter(v => (v.funcoes || []).includes(funcaoFiltro));
+    }
+
+    const nomesCadastrados = baseFiltradaPorFuncao.map(v => v.nome);
     const todosNomes = [...new Set([...nomesCadastrados, ...nomesAtuais])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 
     const restricoesMap = {};
-    listaGlobal.forEach(v => {
+    baseFiltradaPorFuncao.forEach(v => {
         let restricao = null;
         if(v.disponibilidade === "nenhum") {
             restricao = "Indisponível este mês";
@@ -1045,7 +1407,10 @@ function abrirPopupVoluntarios(td) {
     const popup = document.createElement('div');
     popup.className = 'popup-voluntarios';
 
-    let html = `<h4><i class="ph ph-users"></i> Selecionar voluntário(s)</h4>`;
+    let html = `<h4><i class="ph ph-users"></i> Selecionar voluntário(s)${funcaoFiltro ? ' — ' + funcaoFiltro : ''}</h4>`;
+    if (todosNomes.length === 0) {
+        html += `<p style="color:#94a3b8; font-size:12px; padding:8px 4px;">Nenhum voluntário com essa função cadastrado ainda.</p>`;
+    }
     todosNomes.forEach(nome => {
         const checked = nomesAtuais.includes(nome) ? 'checked' : '';
         const naoCadastrado = !nomesCadastrados.includes(nome);
@@ -1054,7 +1419,7 @@ function abrirPopupVoluntarios(td) {
         let badge = '';
         if(naoCadastrado) {
             labelStyle = ' style="color:#f97316;"';
-            badge = ` <span style="font-size:10px; background:#fff7ed; color:#f97316; border:1px solid #fed7aa; border-radius:3px; padding:1px 4px;">não cadastrado</span>`;
+            badge = ` <span style="font-size:10px; background:#fff7ed; color:#f97316; border:1px solid #fed7aa; border-radius:3px; padding:1px 4px;">${funcaoFiltro ? 'sem essa função' : 'não cadastrado'}</span>`;
         } else if(restricao) {
             labelStyle = ' style="color:#94a3b8;"';
             badge = ` <span style="font-size:10px; background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; border-radius:3px; padding:1px 4px;" title="Restrição de disponibilidade">⚠️ ${restricao}</span>`;
@@ -1125,7 +1490,7 @@ window.reconstruirEBaixar = async(id) => {
   if(!snap.exists()) return;
   const dados = snap.data();
   corpoTabela.innerHTML = "";
-  dados.linhas.forEach(l => {
+  (dados.linhas || []).forEach(l => {
     const tr = document.createElement("tr"); if(l.cor) tr.className = l.cor;
     const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
     const [d,m,a] = l.data.split('/');
@@ -1176,7 +1541,8 @@ window.confirmarResgate = async function() {
   const r = doc(db,"voluntarios",id); const s = await getDoc(r);
   const ministeriosAtuais = s.data().ministerios || [];
   if(!ministeriosAtuais.includes(ministerioSelecionado)) await updateDoc(r, { ministerios: [...ministeriosAtuais, ministerioSelecionado] });
-  fecharModal('modalResgate'); carregarVoluntarios();
+  fecharModal('modalResgate');
+  if(ehLouvor(ministerioSelecionado)) { carregarVoluntariosLouvor(); } else { carregarVoluntarios(); }
 };
 
 let ministerioTrocandoSenha = "";
@@ -1238,6 +1604,302 @@ window.adicionarEventoEspecial = function() {
     document.getElementById('nomeEvento').value = ''; document.getElementById('dataEvento').value = '';
     document.getElementById('vagasEvento').value = '1';
     atualizarSelectsVoluntarios();
+};
+
+/* ===================================================================== */
+/* ===== PAINEL EXCLUSIVO DO MINISTÉRIO DE LOUVOR (estrutura própria) === */
+/* ===================================================================== */
+
+let listaGlobalLouvor = [];
+const FUNCOES_FIXAS_LOUVOR = ['Bateria', 'Baixo', 'Guitarra', 'Violão', 'Teclado', 'Ministro'];
+let qtdVocaisAtualLouvor = 3; // controla a última quantidade usada para montar a tabela
+
+function montarCabecalhoLouvor() {
+  const qtdVocais = parseInt(document.getElementById('qtdVocaisLouvor').value) || 3;
+  qtdVocaisAtualLouvor = qtdVocais;
+  const cabecalho = document.getElementById('cabecalhoLouvor');
+  let colunas = ['Data','Dia','Culto','Hora de Chegada', ...FUNCOES_FIXAS_LOUVOR];
+  for (let i = 1; i <= qtdVocais; i++) colunas.push(`Vocal ${i}`);
+  colunas.push('Ações');
+  cabecalho.innerHTML = colunas.map(c => `<th>${c}</th>`).join('');
+}
+
+// Ao mudar a quantidade de vocais, a estrutura de colunas da tabela muda.
+// Linhas já geradas/salvas na tela ficam com número de colunas diferente do cabeçalho,
+// o que desconfigura a tabela (e a coluna "Ações" parece "fixa"/deslocada).
+// Por isso limpamos o corpo da tabela sempre que a quantidade de vocais é alterada.
+document.getElementById('qtdVocaisLouvor').addEventListener('change', () => {
+  const corpo = document.getElementById('corpoTabelaLouvor');
+  if (corpo.children.length > 0) {
+    const ok = confirm("Alterar a quantidade de vocais muda as colunas da tabela. A escala atual em tela será limpa (gere novamente). Deseja continuar?");
+    if (!ok) {
+      document.getElementById('qtdVocaisLouvor').value = qtdVocaisAtualLouvor;
+      return;
+    }
+  }
+  corpo.innerHTML = '';
+  montarCabecalhoLouvor();
+});
+
+async function carregarVoluntariosLouvor() {
+  const snap = await getDocs(collection(db, "voluntarios"));
+  listaGlobalLouvor = [];
+  const lista = document.getElementById('listaVoluntariosUILouvor');
+  lista.innerHTML = "";
+  const mesSelecionadoPainel = document.getElementById('mesEscalaLouvor').value;
+  snap.forEach(d => {
+    const v = d.data(); v.id = d.id;
+    if (v.ministerios?.includes(ministerioSelecionado)) {
+      if (v.disponibilidades && v.disponibilidades[mesSelecionadoPainel]) {
+        const dispMes = v.disponibilidades[mesSelecionadoPainel];
+        v.disponibilidade = dispMes.disponibilidade;
+        v.datasIndisponiveis = dispMes.datasIndisponiveis;
+        v.mesReferencia = mesSelecionadoPainel;
+      }
+      listaGlobalLouvor.push(v);
+      let txtStatus = v.mesReferencia !== mesSelecionadoPainel
+        ? "<span style='color:#f97316; font-weight:bold;'>⚠️ Cadastro de mês anterior</span>" : textoDisp(v);
+      const funcoesTxt = (v.funcoes || []).join(', ') || 'Sem função definida';
+      lista.innerHTML += `<div class="voluntario-item"><span><b>${v.nome}</b><br><small>${funcoesTxt}</small><br><small>${txtStatus}</small></span><i class="ph ph-trash excluir" onclick="excluirVol('${v.id}')"></i></div>`;
+    }
+  });
+  atualizarSelectsVoluntariosLouvor();
+}
+
+function diaPermitidoLouvor(diaSem, ministerio) {
+  if (ministerio === 'Louvor Principal') return diaSem === 0 || diaSem === 2;
+  if (ministerio === 'Louvor Sábado') return diaSem === 6;
+  return false;
+}
+function infoCultoLouvor(diaSem) {
+  if (diaSem === 0) return "Culto Domingo";
+  if (diaSem === 2) return "Culto Terça";
+  if (diaSem === 6) return "Culto Sábado";
+  return "Culto";
+}
+// Horário de chegada conforme o ministério/dia (Domingo e Terça podem ter horários diferentes)
+function horaChegadaPorDia(diaSem) {
+  if (ministerioSelecionado === 'Louvor Principal') {
+    if (diaSem === 0) return document.getElementById('horaChegadaDomingoLouvor').value || "16:00";
+    if (diaSem === 2) return document.getElementById('horaChegadaTercaLouvor').value || "18:30";
+  }
+  return document.getElementById('horaChegadaLouvor').value || "18:00";
+}
+
+// Função que decide quais funções de um voluntário podem preencher uma coluna.
+// Considera que alguém com mais de uma função (ex: Teclado + Vocal) pode ser escalado
+// tanto na coluna do instrumento quanto na coluna de Vocal.
+function candidatoServeFuncao(v, funcao) {
+  return (v.funcoes || []).includes(funcao);
+}
+
+document.getElementById('btnGerarLouvor').onclick = async () => {
+  const mesVal = document.getElementById('mesEscalaLouvor').value;
+  if (!mesVal) return alert("Selecione o mês.");
+  const limiteMes = parseInt(document.getElementById('limiteMensalLouvor').value);
+  const qtdVocais = parseInt(document.getElementById('qtdVocaisLouvor').value) || 3;
+  montarCabecalhoLouvor();
+  document.getElementById('corpoTabelaLouvor').innerHTML = '';
+
+  const colunasFuncao = [...FUNCOES_FIXAS_LOUVOR];
+  for (let i = 1; i <= qtdVocais; i++) colunasFuncao.push('Vocal');
+
+  const [ano, mes] = mesVal.split('-').map(Number);
+
+  let contagem = {}; // contagem por pessoa no mês (todas as funções somadas)
+
+  let data = new Date(ano, mes - 1, 1);
+  const linhasGeradas = [];
+  while (data.getMonth() === mes - 1) {
+    const diaSem = data.getDay();
+    if (diaPermitidoLouvor(diaSem, ministerioSelecionado)) {
+      const dataISO = `${data.getFullYear()}-${String(data.getMonth()+1).padStart(2,'0')}-${String(data.getDate()).padStart(2,'0')}`;
+      let escaladosNoDia = [];
+      const escolhidosPorFuncao = {};
+
+      colunasFuncao.forEach((funcao, idx) => {
+        const candidatos = listaGlobalLouvor.filter(v => {
+          if (!candidatoServeFuncao(v, funcao)) return false;
+          if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
+          if (escaladosNoDia.includes(v.nome)) return false;
+          let d2 = String(v.disponibilidade || "");
+          if (d2 !== "todos") {
+            if (d2.startsWith("nao_")) {
+              if (diaSem === 0 && d2.includes("domingo")) return false;
+              if (diaSem === 2 && d2.includes("terca")) return false;
+              if (diaSem === 6 && d2.includes("sabado")) return false;
+            } else {
+              if (d2 === "0" && diaSem !== 0) return false;
+              if (d2 === "2" && diaSem !== 2) return false;
+              if (d2 === "6" && diaSem !== 6) return false;
+            }
+          }
+          if ((contagem[v.nome] || 0) >= limiteMes) return false;
+          return true;
+        });
+        for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
+        candidatos.sort((a,b)=>(contagem[a.nome]||0)-(contagem[b.nome]||0));
+        const nomeColuna = colunasFuncao[idx] === 'Vocal' ? `Vocal ${ (colunasFuncao.slice(0, idx+1).filter(f=>f==='Vocal').length) }` : colunasFuncao[idx];
+        const escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
+        if (escolhido !== "A definir") {
+          contagem[escolhido] = (contagem[escolhido] || 0) + 1;
+          escaladosNoDia.push(escolhido);
+        }
+        escolhidosPorFuncao[nomeColuna] = escolhido;
+      });
+
+      linhasGeradas.push({ data: new Date(data), diaSem, horaChegada: horaChegadaPorDia(diaSem), escolhidosPorFuncao });
+    }
+    data.setDate(data.getDate() + 1);
+  }
+
+  linhasGeradas.forEach(l => criarLinhaLouvor(l.data, infoCultoLouvor(l.diaSem), l.horaChegada, l.escolhidosPorFuncao, qtdVocais));
+};
+
+function criarLinhaLouvor(d, culto, horaChegada, escolhidosPorFuncao, qtdVocais) {
+  const dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+  const tr = document.createElement("tr");
+  let colunas = [...FUNCOES_FIXAS_LOUVOR];
+  for (let i = 1; i <= qtdVocais; i++) colunas.push(`Vocal ${i}`);
+
+  let tds = `<td>${d.toLocaleDateString('pt-BR')}</td><td>${dias[d.getDay()]}</td><td contenteditable="true">${culto}</td><td contenteditable="true">${horaChegada}</td>`;
+  colunas.forEach(col => {
+    const funcaoBase = col.startsWith('Vocal') ? 'Vocal' : col;
+    const nome = (escolhidosPorFuncao && escolhidosPorFuncao[col]) || "A definir";
+    const nomeSeguro = nome.replace(/"/g, "&quot;");
+    tds += `<td class="cel-voluntario editavel cel-funcao" data-funcao="${funcaoBase}" data-nomes="${nomeSeguro}"><span class="vol-texto">${nome}</span></td>`;
+  });
+  tds += `<td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
+  tr.innerHTML = tds;
+  document.getElementById('corpoTabelaLouvor').appendChild(tr);
+  ordenarTabelaLouvor();
+}
+
+function ordenarTabelaLouvor() {
+  const tbody = document.getElementById("corpoTabelaLouvor");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  rows.sort((a, b) => {
+    const parseDate = (str) => {
+      let p = str.split('/');
+      if (p.length === 3) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+      return str;
+    };
+    return parseDate(a.cells[0].innerText.trim()).localeCompare(parseDate(b.cells[0].innerText.trim()));
+  });
+  rows.forEach(row => tbody.appendChild(row));
+}
+
+document.getElementById('btnSalvarLouvor').onclick = async () => {
+  const mesVal = document.getElementById('mesEscalaLouvor').value;
+  if (!mesVal) return alert("Selecione o mês!");
+  const cabecalhoThs = Array.from(document.querySelectorAll('#cabecalhoLouvor th')).map(th => th.innerText);
+  const colunasFuncao = cabecalhoThs.slice(4, cabecalhoThs.length - 1); // remove Data/Dia/Culto/Hora e Ações
+
+  const linhas = [];
+  document.querySelectorAll('#corpoTabelaLouvor tr').forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if (tds.length < 5) return;
+    const escolhidos = {};
+    colunasFuncao.forEach((col, idx) => {
+      const tdFuncao = tds[4 + idx];
+      escolhidos[col] = (tdFuncao?.dataset.nomes || tdFuncao?.innerText || "").trim();
+    });
+    linhas.push({
+      data: tds[0].innerText, dia: tds[1].innerText, culto: tds[2].innerText, horaChegada: tds[3].innerText,
+      escolhidos, cor: tr.className
+    });
+  });
+  if (linhas.length === 0) return alert("Gere uma escala primeiro!");
+
+  const snapVersao = await getDocs(query(collection(db,"historico_escalas"), where("mesReferencia","==",mesVal), where("ministerio","==",ministerioSelecionado)));
+  const versao = snapVersao.size + 1;
+  const nomeExibicao = `${mesVal} - ${ministerioSelecionado} (Versão ${versao})`;
+  await addDoc(collection(db,"historico_escalas"), {
+    ministerio: ministerioSelecionado, mesReferencia: mesVal, tipo: 'louvor',
+    colunasFuncao, nomeExibicao, dataCriacao: new Date().toISOString(), linhas
+  });
+  alert(`Escala salva: ${nomeExibicao}`);
+  carregarHistoricoLouvor();
+};
+
+async function carregarHistoricoLouvor() {
+  const listaHistorico = document.getElementById('listaHistoricoLouvor');
+  listaHistorico.innerHTML = "";
+  if (!ministerioSelecionado) return;
+  const snap = await getDocs(collection(db,"historico_escalas"));
+  let listaTemp = [];
+  snap.forEach(d => { const item = d.data(); if (item.ministerio === ministerioSelecionado) { item.id = d.id; listaTemp.push(item); } });
+  listaTemp.sort((a,b) => (b.dataCriacao || "").localeCompare(a.dataCriacao || ""));
+  if (listaTemp.length === 0) { listaHistorico.innerHTML = "<p style='color:#94a3b8; font-size:13px; padding:10px;'>Nenhum histórico salvo.</p>"; return; }
+  listaTemp.forEach(item => {
+    listaHistorico.innerHTML += `
+      <div class="historico-item">
+        <span>${item.nomeExibicao || item.mesReferencia}</span>
+        <div class="btn-acoes-hist">
+          <button class="btn-baixar" title="Visualizar/Imprimir" onclick="reconstruirEBaixarLouvor('${item.id}')"><i class="ph ph-file-pdf"></i></button>
+          <button class="btn-baixar excluir-hist" title="Excluir" onclick="excluirHistoricoLouvor('${item.id}')"><i class="ph ph-trash"></i></button>
+        </div>
+      </div>`;
+  });
+}
+
+window.excluirHistoricoLouvor = async(id) => {
+  if (confirm("Deseja excluir esta escala do histórico permanentemente?")) { await deleteDoc(doc(db,"historico_escalas",id)); carregarHistoricoLouvor(); }
+};
+
+window.reconstruirEBaixarLouvor = async(id) => {
+  const snap = await getDoc(doc(db,"historico_escalas",id));
+  if (!snap.exists()) return;
+  const dados = snap.data();
+  const colunasFuncao = dados.colunasFuncao || FUNCOES_FIXAS_LOUVOR;
+  const cabecalho = document.getElementById('cabecalhoLouvor');
+  cabecalho.innerHTML = ['Data','Dia','Culto','Hora de Chegada', ...colunasFuncao, 'Ações'].map(c => `<th>${c}</th>`).join('');
+
+  const corpo = document.getElementById('corpoTabelaLouvor');
+  corpo.innerHTML = "";
+  (dados.linhas || []).forEach(l => {
+    const tr = document.createElement("tr"); if (l.cor) tr.className = l.cor;
+    let tds = `<td>${l.data}</td><td>${l.dia}</td><td contenteditable="true">${l.culto}</td><td contenteditable="true">${l.horaChegada}</td>`;
+    colunasFuncao.forEach(col => {
+      const funcaoBase = col.startsWith('Vocal') ? 'Vocal' : col;
+      const nome = (l.escolhidos && l.escolhidos[col]) || "A definir";
+      const nomeSeguro = nome.replace(/"/g, "&quot;");
+      tds += `<td class="cel-voluntario editavel cel-funcao" data-funcao="${funcaoBase}" data-nomes="${nomeSeguro}"><span class="vol-texto">${nome}</span></td>`;
+    });
+    tds += `<td class="acoes"><i class="ph ph-circle acao-amarelo" onclick="alternarCor(this,'amarelo')" title="Destacar Amarelo"></i><i class="ph ph-circle acao-vermelho" onclick="alternarCor(this,'vermelho')" title="Destacar Vermelho"></i><i class="ph ph-trash acao-lixeira" onclick="this.closest('tr').remove()" title="Remover Linha"></i></td>`;
+    tr.innerHTML = tds;
+    corpo.appendChild(tr);
+  });
+  document.title = `Escala ${dados.mesReferencia} - ${ministerioSelecionado}`; window.print(); document.title = "Gerenciador de Escala - Nação Santa";
+};
+
+/* ── EVENTO ESPECIAL DO LOUVOR ── */
+window.atualizarSelectsVoluntariosLouvor = function() {
+  // mantido por simetria; o painel de louvor usa seleção por clique nas células (popup)
+};
+
+window.adicionarEventoEspecialLouvor = function() {
+  const n = document.getElementById('nomeEventoLouvor').value.trim();
+  const dataStr = document.getElementById('dataEventoLouvor').value;
+  const h = document.getElementById('horaEventoLouvor').value;
+  const qtdVocais = parseInt(document.getElementById('qtdVocaisLouvor').value) || 3;
+
+  if (!n) return alert("Digite o nome do evento.");
+  if (!dataStr) return alert("Selecione a data do evento.");
+
+  // Garante que o cabeçalho está com a quantidade de vocais configurada atualmente
+  const cabecalhoThs = document.querySelectorAll('#cabecalhoLouvor th');
+  if (cabecalhoThs.length === 0) montarCabecalhoLouvor();
+
+  const [ano, mes, dia] = dataStr.split('-');
+  const dt = new Date(ano, mes - 1, dia, 12, 0, 0);
+
+  // Linha de evento especial: todas as funções iniciam "A definir";
+  // o responsável clica em cada célula para escolher o voluntário (popup já existente).
+  criarLinhaLouvor(dt, n, h, {}, qtdVocais);
+
+  document.getElementById('nomeEventoLouvor').value = '';
+  document.getElementById('dataEventoLouvor').value = '';
 };
 
 /* ── JÁ POSSUO CADASTRO ── */
