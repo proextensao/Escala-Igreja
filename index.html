@@ -1447,7 +1447,9 @@ function abrirPopupVoluntarios(td, candidatosCustom, funcaoFiltro) {
 
     let baseFiltradaPorFuncao = baseLista;
     if (funcaoFiltro) {
-        baseFiltradaPorFuncao = baseLista.filter(v => (v.funcoes || []).includes(funcaoFiltro));
+        baseFiltradaPorFuncao = baseLista.filter(v => 
+            (v.funcoes || []).some(f => f.trim().toLowerCase() === funcaoFiltro.trim().toLowerCase())
+        );
     }
 
     const nomesCadastrados = baseFiltradaPorFuncao.map(v => v.nome);
@@ -1758,7 +1760,7 @@ function horaChegadaPorDia(diaSem) {
 // Considera que alguém com mais de uma função (ex: Teclado + Vocal) pode ser escalado
 // tanto na coluna do instrumento quanto na coluna de Vocal.
 function candidatoServeFuncao(v, funcao) {
-  return (v.funcoes || []).includes(funcao);
+  return (v.funcoes || []).some(f => f.trim().toLowerCase() === funcao.trim().toLowerCase());
 }
 
 document.getElementById('btnGerarLouvor').onclick = async () => {
