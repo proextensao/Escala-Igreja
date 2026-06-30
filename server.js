@@ -363,7 +363,7 @@ async function dispararLembreteDisponibilidade() {
       }
 
       // Já preencheu o mês seguinte — pula
-      if (v.mesReferencia === mesReferencia) {
+      if (v.mesReferencia === mesReferencia || (v.disponibilidades && v.disponibilidades[mesReferencia])) {
         console.log(`✅ Já preencheu ${mesReferencia}: ${v.nome}`);
         continue;
       }
