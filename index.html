@@ -1784,14 +1784,23 @@ document.getElementById('btnGerarLouvor').onclick = async () => {
     const diaSem = data.getDay();
     if (diaPermitidoLouvor(diaSem, ministerioSelecionado)) {
       const dataISO = `${data.getFullYear()}-${String(data.getMonth()+1).padStart(2,'0')}-${String(data.getDate()).padStart(2,'0')}`;
-      let escaladosNoDia = [];
-      const escolhidosPorFuncao = {};
+     let escaladosHoje = {};
+          const escolhidosPorFuncao = {};
 
-      colunasFuncao.forEach((funcao, idx) => {
-        const candidatos = listaGlobalLouvor.filter(v => {
-          if (!candidatoServeFuncao(v, funcao)) return false;
-          if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
-          if (escaladosNoDia.includes(v.nome)) return false;
+          colunasFuncao.forEach((funcao, idx) => {
+            const ehVoz = funcao === 'Vocal' || funcao === 'Ministro';
+
+            const candidatos = listaGlobalLouvor.filter(v => {
+              if (!candidatoServeFuncao(v, funcao)) return false;
+              if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
+              
+              // === NOVA LÓGICA DE DUPLA FUNÇÃO ===
+              if (escaladosHoje[v.nome]) {
+                const temVoz = escaladosHoje[v.nome].some(f => f === 'Vocal' || f === 'Ministro');
+                const temInst = escaladosHoje[v.nome].some(f => f !== 'Vocal' && f !== 'Ministro');
+                if (ehVoz && temVoz) return false; // Já está cantando/ministrando
+                if (!ehVoz && temInst) return false; // Já está tocando instrumento
+              }
           let d2 = String(v.disponibilidade || "");
           if (d2 !== "todos") {
             if (d2.startsWith("nao_")) {
