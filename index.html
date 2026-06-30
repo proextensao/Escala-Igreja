@@ -1085,6 +1085,74 @@ document.getElementById('louvorBtnSalvar').onclick = async () => {
     await addDoc(collection(db, "voluntarios"), dadosFinal);
     mensagemFinal = "Cadastro ENVIADO com sucesso!";
   }
+  // === INÍCIO DO ENVIO DE E-MAIL DO LOUVOR ===
+  if (emailParaUsar) {
+    try {
+      const mapaDisp = {
+        "todos": "✅ Disponível todos os dias",
+        "nenhum": "❌ Indisponível este mês",
+        "0": "📅 Somente aos domingos",
+        "2": "📅 Somente às terças",
+        "6": "📅 Somente aos sábados",
+        "nao_domingo": "🚫 Indisponível aos domingos",
+        "nao_terca": "🚫 Indisponível às terças",
+        "nao_sabado": "🚫 Indisponível aos sábados"
+      };
+      const textoDisponibilidade = mapaDisp[disp] || disp;
+
+      let chipsHtml = datasLouvorSelecionadas.length > 0 ? 
+        datasLouvorSelecionadas.map(dt => {
+          const [a, m, d] = dt.split('-');
+          return `<span style="display:inline-block; background:#fee2e2; color:#ef4444; padding:4px 10px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${d}/${m}</span>`;
+        }).join('') : `<span style="color:#94a3b8; font-size:13px;">Nenhuma data específica informada.</span>`;
+
+      const equipesHtml = ministeriosFinais.map(m => `<span style="display:inline-block; background:#f3e8ff; color:#7c3aed; padding:4px 12px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${m}</span>`).join('');
+      const funcoesHtml = funcoesFinais.map(f => `<span style="display:inline-block; background:#dbeafe; color:#1d4ed8; padding:4px 12px; border-radius:12px; font-size:13px; margin:3px; font-weight:bold;">${f}</span>`).join('');
+
+      const primeiroNome = nome.split(' ')[0];
+      const mesExtenso = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][parseInt(mesReferenciaBanco.split('-')[1]) - 1];
+      const anoRef = mesReferenciaBanco.split('-')[0];
+
+      const htmlEmail = `
+      <div style="font-family:'Segoe UI',sans-serif; max-width:520px; margin:0 auto; background:#f8fafc; padding:24px; border-radius:12px;">
+        <div style="background:#1e293b; padding:24px; border-radius:10px; text-align:center; margin-bottom:24px;">
+          <h2 style="color:white; margin:0; font-size:20px;">🎤 Cadastro de Louvor Confirmado!</h2>
+          <p style="color:#94a3b8; margin:6px 0 0 0; font-size:14px;">${mesExtenso} ${anoRef} — Nação Santa</p>
+        </div>
+        <p style="color:#1e293b; font-size:16px; margin-bottom:4px;">Olá, <b>${primeiroNome}</b>! 👋</p>
+        <p style="color:#475569; font-size:14px; margin-bottom:20px;">
+          Seu cadastro para o Ministério de Louvor foi recebido com sucesso.
+        </p>
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; margin:0 0 10px 0;">🎸 EQUIPES E FUNÇÕES</p>
+          <div style="margin-bottom:8px;">${equipesHtml}</div>
+          <div>${funcoesHtml}</div>
+        </div>
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; margin:0 0 8px 0;">📆 DISPONIBILIDADE (${mesExtenso})</p>
+          <p style="font-size:14px; color:#1e293b; margin:0;">${textoDisponibilidade}</p>
+        </div>
+        <div style="background:white; border-radius:10px; padding:18px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <p style="font-size:12px; font-weight:bold; color:#64748b; margin:0 0 10px 0;">🗓️ DATAS INDISPONÍVEIS</p>
+          <div>${chipsHtml}</div>
+        </div>
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center;">
+          <p style="color:#15803d; font-size:14px; margin:0;">🙏 Obrigado por servir no Louvor!</p>
+        </div>
+      </div>`;
+
+      await fetch("https://escala-igreja.onrender.com/enviar-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "api-key": "EscalaNacaoSanta123" },
+        body: JSON.stringify({
+          para: emailParaUsar, nomePara: nome,
+          assunto: `🎤 Cadastro Louvor confirmado — ${mesExtenso} | Nação Santa`,
+          html: htmlEmail
+        })
+      });
+    } catch(e) { console.warn("Erro ao enviar e-mail de louvor:", e.message); }
+  }
+  // === FIM DO ENVIO DE E-MAIL DO LOUVOR ===
 
   document.getElementById('louvorNome').value = "";
   document.getElementById('louvorWhatsapp').value = "";
