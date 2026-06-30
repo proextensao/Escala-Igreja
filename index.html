@@ -1813,45 +1813,55 @@ document.getElementById('btnGerarLouvor').onclick = async () => {
             const ehVoz = funcao === 'Vocal' || funcao === 'Ministro';
 
             const candidatos = listaGlobalLouvor.filter(v => {
+              // 1. Tem a função correta?
               if (!candidatoServeFuncao(v, funcao)) return false;
-              if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
               
-              // === NOVA LÓGICA DE DUPLA FUNÇÃO ===
+              // 2. Está disponível no mês e não tem folga nesta data específica?
+              if (v.disponibilidade === "nenhum" || v.datasIndisponiveis?.includes(dataISO)) return false;
+
+              // 3. Respeita restrição de dia da semana
+              let d2 = String(v.disponibilidade || "");
+              if (d2 !== "todos" && d2 !== "") {
+                if (d2.startsWith("nao_")) {
+                    if (diaSem === 0 && d2.includes("domingo")) return false;
+                    if (diaSem === 2 && d2.includes("terca")) return false;
+                    if (diaSem === 6 && d2.includes("sabado")) return false;
+                } else {
+                    if (d2 === "0" && diaSem !== 0) return false;
+                    if (d2 === "2" && diaSem !== 2) return false;
+                    if (d2 === "6" && diaSem !== 6) return false;
+                }
+              }
+
+              // 4. Regra de exclusividade: não estar escalado para o mesmo tipo de função
               if (escaladosHoje[v.nome]) {
                 const temVoz = escaladosHoje[v.nome].some(f => f === 'Vocal' || f === 'Ministro');
                 const temInst = escaladosHoje[v.nome].some(f => f !== 'Vocal' && f !== 'Ministro');
-                if (ehVoz && temVoz) return false; // Já está cantando/ministrando
-                if (!ehVoz && temInst) return false; // Já está tocando instrumento
+                if (ehVoz && temVoz) return false;
+                if (!ehVoz && temInst) return false;
               }
-          let d2 = String(v.disponibilidade || "");
-          if (d2 !== "todos") {
-            if (d2.startsWith("nao_")) {
-              if (diaSem === 0 && d2.includes("domingo")) return false;
-              if (diaSem === 2 && d2.includes("terca")) return false;
-              if (diaSem === 6 && d2.includes("sabado")) return false;
-            } else {
-              if (d2 === "0" && diaSem !== 0) return false;
-              if (d2 === "2" && diaSem !== 2) return false;
-              if (d2 === "6" && diaSem !== 6) return false;
-            }
-          }
-          if ((contagem[v.nome] || 0) >= limiteMes) return false;
-          return true;
-        });
-        for(let _k=candidatos.length-1;_k>0;_k--){const _j=Math.floor(Math.random()*(_k+1));[candidatos[_k],candidatos[_j]]=[candidatos[_j],candidatos[_k]];}
-        candidatos.sort((a,b)=>(contagem[a.nome]||0)-(contagem[b.nome]||0));
-        const nomeColuna = colunasFuncao[idx] === 'Vocal' ? `Vocal ${ (colunasFuncao.slice(0, idx+1).filter(f=>f==='Vocal').length) }` : colunasFuncao[idx];
-        const escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
+
+              // 5. Estourou o limite mensal?
+              if ((contagem[v.nome] || 0) >= limiteMes) return false;
+
+              return true;
+            });
+
+            // Sorteio justo (quem foi menos, vai primeiro)
+            candidatos.sort((a,b) => (contagem[a.nome] || 0) - (contagem[b.nome] || 0));
+            
+            const nomeColuna = colunasFuncao[idx] === 'Vocal' ? `Vocal ${ (colunasFuncao.slice(0, idx+1).filter(f=>f==='Vocal').length) }` : colunasFuncao[idx];
+            const escolhido = candidatos.length > 0 ? candidatos[0].nome : "A definir";
+
             if (escolhido !== "A definir") {
               if (!escaladosHoje[escolhido]) {
                 escaladosHoje[escolhido] = [];
-                contagem[escolhido] = (contagem[escolhido] || 0) + 1; // Consome apenas 1 do limite mensal por culto
+                contagem[escolhido] = (contagem[escolhido] || 0) + 1;
               }
               escaladosHoje[escolhido].push(funcao);
             }
             escolhidosPorFuncao[nomeColuna] = escolhido;
-      });
-
+          });
       linhasGeradas.push({ data: new Date(data), diaSem, horaChegada: horaChegadaPorDia(diaSem), escolhidosPorFuncao });
     }
     data.setDate(data.getDate() + 1);
