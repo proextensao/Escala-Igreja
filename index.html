@@ -366,7 +366,6 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
     .louvor-historico-grid { grid-template-columns: 1fr !important; }
     #secaoPrint, .tabela-louvor-wrap {
         overflow-x: auto !important;
-        display: block !important;
         -webkit-overflow-scrolling: touch !important;
     }
     table { min-width: 480px !important; }
@@ -379,6 +378,7 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
 }
 
 @media print {
+    @page { size: landscape; margin: 10mm; }
     #screen-cadastro { display: none !important; }
     .btn-voltar-cadastro, .tabs-container, .tabs-louvor-container, .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, #painelPrincipal, .config-louvor-card, .evento-louvor-card, .louvor-historico-grid { display: none !important; }
     #secaoPrint, #secaoPrint *, .tabela-louvor-wrap, .tabela-louvor-wrap * { visibility: visible; }
