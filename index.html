@@ -378,10 +378,17 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
 }
 
 @media print {
-    /* Esconde elementos do sistema que não devem aparecer no papel */
+    /* Força a orientação da página para Paisagem (Horizontal) */
+    @page {
+        size: landscape;
+        margin: 10mm;
+    }
+
+    /* Esconde elementos do sistema que não devem aparecer no papel, incluindo a coluna .acoes */
     #screen-cadastro, .btn-voltar-cadastro, .tabs-container, .tabs-louvor-container, 
     .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, 
-    #painelPrincipal, .config-louvor-card, .evento-louvor-card, .louvor-historico-grid { 
+    #painelPrincipal, .config-louvor-card, .evento-louvor-card, .louvor-historico-grid,
+    .acoes { 
         display: none !important; 
     }
     
@@ -393,14 +400,14 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
     /* Configurações da tabela para impressão */
     table { 
         width: 100% !important; 
-        table-layout: fixed !important; 
-        font-size: 10px !important;    
+        table-layout: auto !important; /* 'auto' ajusta melhor as colunas no modo paisagem */
+        font-size: 11px !important;    
         border: 1px solid #000;
         border-collapse: collapse;
     }
     
     th, td { 
-        padding: 4px !important; 
+        padding: 6px !important; 
         word-wrap: break-word !important; 
         border: 1px solid #000;
     }
@@ -1712,8 +1719,9 @@ function montarCabecalhoLouvor() {
   const cabecalho = document.getElementById('cabecalhoLouvor');
   let colunas = ['Data','Dia','Culto','Hora de Chegada', ...FUNCOES_FIXAS_LOUVOR];
   for (let i = 1; i <= qtdVocais; i++) colunas.push(`Vocal ${i}`);
-  colunas.push('Ações');
-  cabecalho.innerHTML = colunas.map(c => `<th>${c}</th>`).join('');
+  
+  // Adiciona a coluna com a classe 'acoes' para ser ocultada no @media print
+  cabecalho.innerHTML = colunas.map(c => `<th>${c}</th>`).join('') + `<th class="acoes">Ações</th>`;
 }
 
 // Ao mudar a quantidade de vocais, a estrutura de colunas da tabela muda.
@@ -1967,7 +1975,9 @@ window.reconstruirEBaixarLouvor = async(id) => {
   const dados = snap.data();
   const colunasFuncao = dados.colunasFuncao || FUNCOES_FIXAS_LOUVOR;
   const cabecalho = document.getElementById('cabecalhoLouvor');
-  cabecalho.innerHTML = ['Data','Dia','Culto','Hora de Chegada', ...colunasFuncao, 'Ações'].map(c => `<th>${c}</th>`).join('');
+  
+  // O correto é assim:
+  cabecalho.innerHTML = ['Data','Dia','Culto','Hora de Chegada', ...colunasFuncao].map(c => `<th>${c}</th>`).join('') + `<th class="acoes">Ações</th>`
 
   const corpo = document.getElementById('corpoTabelaLouvor');
   corpo.innerHTML = "";
