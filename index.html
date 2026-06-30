@@ -378,34 +378,37 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
 }
 
 @media print {
-    @page { size: landscape; margin: 10mm; }
-    
-    /* Esconde o que não precisa ser impresso */
+    /* Esconde elementos do sistema que não devem aparecer no papel */
     #screen-cadastro, .btn-voltar-cadastro, .tabs-container, .tabs-louvor-container, 
     .subtitulo, .modal-overlay, .btn-mestre, .mes-pequeno-painel, #screen-painel h1, 
-    #painelPrincipal, .config-louvor-card, .evento-louvor-card, .louvor-historico-grid,
-    .painel-louvor-wrap { display: none !important; }
+    #painelPrincipal, .config-louvor-card, .evento-louvor-card, .louvor-historico-grid { 
+        display: none !important; 
+    }
+    
+    /* Garante que o container da tabela do Louvor fique visível */
+    .painel-louvor-wrap { display: block !important; }
     
     /* Força o conteúdo principal a ocupar a página toda */
     #secaoPrint, .tabela-louvor-wrap { 
         position: absolute; top: 0; left: 0; width: 100%; display: block !important; 
     }
     
-    /* REGRA DE OURO: Faz a tabela encolher para caber na página */
+    /* Configurações da tabela para impressão */
     table { 
         width: 100% !important; 
-        table-layout: fixed !important; /* Força colunas fixas */
-        font-size: 10px !important;    /* Reduz a fonte para caber mais */
+        table-layout: fixed !important; 
+        font-size: 10px !important;    
         border: 1px solid #000;
+        border-collapse: collapse;
     }
     
     th, td { 
         padding: 4px !important; 
         word-wrap: break-word !important; 
-        overflow: hidden;
+        border: 1px solid #000;
     }
     
-    /* Garante que o fundo das cores apareça no PDF */
+    /* Garante cores de fundo (se necessário) */
     tr.amarelo td { background: #fef08a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     tr.vermelho td { background: #fca5a5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
