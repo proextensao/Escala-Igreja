@@ -134,7 +134,6 @@ async function dispararLembretesDeAmanha() {
             const primeiroNome = nomeVoluntario.split(" ")[0];
             const assunto = `⏰ Lembrete: Escala Amanhã (${linha.evento})`;
             const html = `
-              const html = `
               <div style="font-family:sans-serif; max-width:500px; margin:0 auto; background:#f8fafc; padding:20px; border-radius:10px;">
                 <div style="background:#1e293b; padding:20px; border-radius:8px; text-align:center; margin-bottom:20px;">
                   <img src="https://static.wixstatic.com/media/e5be25_5d5b39f3cd494d41a7b001a04be2673f~mv2.png/v1/fill/w_428,h_88,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo_Branco.png" alt="Nação Santa" style="height:45px; object-fit:contain; margin-bottom:10px;">
