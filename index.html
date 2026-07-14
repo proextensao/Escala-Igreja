@@ -501,7 +501,7 @@ table.tabela-louvor td.cel-funcao { font-size: 13px; }
     <button class="btn-voltar-cadastro-louvor" onclick="voltarDoLouvor()"><i class="ph ph-arrow-left"></i> Voltar ao cadastro geral</button>
     <div class="card-louvor-header">
       <h3><i class="ph ph-microphone-stage"></i> Ministério de Louvor</h3>
-      <p>Cadastro exclusivo dos músicos, vocais e ministros — não acumula com outros ministérios.</p>
+      <p>Cadastro exclusivo dos músicos, vocais e ministros. Se você também atua em outro ministério, pode ficar tranquilo: seu cadastro anterior é preservado.</p>
     </div>
 
     <label>Nome:</label>
@@ -1097,9 +1097,9 @@ document.getElementById('louvorBtnSalvar').onclick = async () => {
   let docExistente = null; let ministeriosAntigos = []; let funcoesAntigas = [];
   snap.forEach(d => { if (d.data().whatsapp === zap) { docExistente = d; ministeriosAntigos = d.data().ministerios || []; funcoesAntigas = d.data().funcoes || []; } });
 
-  // Garante exclusividade: remove qualquer ministério que NÃO seja de Louvor já existente, e mantém só os de louvor + os novos
-  const ministeriosLouvorAntigos = ministeriosAntigos.filter(m => m === 'Louvor Principal' || m === 'Louvor Sábado');
-  const ministeriosFinais = [...new Set([...ministeriosLouvorAntigos, ...equipesSelecionadas])];
+  // Preserva os ministérios não-Louvor já existentes (Projeção, Som, etc.) e substitui só os de Louvor pelos recém-selecionados
+  const ministeriosNaoLouvorAntigos = ministeriosAntigos.filter(m => m !== 'Louvor Principal' && m !== 'Louvor Sábado');
+  const ministeriosFinais = [...new Set([...ministeriosNaoLouvorAntigos, ...equipesSelecionadas])];
   const funcoesFinais = [...new Set([...funcoesAntigas, ...funcoesSelecionadas])];
 
   const emailSalvoAntes = docExistente ? (docExistente.data().email || "") : "";
@@ -1199,6 +1199,27 @@ document.getElementById('louvorBtnSalvar').onclick = async () => {
 
 /* ===== PAINEL LOGIC (MINISTÉRIOS PADRÃO) ===== */
 let listaGlobal = []; let ministerioSelecionado = ""; let ministerioPendente = ""; let botaoPendente = null; let acessoMestreLiberado = false; let ministeriosDestravados = {};
+// Mapa: nome do voluntário -> { "AAAA-MM-DD": "Nome do outro ministério" } — usado para alertar conflitos de escala entre ministérios
+let ocupadosPorNome = {};
+async function carregarOcupadosPorNome(mesVal) {
+  ocupadosPorNome = {};
+  if (!mesVal) return;
+  const snapHist = await getDocs(query(collection(db, "historico_escalas"), where("mesReferencia", "==", mesVal)));
+  snapHist.forEach(d => {
+    const esc = d.data();
+    if (esc.ministerio === ministerioSelecionado) return; // conflito é só entre ministérios diferentes
+    (esc.linhas || []).forEach(l => {
+      const p = (l.data || "").split('/');
+      if (p.length !== 3) return;
+      const dataISO = `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+      const nomes = (l.voluntario || "").split(',').map(s => s.trim()).filter(s => s && s !== 'A definir');
+      nomes.forEach(nome => {
+        if (!ocupadosPorNome[nome]) ocupadosPorNome[nome] = {};
+        ocupadosPorNome[nome][dataISO] = esc.ministerio;
+      });
+    });
+  });
+}
 
 const mesesP = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 const hojeP = new Date();
@@ -1304,6 +1325,7 @@ async function carregarVoluntarios(){
   const snap = await getDocs(collection(db,"voluntarios"));
   listaGlobal=[]; listaVoluntariosUI.innerHTML="";
   const mesSelecionadoPainel = document.getElementById('mesEscala').value;
+  await carregarOcupadosPorNome(mesSelecionadoPainel);
   snap.forEach(d=>{
     const v=d.data(); v.id=d.id;
     if(v.ministerios?.includes(ministerioSelecionado)) {
@@ -1486,6 +1508,15 @@ function abrirPopupVoluntarios(td, candidatosCustom, funcaoFiltro) {
     const nomesCadastrados = baseFiltradaPorFuncao.map(v => v.nome);
     const todosNomes = [...new Set([...nomesCadastrados, ...nomesAtuais])].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 
+    // Verifica conflito: voluntário já escalado em OUTRO ministério nessa mesma data
+    const conflitosMap = {};
+    if (dataISO) {
+        todosNomes.forEach(nome => {
+            const outroMin = ocupadosPorNome[nome]?.[dataISO];
+            if (outroMin) conflitosMap[nome] = outroMin;
+        });
+    }
+
     const restricoesMap = {};
     baseFiltradaPorFuncao.forEach(v => {
         let restricao = null;
@@ -1516,9 +1547,13 @@ function abrirPopupVoluntarios(td, candidatosCustom, funcaoFiltro) {
         const checked = nomesAtuais.includes(nome) ? 'checked' : '';
         const naoCadastrado = !nomesCadastrados.includes(nome);
         const restricao = restricoesMap[nome];
+        const conflito = conflitosMap[nome];
         let labelStyle = '';
         let badge = '';
-        if(naoCadastrado) {
+        if(conflito) {
+            labelStyle = ' style="color:#dc2626;"';
+            badge = ` <span style="font-size:10px; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; border-radius:3px; padding:1px 4px; font-weight:bold;" title="Conflito de escala">🚫 já escalado(a) em ${conflito} nesse dia</span>`;
+        } else if(naoCadastrado) {
             labelStyle = ' style="color:#f97316;"';
             badge = ` <span style="font-size:10px; background:#fff7ed; color:#f97316; border:1px solid #fed7aa; border-radius:3px; padding:1px 4px;">${funcaoFiltro ? 'sem essa função' : 'não cadastrado'}</span>`;
         } else if(restricao) {
@@ -1526,7 +1561,7 @@ function abrirPopupVoluntarios(td, candidatosCustom, funcaoFiltro) {
             badge = ` <span style="font-size:10px; background:#f8fafc; color:#94a3b8; border:1px solid #e2e8f0; border-radius:3px; padding:1px 4px;" title="Restrição de disponibilidade">⚠️ ${restricao}</span>`;
         }
         const nomeEscapado = nome.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        html += `<label${labelStyle}><input type="checkbox" value="${nomeEscapado}" ${checked}> ${nome}${badge}</label>`;
+        html += `<label${labelStyle}><input type="checkbox" value="${nomeEscapado}" data-conflito="${conflito ? conflito.replace(/"/g, '&quot;') : ''}" ${checked}> ${nome}${badge}</label>`;
     });
 
     html += `
@@ -1547,7 +1582,17 @@ function abrirPopupVoluntarios(td, candidatosCustom, funcaoFiltro) {
     popup.style.left = `${Math.max(10, left)}px`;
 
     popup.querySelector('.btn-aplicar').onclick = () => {
-        const marcados = Array.from(popup.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
+        const checkboxesMarcados = Array.from(popup.querySelectorAll('input[type="checkbox"]:checked'));
+        const marcados = checkboxesMarcados.map(c => c.value);
+
+        // Se algum dos marcados tem conflito de escala, pede confirmação antes de aplicar
+        const conflitantes = checkboxesMarcados.filter(c => c.dataset.conflito);
+        if (conflitantes.length > 0) {
+            const listaConflitos = conflitantes.map(c => `• ${c.value} (já escalado(a) em ${c.dataset.conflito} nesse dia)`).join('\n');
+            const confirmar = confirm(`⚠️ Atenção, conflito de escala:\n\n${listaConflitos}\n\nDeseja aplicar mesmo assim?`);
+            if (!confirmar) return;
+        }
+
         const novosNomes = marcados.length > 0 ? marcados.join(', ') : 'A definir';
         td.dataset.nomes = novosNomes;
         let span = td.querySelector('.vol-texto');
@@ -1806,6 +1851,7 @@ async function carregarVoluntariosLouvor() {
   const lista = document.getElementById('listaVoluntariosUILouvor');
   lista.innerHTML = "";
   const mesSelecionadoPainel = document.getElementById('mesEscalaLouvor').value;
+  await carregarOcupadosPorNome(mesSelecionadoPainel);
   snap.forEach(d => {
     const v = d.data(); v.id = d.id;
     if (v.ministerios?.includes(ministerioSelecionado)) {
